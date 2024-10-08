@@ -3,9 +3,10 @@ const router = express.Router();
 const clienteController = require("../controllers/clienteController");
 const repuestosController = require("../controllers/repuestosController");
 const pedidosController = require("../controllers/pedidosController");
-const categoriasController = require("../controllers/categoriasController")
-const tecnicosController = require("../controllers/tecnicosController")
-const citasController = require("../controllers/citasController")
+const categoriasController = require("../controllers/categoriasController");
+const tecnicosController = require("../controllers/tecnicosController");
+const citasController = require("../controllers/citasController");
+const serviciosController = require("../controllers/serviciosController"); // Importar el controlador de servicios
 
 module.exports = function () {
     // Clientes
@@ -22,15 +23,21 @@ module.exports = function () {
     router.put("/tecnicos/:idTecnico", tecnicosController.actualizarTecnico);
     router.delete("/tecnicos/:idTecnico", tecnicosController.EliminarTecnico);
 
-    // Categoria de servicios
+    // Categoría de servicios
     router.post("/categorias", categoriasController.nuevaCategoria);
     router.get("/categorias", categoriasController.mostrarCategorias);
     router.get("/categorias/:idCategoria", categoriasController.mostrarCategoria);
     router.put("/categorias/:idCategoria", categoriasController.actualizarCategoria);
     router.delete("/categorias/:idCategoria", categoriasController.EliminarCategoria);
 
+    // Servicios
+    router.post("/servicios", serviciosController.nuevoServicio);
+    router.get("/servicios", serviciosController.mostrarServicios);
+    router.get("/servicios/:idServicio", serviciosController.mostrarServicio);
+    router.put("/servicios/:idServicio", serviciosController.actualizarServicio);
+    router.delete("/servicios/:idServicio", serviciosController.eliminarServicio);
 
-    // Productos:
+    // Repuestos
     router.post(
         "/repuestos",
         repuestosController.subirArchivo,
@@ -38,14 +45,15 @@ module.exports = function () {
     );
     router.get("/repuestos", repuestosController.mostrarRepuestos);
     router.get("/repuestos/:idRepuesto", repuestosController.mostrarRepuesto);
-    router.put("/repuestos/:idRepuesto",
+    router.put(
+        "/repuestos/:idRepuesto",
         repuestosController.subirArchivo,
-        repuestosController.actualizarRepuesto);
+        repuestosController.actualizarRepuesto
+    );
     router.delete("/repuestos/:idRepuesto", repuestosController.eliminarRepuesto);
 
-    // Busqueda de productos
-    router.post('/repuestos/busqueda/:query', repuestosController.buscarRepuesto)
-
+    // Búsqueda de repuestos
+    router.post("/repuestos/busqueda/:query", repuestosController.buscarRepuesto);
 
     // Citas
     router.post("/citas", citasController.nuevaCita);
@@ -63,4 +71,3 @@ module.exports = function () {
 
     return router;
 };
-

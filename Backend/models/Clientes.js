@@ -5,7 +5,7 @@ const clientesSchema = new Schema({
     nombre: {
         type: String,
         trim: true,
-        required: true // Asegúrate de agregar validación si es necesario
+        required: true 
     },
     apellido: {
         type: String,

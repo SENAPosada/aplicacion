@@ -6,15 +6,15 @@ import Navegacion from "./componentes/layout/Navegacion";
 // Componentes
 // Clientes:
 import Clientes from "./componentes/clientes/Clientes";
-import NuevoCliente from "./componentes/clientes//NuevoCliente";
+import NuevoCliente from "./componentes/clientes/NuevoCliente";
 import EditarCliente from "./componentes/clientes/EditarCliente";
 
-// Tecnicos
+// Técnicos
 import Tecnicos from "./componentes/tecnicos/Tecnicos";
 import NuevoTecnico from "./componentes/tecnicos/NuevoTecnico";
 import EditarTecnico from "./componentes/tecnicos/EditarTecnico";
 
-// Categorias
+// Categorías
 import Categorias from "./componentes/categorias/Categorias";
 import NuevaCategoria from "./componentes/categorias/NuevaCategoria";
 import EditarCategoria from "./componentes/categorias/EditarCategoria";
@@ -24,9 +24,12 @@ import Repuestos from "./componentes/repuestos/Repuestos";
 import NuevoRepuesto from "./componentes/repuestos/NuevoRepuesto";
 import EditarRepuesto from "./componentes/repuestos/EditarRepuesto";
 
-
-
-
+// Servicios
+import Servicios from "./componentes/servicios/Servicios";
+import NuevoServicio from "./componentes/servicios/NuevoServicio";
+import EditarServicio from "./componentes/servicios/EditarServicio";
+import Citas from "./componentes/Citas/Citas";
+import NuevaCita from "./componentes/Citas/NuevaCita";
 
 function App() {
   return (
@@ -53,7 +56,13 @@ function App() {
               <Route exact path="/repuestos/nuevo" element={<NuevoRepuesto />} />
               <Route exact path="/repuestos/editar/:id" element={<EditarRepuesto />} />
 
- 
+              <Route exact path="/servicios" element={<Servicios />} />
+              <Route exact path="/servicios/nuevo" element={<NuevoServicio />} />
+              <Route exact path="/servicios/editar/:id" element={<EditarServicio />} />
+           
+              <Route exact path="/citas" element={<Citas />} />
+              <Route path="/citas/nueva" element={<NuevaCita />} />
+
             </Routes>
           </main>
         </div>
@@ -63,4 +72,3 @@ function App() {
 }
 
 export default App;
-

@@ -9,7 +9,7 @@ const Navegacion = () => {
                 <Link to={"/"} className="clientes">Clientes</Link>
                 <Link to={"/tecnicos"} className="tecnicos">Técnicos</Link>
                 <Link to={"/servicios"} className="servicios">Servicios</Link>
-                <Link to={"/categorias"} className="categorias">Categorias</Link>
+                <Link to={"/categorias"} className="categorias">Categorias de servicios</Link>
                 <Link to={"/repuestos"} className="repuestos">Repuestos</Link>
                 <Link to={"/citas"} className="citas">Citas</Link>
             </nav>
