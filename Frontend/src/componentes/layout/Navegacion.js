@@ -6,10 +6,11 @@ const Navegacion = () => {
         <aside className="sidebar col-3">
             <h2>Administración</h2>
             <nav className="navegacion">
+                <Link to={"/agenda"} className="agenda">Agenda</Link> {/* Nueva pestaña */}
                 <Link to={"/"} className="clientes">Clientes</Link>
                 <Link to={"/tecnicos"} className="tecnicos">Técnicos</Link>
                 <Link to={"/servicios"} className="servicios">Servicios</Link>
-                <Link to={"/categorias"} className="categorias">Categorias de servicios</Link>
+                <Link to={"/categorias"} className="categorias">Categorías de servicios</Link>
                 <Link to={"/repuestos"} className="repuestos">Repuestos</Link>
                 <Link to={"/citas"} className="citas">Citas</Link>
             </nav>

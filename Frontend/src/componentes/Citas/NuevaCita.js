@@ -1,119 +1,156 @@
 import React, { useEffect, useState } from "react";
 import useTechnicalsStore from "../../store/useTechnicals.store";
 import useClientsStore from "../../store/useClients.store";
-import useSparesStore from "../../store/useSpares.store"; // Cambia a useSparesStore
+import useSparesStore from "../../store/useSpares.store";
+import SelectOptions from "../Citas/SelectOptions"; 
+import TechnicalSupportCalendar from "../Calendar"; 
+import Swal from "sweetalert2"; 
+import { useNavigate } from "react-router-dom";
+import clienteAxios from "../../config/axios";
 
 const NuevaCita = () => {
   const { fetchTechnicals, technicals } = useTechnicalsStore();
   const { fetchClients, clients } = useClientsStore();
-  const { fetchSpares, spares } = useSparesStore(); // Ajusta para obtener spares
-  const [selectedTechnical, setSelectedTechnical] = useState("");
-  const [selectedClient, setSelectedClient] = useState("");
-  const [selectedSpare, setSelectedSpare] = useState(""); // Cambia el nombre a selectedSpare
-  const [direccion, setDireccion] = useState(""); // Nuevo estado para la dirección
-  const [ciudad, setCiudad] = useState(""); // Nuevo estado para la ciudad
+  const { fetchSpares, spares } = useSparesStore();
+
+  const [Data, setData] = useState({
+    cliente: "",         // Cambiado de selectedClient a cliente
+    tecnico: "",        // Cambiado de selectedTechnical a tecnico
+    repuesto: "",       // Cambiado de selectedSpare a repuesto
+    direccion: "",
+    ciudad: "",
+    fecha: new Date(), 
+    horario: "", 
+  });
+
+  const horariosPosibles = [
+    "8:00 AM - 10:00 AM",
+    "12:00 PM - 02:00 PM",
+    "4:00 PM - 6:00 PM",
+  ];
 
   useEffect(() => {
     fetchTechnicals();
     fetchClients();
-    fetchSpares(); // Llama a la función para obtener repuestos
+    fetchSpares();
   }, [fetchTechnicals, fetchClients, fetchSpares]);
 
-  const handleTechnicalChange = (event) => {
-    setSelectedTechnical(event.target.value);
+  const handleChange = (e) => {
+    setData({
+      ...Data,
+      [e.target.name]: e.target.value,
+    });
   };
 
-  const handleClientChange = (event) => {
-    setSelectedClient(event.target.value);
+  const handleDateChange = (date) => {
+    setData({
+      ...Data,
+      fecha: date, 
+    });
   };
 
-  const handleSpareChange = (event) => {
-    setSelectedSpare(event.target.value); // Actualiza el estado con el repuesto seleccionado
+  const handleHorarioChange = (e) => {
+    setData({
+      ...Data,
+      horario: e.target.value, 
+    });
   };
 
-  const handleDireccionChange = (event) => {
-    setDireccion(event.target.value); // Actualiza el estado con la dirección
-  };
-
-  const handleCiudadChange = (event) => {
-    setCiudad(event.target.value); // Actualiza el estado con la ciudad
+  const reservarCita = (e) => {
+    e.preventDefault(); 
+    clienteAxios.post('/citas', Data)
+      .then(res => {
+        console.log("Cita reservada:", res.data);
+        Swal.fire({
+          icon: 'success',
+          title: 'Cita Reservada',
+          text: 'Tu cita ha sido reservada correctamente',
+        });
+      })
+      .catch(error => {
+        console.error("Error al reservar la cita:", error);
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'Hubo un error al reservar la cita',
+        });
+      });
   };
 
   return (
     <>
       <h2>Nueva Cita</h2>
+      <SelectOptions
+        data={clients}
+        id="clientes"
+        name="cliente" 
+        selectedValue={Data.cliente}
+        handleChange={handleChange}
+        label="Seleccionar Cliente"
+      />
 
-      <div style={{ marginBottom: "1rem" }}>
-        <label htmlFor="clientes">Seleccionar Cliente:</label>
-        <select id="clientes" value={selectedClient} onChange={handleClientChange}>
-          <option value="">-- Selecciona un cliente --</option>
-          {clients.length > 0 ? (
-            clients.map((client) => (
-              <option key={client._id} value={client._id}>
-                {client.nombre} {client.apellido}
-              </option>
-            ))
-          ) : (
-            <option value="">No hay clientes disponibles</option>
-          )}
-        </select>
-      </div>
-      
-      <div style={{ marginBottom: "1rem" }}>
-        <label htmlFor="tecnicos">Seleccionar Técnico:</label>
-        <select id="tecnicos" value={selectedTechnical} onChange={handleTechnicalChange}>
-          <option value="">-- Selecciona un técnico --</option>
-          {technicals.length > 0 ? (
-            technicals.map((technical) => (
-              <option key={technical._id} value={technical._id}>
-                {technical.nombre} {technical.apellido}
-              </option>
-            ))
-          ) : (
-            <option value="">No hay técnicos disponibles</option>
-          )}
-        </select>
-      </div>
+      <SelectOptions
+        data={technicals}
+        id="tecnicos"
+        name="tecnico"
+        selectedValue={Data.tecnico} 
+        handleChange={handleChange}
+        label="Seleccionar Técnico"
+      />
 
-      <div style={{ marginBottom: "1rem" }}>
-        <label htmlFor="repuestos">Seleccionar Repuesto:</label>
-        <select id="repuestos" value={selectedSpare} onChange={handleSpareChange}>
-          <option value="">-- Selecciona un repuesto --</option>
-          {spares.length > 0 ? (
-            spares.map((spare) => (
-              <option key={spare._id} value={spare._id}>
-                {spare.nombre} {/* Asegúrate de que el campo "nombre" sea correcto */}
-              </option>
-            ))
-          ) : (
-            <option value="">No hay repuestos disponibles</option>
-          )}
-        </select>
-      </div>
+      <SelectOptions
+        data={spares}
+        id="repuestos"
+        name="repuesto"
+        selectedValue={Data.repuesto} 
+        handleChange={handleChange}
+        label="Seleccionar Repuesto"
+      />
 
-      {/* Nuevo campo de Dirección */}
       <div style={{ marginBottom: "1rem" }}>
         <label htmlFor="direccion">Dirección:</label>
         <input
           type="text"
           id="direccion"
-          value={direccion}
-          onChange={handleDireccionChange} // Manejar el cambio
+          name="direccion"
+          value={Data.direccion}
+          onChange={handleChange}
           placeholder="Ingresa la dirección"
         />
       </div>
 
-      {/* Nuevo campo de Ciudad */}
       <div style={{ marginBottom: "1rem" }}>
         <label htmlFor="ciudad">Ciudad:</label>
         <input
           type="text"
           id="ciudad"
-          value={ciudad}
-          onChange={handleCiudadChange} // Manejar el cambio
+          name="ciudad"
+          value={Data.ciudad}
+          onChange={handleChange}
           placeholder="Ingresa la ciudad"
         />
       </div>
+
+      <TechnicalSupportCalendar onDateChange={handleDateChange} />
+
+      <div style={{ marginBottom: "1rem" }}>
+        <label htmlFor="horario">Horario:</label>
+        <select
+          id="horario"
+          name="horario"
+          value={Data.horario}
+          onChange={handleHorarioChange}
+        >
+          <option value="">Selecciona un horario</option>
+          {horariosPosibles.map((horario, index) => (
+            <option key={index} value={horario}>{horario}</option>
+          ))}
+        </select>
+      </div>
+      
+      <button onClick={reservarCita} className="btn btn-azul">
+        Reservar Cita
+      </button>
     </>
   );
 };

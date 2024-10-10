@@ -5,7 +5,7 @@ const repuestosController = require("../controllers/repuestosController");
 const pedidosController = require("../controllers/pedidosController");
 const categoriasController = require("../controllers/categoriasController");
 const tecnicosController = require("../controllers/tecnicosController");
-const citasController = require("../controllers/citasController");
+const citasController = require("../controllers/citasController")
 const serviciosController = require("../controllers/serviciosController"); // Importar el controlador de servicios
 
 module.exports = function () {

@@ -10,6 +10,16 @@ const tecnicosSchema = new Schema({
         type: String,
         trim: true,
     },
+    tipoDocumento: {
+        type: String,
+        enum: ['Cédula de Ciudadanía', 'Pasaporte', 'Tarjeta de Identidad', 'Cédula de Extranjería'],
+        required: true // Obligatorio
+    },
+    cedula: {
+        type: String,
+        trim: true,
+        required: true // Obligatorio
+    },
     email: {
         type: String,
         unique: true,

@@ -10,27 +10,32 @@ const citasSchema = new Schema({
     direccion: {
         type: String,
         trim: true,
-        required: true 
+        required: true
     },
     ciudad: {
-        type: String,  
+        type: String,
         trim: true,
-        required: true  
-    },
-    categoria: {
-        type: Schema.ObjectId,
-        ref: 'Categorias',  
         required: true
     },
     tecnico: {
         type: Schema.ObjectId,
-        ref: 'Tecnicos',  
+        ref: 'Tecnicos',
+        required: true
+    },
+    repuesto: { 
+        type: String,
+        trim: true,
         required: true
     },
     fecha: {
-        type: Date,  
+        type: Date,
+        required: true
+    },
+    horario: { 
+        type: String,
         required: true
     }
 });
+
 
 module.exports = mongoose.model('Citas', citasSchema);

@@ -35,6 +35,8 @@ function Tecnicos() {
                     <thead>
                         <tr>
                             <th>Nombre</th>
+                            <th>Tipo documento</th>
+                            <th>Cedula</th>
                             <th>Email</th>
                             <th>Teléfono</th>
                             <th>Estado</th>

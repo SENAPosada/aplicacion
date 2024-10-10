@@ -98,6 +98,32 @@ function NuevoTecnico() {
                 </div>
 
                 <div className="campo">
+                    <label>Tipo de Documento:</label>
+                    <select
+                        name="tipoDocumento"
+                        onChange={handleChange}
+                        value={tecnico.tipoDocumento}
+                    >
+                        <option value="">-- Seleccionar --</option>
+                        <option value="Cédula de Ciudadanía">Cédula de Ciudadanía</option>
+                        <option value="Pasaporte">Pasaporte</option>
+                        <option value="Tarjeta de Identidad">Tarjeta de Identidad</option>
+                        <option value="Cédula de Extranjería">Cédula de Extranjería</option>
+                    </select>
+                </div>
+
+                <div className="campo">
+                    <label>Cédula:</label>
+                    <input
+                        type="text"
+                        placeholder="Cédula o Documento"
+                        name="cedula"
+                        onChange={handleChange}
+                        value={tecnico.cedula}
+                    />
+                </div>
+
+                <div className="campo">
                     <label>Email:</label>
                     <input
                         type="email"
