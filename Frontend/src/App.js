@@ -32,6 +32,7 @@ import Citas from "./componentes/Citas/Citas";
 import NuevaCita from "./componentes/Citas/NuevaCita";
 
 import Calendar from "./componentes/Calendar";
+import EditarCita from "./componentes/Citas/EditarCita";
 function App() {
   return (
     <Router>
@@ -64,7 +65,7 @@ function App() {
 
               <Route exact path="/citas" element={<Citas />} />
               <Route path="/citas/nueva" element={<NuevaCita />} />
-
+              <Route exact path="/citas/editar/:id" element={<EditarCita />} />
             </Routes>
           </main>
         </div>

@@ -2,73 +2,90 @@ import React, { useEffect, useState } from "react";
 import useTechnicalsStore from "../../store/useTechnicals.store";
 import useClientsStore from "../../store/useClients.store";
 import useSparesStore from "../../store/useSpares.store";
-import SelectOptions from "../Citas/SelectOptions"; 
-import TechnicalSupportCalendar from "../Calendar"; 
-import Swal from "sweetalert2"; 
-import { useNavigate } from "react-router-dom";
+import useCitasStore from "../../store/useCitas.store";
+import SelectOptions from "../Citas/SelectOptions";
+import TechnicalSupportCalendar from "../Calendar";
+import Swal from "sweetalert2";
 import clienteAxios from "../../config/axios";
+import { useNavigate } from "react-router-dom";
 
 const NuevaCita = () => {
+  const navigate = useNavigate();
+
   const { fetchTechnicals, technicals } = useTechnicalsStore();
   const { fetchClients, clients } = useClientsStore();
   const { fetchSpares, spares } = useSparesStore();
+  const { fetchCitas, citas } = useCitasStore();
 
   const [Data, setData] = useState({
-    cliente: "",         // Cambiado de selectedClient a cliente
-    tecnico: "",        // Cambiado de selectedTechnical a tecnico
-    repuesto: "",       // Cambiado de selectedSpare a repuesto
+    cliente: "",
+    tecnico: "",
+    repuesto: "",
     direccion: "",
     ciudad: "",
-    fecha: new Date(), 
-    horario: "", 
+    fecha: new Date(),
+    horario: "",
+    estado: "Activado"
   });
 
   const horariosPosibles = [
     "8:00 AM - 10:00 AM",
+    "10:00 AM - 12:00 PM",
     "12:00 PM - 02:00 PM",
-    "4:00 PM - 6:00 PM",
+    "2:00 PM - 4:00 PM",
   ];
 
   useEffect(() => {
     fetchTechnicals();
     fetchClients();
     fetchSpares();
-  }, [fetchTechnicals, fetchClients, fetchSpares]);
+    fetchCitas();
+  }, []);
 
   const handleChange = (e) => {
+    const { name, value } = e.target;
+
     setData({
       ...Data,
-      [e.target.name]: e.target.value,
+      [name]: value,
     });
-  };
+
+    if (name === "tecnico") {
+      const tecnico = citas.filter((cita) => {
+        return cita.tecnico === value; 
+      });
+      console.log({ tecnico });
+    }
+};
+
 
   const handleDateChange = (date) => {
     setData({
       ...Data,
-      fecha: date, 
+      fecha: date,
     });
   };
 
   const handleHorarioChange = (e) => {
     setData({
       ...Data,
-      horario: e.target.value, 
+      horario: e.target.value,
     });
   };
 
   const reservarCita = (e) => {
-    e.preventDefault(); 
+    e.preventDefault();
     clienteAxios.post('/citas', Data)
       .then(res => {
-        console.log("Cita reservada:", res.data);
         Swal.fire({
           icon: 'success',
           title: 'Cita Reservada',
           text: 'Tu cita ha sido reservada correctamente',
+        }).then(() => {
+          navigate('/citas');
         });
       })
       .catch(error => {
-        console.error("Error al reservar la cita:", error);
         Swal.fire({
           icon: 'error',
           title: 'Error',
@@ -78,36 +95,43 @@ const NuevaCita = () => {
   };
 
   return (
-    <>
+    <div className="nueva-cita-container">
       <h2>Nueva Cita</h2>
-      <SelectOptions
-        data={clients}
-        id="clientes"
-        name="cliente" 
-        selectedValue={Data.cliente}
-        handleChange={handleChange}
-        label="Seleccionar Cliente"
-      />
 
-      <SelectOptions
-        data={technicals}
-        id="tecnicos"
-        name="tecnico"
-        selectedValue={Data.tecnico} 
-        handleChange={handleChange}
-        label="Seleccionar Técnico"
-      />
+      <div className="form-group">
+        <label htmlFor="cliente">Seleccionar Cliente</label>
+        <SelectOptions
+          data={clients}
+          id="clientes"
+          name="cliente"
+          selectedValue={Data.cliente}
+          handleChange={handleChange}
+        />
+      </div>
 
-      <SelectOptions
-        data={spares}
-        id="repuestos"
-        name="repuesto"
-        selectedValue={Data.repuesto} 
-        handleChange={handleChange}
-        label="Seleccionar Repuesto"
-      />
+      <div className="form-group">
+        <label htmlFor="tecnico">Seleccionar Técnico</label>
+        <SelectOptions
+          data={technicals}
+          id="tecnicos"
+          name="tecnico"
+          selectedValue={Data.tecnico}
+          handleChange={handleChange}
+        />
+      </div>
 
-      <div style={{ marginBottom: "1rem" }}>
+      <div className="form-group">
+        <label htmlFor="repuesto">Seleccionar Repuesto</label>
+        <SelectOptions
+          data={spares}
+          id="repuestos"
+          name="repuesto"
+          selectedValue={Data.repuesto}
+          handleChange={handleChange}
+        />
+      </div>
+
+      <div className="form-group">
         <label htmlFor="direccion">Dirección:</label>
         <input
           type="text"
@@ -119,7 +143,7 @@ const NuevaCita = () => {
         />
       </div>
 
-      <div style={{ marginBottom: "1rem" }}>
+      <div className="form-group">
         <label htmlFor="ciudad">Ciudad:</label>
         <input
           type="text"
@@ -133,7 +157,7 @@ const NuevaCita = () => {
 
       <TechnicalSupportCalendar onDateChange={handleDateChange} />
 
-      <div style={{ marginBottom: "1rem" }}>
+      <div className="form-group">
         <label htmlFor="horario">Horario:</label>
         <select
           id="horario"
@@ -147,11 +171,11 @@ const NuevaCita = () => {
           ))}
         </select>
       </div>
-      
+
       <button onClick={reservarCita} className="btn btn-azul">
         Reservar Cita
       </button>
-    </>
+    </div>
   );
 };
 
