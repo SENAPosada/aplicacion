@@ -38,7 +38,6 @@ function Repuesto({ repuesto, mostrarModal }) { // Cambiar a Repuesto
                 <td>{nombre}</td>
                 <td>{precio}</td>
                 <td>
-                    {/* Colocamos los tres botones en la misma celda */}
                     <button onClick={() => mostrarModal(repuesto)} className="btn btn-info">
                         <i className="fas fa-eye"></i> Ver
                     </button>

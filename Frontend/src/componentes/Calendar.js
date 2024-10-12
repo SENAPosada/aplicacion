@@ -22,9 +22,8 @@ const TechnicalSupportCalendar = () => {
     };
     return (
         <div>
-            <h1>Calendario</h1>
+            <h4>Fecha:</h4>
             <input
-
                 style={{ cursor: "pointer" }}
                 type="text"
                 value={`${selectedDate.getDate()}/${selectedDate.getMonth() + 1

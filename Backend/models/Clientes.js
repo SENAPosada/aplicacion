@@ -10,17 +10,18 @@ const clientesSchema = new Schema({
     apellido: {
         type: String,
         trim: true,
-        required: true // Asegúrate de agregar validación si es necesario
+        required: true 
     },
     tipoDocumento: {
         type: String,
         enum: ['Cédula de Ciudadanía', 'Pasaporte', 'Tarjeta de Identidad', 'Cédula de Extranjería'],
-        required: true // Obligatorio
+        required: true 
     },
     cedula: {
         type: String,
         trim: true,
-        required: true // Obligatorio
+        required: true,
+        unique: true,
     },
     empresa: {
         type: String,
@@ -31,7 +32,7 @@ const clientesSchema = new Schema({
         unique: true,
         lowercase: true,
         trim: true,
-        required: true // Asegúrate de agregar validación si es necesario
+        required: true 
     },
     telefono: {
         type: String,
@@ -39,7 +40,7 @@ const clientesSchema = new Schema({
     },
     activo: {
         type: Boolean,
-        default: true // Establece el valor por defecto como activo
+        default: true
     }
 });
 

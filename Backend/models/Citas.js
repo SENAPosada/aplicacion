@@ -18,7 +18,7 @@ const citasSchema = new Schema({
     },
     tecnico: {
         type: String,
-        required: true // Aquí también puede ser String si guardas la cédula del técnico
+        required: true 
     },
     repuesto: { 
         type: String,
@@ -43,7 +43,7 @@ const citasSchema = new Schema({
             "Procesando",
             "Finalizado"
         ],
-        default: "Cargado" // Valor predeterminado
+        default: "Cargado" 
     },
 });
 

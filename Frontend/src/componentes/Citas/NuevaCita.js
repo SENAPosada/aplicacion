@@ -16,7 +16,7 @@ const NuevaCita = () => {
   const { fetchClients, clients } = useClientsStore();
   const { fetchSpares, spares } = useSparesStore();
   const { fetchCitas, citas } = useCitasStore();
-
+  const [technicalDocument, setTechnicalDocument] = useState("")
   const [Data, setData] = useState({
     cliente: "",
     tecnico: "",
@@ -40,24 +40,16 @@ const NuevaCita = () => {
     fetchClients();
     fetchSpares();
     fetchCitas();
+    
   }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-
     setData({
       ...Data,
       [name]: value,
     });
-
-    if (name === "tecnico") {
-      const tecnico = citas.filter((cita) => {
-        return cita.tecnico === value; 
-      });
-      console.log({ tecnico });
-    }
-};
-
+  };
 
   const handleDateChange = (date) => {
     setData({
@@ -71,6 +63,20 @@ const NuevaCita = () => {
       ...Data,
       horario: e.target.value,
     });
+  };
+
+  const handleTechnicalDocument = (e) => {
+    const { name, value } = e.target;
+    const tecnico = citas.filter((cita) => cita.tecnico === value);
+    if (tecnico.length > 0) {
+      setTechnicalDocument(value); 
+      setData((prevData) => ({
+        ...prevData,
+        tecnico: value, 
+      }));
+    } 
+    console.log({technicalDocument}) 
+    
   };
 
   const reservarCita = (e) => {
@@ -116,7 +122,7 @@ const NuevaCita = () => {
           id="tecnicos"
           name="tecnico"
           selectedValue={Data.tecnico}
-          handleChange={handleChange}
+          handleChange={handleTechnicalDocument}
         />
       </div>
 

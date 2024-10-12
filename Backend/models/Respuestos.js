@@ -6,6 +6,7 @@ const repuestosSchema = new Schema({
         type: String,
         trim: true,
         required: true,
+        uniqued: true
     },
     precio: {
         type: Number,

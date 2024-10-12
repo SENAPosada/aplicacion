@@ -18,7 +18,8 @@ const tecnicosSchema = new Schema({
     cedula: {
         type: String,
         trim: true,
-        required: true // Obligatorio
+        required: true,
+        uniqued: true
     },
     email: {
         type: String,
