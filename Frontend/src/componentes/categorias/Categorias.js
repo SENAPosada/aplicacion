@@ -29,11 +29,10 @@ function Categorias() {
 
             {/* Mostrar la tabla solo si hay categorías */}
             {categorias.length > 0 ? (
-                <table className="tabla-categorias">
+                <table className="tabla-clientes">
                     <thead>
                         <tr>
                             <th>Nombre de la Categoría</th> {/* Cambiar según sea necesario */}
-                            <th>Tipos</th> {/* Nueva columna para tipos */}
                             <th>Acciones</th>
                         </tr>
                     </thead>

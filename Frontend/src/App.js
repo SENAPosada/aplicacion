@@ -33,6 +33,8 @@ import NuevaCita from "./componentes/Citas/NuevaCita";
 
 import Calendar from "./componentes/Calendar";
 import EditarCita from "./componentes/Citas/EditarCita";
+// import Horario from "./componentes/disponibilidad/CrearDisponibilidad";
+// import Agenda from "./componentes/disponibilidad/Agenda"
 function App() {
   return (
     <Router>
@@ -42,7 +44,9 @@ function App() {
           <Navegacion />
           <main className="caja-contenido col-9">
             <Routes>
-              <Route exact path="/agenda" element={<Calendar />} />
+              {/* <Route exact path="/horarios" element={<Agenda/>} />
+              <Route exact path="/horarios/nuevo" element={<Horario />} /> */}
+
               <Route exact path="/" element={<Clientes />} />
               <Route exact path="/clientes/nuevo" element={<NuevoCliente />} />
               <Route exact path="/clientes/editar/:id" element={<EditarCliente />} />

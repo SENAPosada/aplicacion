@@ -29,11 +29,10 @@ function Servicios() {
 
             {/* Mostrar la tabla solo si hay servicios */}
             {servicios.length > 0 ? (
-                <table className="tabla-servicios">
+                <table className="tabla-clientes">
                     <thead>
                         <tr>
                             <th>Nombre del Servicio</th> {/* Cambiar según sea necesario */}
-                            <th>Descripción</th> {/* Nueva columna para descripción o detalle */}
                             <th>Acciones</th>
                         </tr>
                     </thead>

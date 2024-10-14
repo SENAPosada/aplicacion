@@ -11,12 +11,12 @@ import { useNavigate } from "react-router-dom";
 
 const NuevaCita = () => {
   const navigate = useNavigate();
-
+  const [horariosDisponibles, setHorariosDisponibles] = useState([]);
   const { fetchTechnicals, technicals } = useTechnicalsStore();
   const { fetchClients, clients } = useClientsStore();
   const { fetchSpares, spares } = useSparesStore();
   const { fetchCitas, citas } = useCitasStore();
-  const [technicalDocument, setTechnicalDocument] = useState("")
+  const [technicalDocument, setTechnicalDocument] = useState("");
   const [Data, setData] = useState({
     cliente: "",
     tecnico: "",
@@ -40,7 +40,6 @@ const NuevaCita = () => {
     fetchClients();
     fetchSpares();
     fetchCitas();
-    
   }, []);
 
   const handleChange = (e) => {
@@ -56,28 +55,49 @@ const NuevaCita = () => {
       ...Data,
       fecha: date,
     });
-  };
 
-  const handleHorarioChange = (e) => {
-    setData({
-      ...Data,
-      horario: e.target.value,
-    });
-  };
+    // Actualizar horarios disponibles si ya se ha seleccionado un técnico
+    if (Data.tecnico) {
+      const citasDelDia = citas.filter(cita => 
+        new Date(cita.fecha).toDateString() === new Date(date).toDateString() && cita.tecnico === Data.tecnico // Filtrando por técnico
+      );
+
+      const horariosOcupados = citasDelDia.map(cita => cita.horario);
+      const horariosDisponibles = horariosPosibles.filter(
+        horario => !horariosOcupados.includes(horario)
+      );
+
+      setHorariosDisponibles(horariosDisponibles);
+    }
+};
+
 
   const handleTechnicalDocument = (e) => {
-    const { name, value } = e.target;
-    const tecnico = citas.filter((cita) => cita.tecnico === value);
-    if (tecnico.length > 0) {
-      setTechnicalDocument(value); 
-      setData((prevData) => ({
-        ...prevData,
-        tecnico: value, 
-      }));
-    } 
-    console.log({technicalDocument}) 
-    
-  };
+    const { value } = e.target;
+    setTechnicalDocument(value);
+    setData(prevData => ({
+      ...prevData,
+      tecnico: value,
+    }));
+
+    // Actualizar horarios disponibles si ya hay fecha
+    if (Data.fecha) {
+      const citasDelDia = citas.filter(cita => 
+        new Date(cita.fecha).toDateString() === new Date(Data.fecha).toDateString() && cita.tecnico === value // Filtrando por técnico
+      );
+
+      const horariosOcupados = citasDelDia.map(cita => cita.horario);
+      const horariosDisponibles = horariosPosibles.filter(
+        horario => !horariosOcupados.includes(horario)
+      );
+
+      setHorariosDisponibles(horariosDisponibles);
+    } else {
+      // Si no hay fecha seleccionada, limpiar horarios
+      setHorariosDisponibles(horariosPosibles);
+    }
+};
+
 
   const reservarCita = (e) => {
     e.preventDefault();
@@ -126,6 +146,12 @@ const NuevaCita = () => {
         />
       </div>
 
+      {/* Sección de fecha después de seleccionar el técnico */}
+      <div className="form-group">
+        <label htmlFor="fecha">Seleccionar Fecha:</label>
+        <TechnicalSupportCalendar onDateChange={handleDateChange} />
+      </div>
+
       <div className="form-group">
         <label htmlFor="repuesto">Seleccionar Repuesto</label>
         <SelectOptions
@@ -161,18 +187,16 @@ const NuevaCita = () => {
         />
       </div>
 
-      <TechnicalSupportCalendar onDateChange={handleDateChange} />
-
       <div className="form-group">
         <label htmlFor="horario">Horario:</label>
         <select
           id="horario"
           name="horario"
           value={Data.horario}
-          onChange={handleHorarioChange}
+          onChange={handleChange}
         >
           <option value="">Selecciona un horario</option>
-          {horariosPosibles.map((horario, index) => (
+          {horariosDisponibles.map((horario, index) => (
             <option key={index} value={horario}>{horario}</option>
           ))}
         </select>

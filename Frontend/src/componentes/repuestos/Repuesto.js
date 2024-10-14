@@ -42,16 +42,17 @@ function Repuesto({ repuesto, mostrarModal }) { // Cambiar a Repuesto
                         <i className="fas fa-eye"></i> Ver
                     </button>
 
-                    <Link to={`/repuestos/editar/${_id}`} className="btn btn-azul ml-2"> {/* Cambiar a /repuestos */}
-                        <i className="fas fa-pen-alt"></i> 
+                    <Link to={`/repuestos/editar/${_id}`} className="btn btn-azul" style={{ width: '50px' }}>
+                        <i className="fas fa-pen-alt"></i>
                     </Link>
+
 
                     <button
                         type="button"
                         className="btn btn-rojo btn-eliminar ml-2"
                         onClick={() => eliminarRepuesto(_id)} // Cambiar a eliminarRepuesto
                     >
-                        <i className="fas fa-times"></i> 
+                        <i className="fas fa-times"></i>
                     </button>
                 </td>
             </tr>

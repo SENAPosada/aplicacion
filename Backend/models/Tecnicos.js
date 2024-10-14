@@ -19,7 +19,7 @@ const tecnicosSchema = new Schema({
         type: String,
         trim: true,
         required: true,
-        uniqued: true
+        unique: true
     },
     email: {
         type: String,
