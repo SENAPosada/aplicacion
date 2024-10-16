@@ -24,7 +24,7 @@ function CitasList() {
         fetchTecnicos();
         
     }, []);
-    
+    // console.log({citas})
     const eliminarCita = (idCita) => {
         Swal.fire({
             title: "¿Estás seguro?",
@@ -90,11 +90,11 @@ function CitasList() {
                     </thead>
                     <tbody>
                         {citas.map(cita => {
+                            console.log("cita en el map: ", cita)
                             const tecnico = tecnicos.find(t => t.cedula === cita.tecnico);
                             return (
                                 <tr key={cita._id}>
-                                    <td>{cita.cliente ? `${cita.cliente.nombre} ${cita.cliente.apellido}` : 'No disponible'}</td>
-
+                                    <td>{cita.cliente}</td>
                                     <td>{tecnico ? `${tecnico.nombre} ${tecnico.apellido}` : 'No disponible'}</td>
                                     <td>{cita.direccion}</td>
                                     <td>{cita.ciudad}</td>
