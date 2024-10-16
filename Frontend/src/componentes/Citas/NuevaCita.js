@@ -8,6 +8,9 @@ import TechnicalSupportCalendar from "../Calendar";
 import Swal from "sweetalert2";
 import clienteAxios from "../../config/axios";
 import { useNavigate } from "react-router-dom";
+import useCategoriasStore from "../../store/useCategorias.store";
+import useServiciosStore from "../../store/useServicios.store";
+import useHorariosstore from "../../store/useHorarios.store";
 
 const NuevaCita = () => {
   const navigate = useNavigate();
@@ -16,31 +19,46 @@ const NuevaCita = () => {
   const { fetchClients, clients } = useClientsStore();
   const { fetchSpares, spares } = useSparesStore();
   const { fetchCitas, citas } = useCitasStore();
+  const { fetchCategorias, categorias } = useCategoriasStore();
+  const { fetchHorarios, horarios } = useHorariosstore();
+  const { fetchServicios, servicios } = useServiciosStore();
   const [technicalDocument, setTechnicalDocument] = useState("");
+
   const [Data, setData] = useState({
     cliente: "",
     tecnico: "",
-    repuesto: "",
+    repuestos: [{ repuesto: "", cantidad: 1 }],
     direccion: "",
     ciudad: "",
     fecha: new Date(),
+    servicio: "",
+    categoria: "",
     horario: "",
     estado: "Activado"
   });
 
-  const horariosPosibles = [
-    "8:00 AM - 10:00 AM",
-    "10:00 AM - 12:00 PM",
-    "12:00 PM - 02:00 PM",
-    "2:00 PM - 4:00 PM",
-  ];
+  const [filteredCategories, setFilteredCategories] = useState([]);
 
   useEffect(() => {
     fetchTechnicals();
     fetchClients();
     fetchSpares();
     fetchCitas();
+    fetchServicios();
+    fetchCategorias();
+    fetchHorarios();
   }, []);
+// console.log({horariosDisponibles})
+  useEffect(() => {
+    if (Data.servicio) {
+      const categoriasFiltradas = categorias.filter(
+        (categoria) => categoria.servicio === Data.servicio
+      );
+      setFilteredCategories(categoriasFiltradas);
+    } else {
+      setFilteredCategories([]);
+    }
+  }, [Data.servicio, categorias]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -56,21 +74,19 @@ const NuevaCita = () => {
       fecha: date,
     });
 
-    // Actualizar horarios disponibles si ya se ha seleccionado un técnico
     if (Data.tecnico) {
-      const citasDelDia = citas.filter(cita => 
-        new Date(cita.fecha).toDateString() === new Date(date).toDateString() && cita.tecnico === Data.tecnico // Filtrando por técnico
+      const citasDelDia = citas.filter(cita =>
+        new Date(cita.fecha).toDateString() === new Date(date).toDateString() && cita.tecnico === Data.tecnico
       );
 
       const horariosOcupados = citasDelDia.map(cita => cita.horario);
-      const horariosDisponibles = horariosPosibles.filter(
-        horario => !horariosOcupados.includes(horario)
+      const horariosDisponibles = horarios.filter(
+        horario => !horariosOcupados.includes(horario._id)
       );
 
       setHorariosDisponibles(horariosDisponibles);
     }
-};
-
+  };
 
   const handleTechnicalDocument = (e) => {
     const { value } = e.target;
@@ -80,45 +96,81 @@ const NuevaCita = () => {
       tecnico: value,
     }));
 
-    // Actualizar horarios disponibles si ya hay fecha
     if (Data.fecha) {
-      const citasDelDia = citas.filter(cita => 
-        new Date(cita.fecha).toDateString() === new Date(Data.fecha).toDateString() && cita.tecnico === value // Filtrando por técnico
+      const citasDelDia = citas.filter(cita =>
+        new Date(cita.fecha).toDateString() === new Date(Data.fecha).toDateString() && cita.tecnico === value
       );
 
       const horariosOcupados = citasDelDia.map(cita => cita.horario);
-      const horariosDisponibles = horariosPosibles.filter(
-        horario => !horariosOcupados.includes(horario)
+      const horariosDisponibles = horarios.filter(
+        horario => !horariosOcupados.includes(horario._id)
       );
 
       setHorariosDisponibles(horariosDisponibles);
     } else {
-      // Si no hay fecha seleccionada, limpiar horarios
-      setHorariosDisponibles(horariosPosibles);
+      setHorariosDisponibles(horarios);
     }
-};
+  };
 
+  const handleAddRepuesto = () => {
+    setData(prevData => ({
+      ...prevData,
+      repuestos: [...prevData.repuestos, { repuesto: "", cantidad: 1 }]
+    }));
+  };
+
+  const handleRepuestoChange = (index, field, value) => {
+    const updatedRepuestos = Data.repuestos.map((item, i) =>
+      i === index ? { ...item, [field]: value } : item
+    );
+    setData({
+      ...Data,
+      repuestos: updatedRepuestos
+    });
+  };
 
   const reservarCita = (e) => {
     e.preventDefault();
-    clienteAxios.post('/citas', Data)
+  
+    // Encuentra el horario seleccionado
+    const horarioSeleccionado = horarios.find(horario => horario._id === Data.horario);
+    
+    const citaData = {
+      ...Data,
+      repuestos: Data.repuestos.map(item => {
+        const repuestoEncontrado = spares.find(repuesto => repuesto._id === item.repuesto);
+        return {
+          repuesto: item.repuesto,
+          cantidad: item.cantidad,
+          nombre: repuestoEncontrado ? repuestoEncontrado.nombre : "",
+        };
+      }),
+      // Agrega horaInicio y horaFin al objeto
+      horaInicio: horarioSeleccionado ? horarioSeleccionado.horaInicio : "",
+      horaFin: horarioSeleccionado ? horarioSeleccionado.horaFin : ""
+    };
+  
+    console.log({citaData})
+    
+    clienteAxios.post("/citas", citaData)
       .then(res => {
         Swal.fire({
-          icon: 'success',
-          title: 'Cita Reservada',
-          text: 'Tu cita ha sido reservada correctamente',
+          icon: "success",
+          title: "Cita Reservada",
+          text: "Tu cita ha sido reservada correctamente",
         }).then(() => {
-          navigate('/citas');
+          navigate("/citas");
         });
       })
       .catch(error => {
         Swal.fire({
-          icon: 'error',
-          title: 'Error',
-          text: 'Hubo un error al reservar la cita',
+          icon: "error",
+          title: "Error",
+          text: "Hubo un error al reservar la cita",
         });
       });
   };
+  
 
   return (
     <div className="nueva-cita-container">
@@ -146,21 +198,70 @@ const NuevaCita = () => {
         />
       </div>
 
-      {/* Sección de fecha después de seleccionar el técnico */}
       <div className="form-group">
         <label htmlFor="fecha">Seleccionar Fecha:</label>
         <TechnicalSupportCalendar onDateChange={handleDateChange} />
       </div>
 
       <div className="form-group">
-        <label htmlFor="repuesto">Seleccionar Repuesto</label>
-        <SelectOptions
-          data={spares}
-          id="repuestos"
-          name="repuesto"
-          selectedValue={Data.repuesto}
-          handleChange={handleChange}
-        />
+        <label htmlFor="servicio">Servicio:</label>
+        <select
+          id="servicio"
+          name="servicio"
+          value={Data.servicio}
+          onChange={handleChange}
+        >
+          <option value="">Seleccione servicio:</option>
+          {servicios.map((servicio) => (
+            <option key={servicio._id} value={servicio._id}>
+              {servicio.tipo}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      <div className="form-group">
+        <label htmlFor="categoria">Categoria:</label>
+        <select
+          id="categoria"
+          name="categoria"
+          value={Data.categoria}
+          onChange={handleChange}
+        >
+          <option value="">Seleccione categoria:</option>
+          {filteredCategories.map((categoria) => (
+            <option key={categoria._id} value={categoria._id}>
+              {categoria.tipo}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      <div className="form-group">
+        <label>Repuestos</label>
+        {Data.repuestos.map((item, index) => (
+          <div key={index} className="repuesto-item">
+            <select
+              value={item.repuesto}
+              onChange={(e) => handleRepuestoChange(index, "repuesto", e.target.value)}
+            >
+              <option value="">Seleccione repuesto:</option>
+              {spares.map((repuesto) => (
+                <option key={repuesto._id} value={repuesto._id}>
+                  {repuesto.nombre}
+                </option>
+              ))}
+            </select>
+            <input
+              type="number"
+              min="1"
+              value={item.cantidad}
+              onChange={(e) => handleRepuestoChange(index, "cantidad", e.target.value)}
+              placeholder="Cantidad"
+            />
+          </div>
+        ))}
+        <button type="button" onClick={handleAddRepuesto}>Agregar otro repuesto</button>
       </div>
 
       <div className="form-group">
@@ -190,21 +291,27 @@ const NuevaCita = () => {
       <div className="form-group">
         <label htmlFor="horario">Horario:</label>
         <select
-          id="horario"
-          name="horario"
-          value={Data.horario}
-          onChange={handleChange}
-        >
-          <option value="">Selecciona un horario</option>
-          {horariosDisponibles.map((horario, index) => (
-            <option key={index} value={horario}>{horario}</option>
-          ))}
-        </select>
+  id="horario"
+  name="horario"
+  className="select-horario"
+  value={Data.horario}
+  onChange={handleChange}
+>
+  <option value="">Seleccione horario:</option>
+  {horariosDisponibles.map((horario) => {
+    console.log({horariosDisponibles})
+    return (
+      <option key={horario._id} value={horario._id}>
+        {horario.horaInicio}-{horario.horaFin}
+      </option>
+    );
+  })}
+</select>
+
+
       </div>
 
-      <button onClick={reservarCita} className="btn btn-azul">
-        Reservar Cita
-      </button>
+      <button onClick={reservarCita}>Reservar Cita</button>
     </div>
   );
 };

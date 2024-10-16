@@ -15,7 +15,10 @@ exports.mostrarCitas = async (req, res, next) => {
     try {
         const citas = await Citas.find({})
             .populate("cliente") // Poblar información del cliente
-            .populate("tecnico"); // Poblar información del técnico
+            .populate("tecnico") // Poblar información del técnico
+            .populate("servicio", "tipo") // Poblar solo el campo 'nombre' del servicio
+            .populate("categoria", "tipo")
+            .populate("repuestos", "nombre")
         res.json(citas);
     } catch (error) {
         console.log(error);
@@ -27,7 +30,9 @@ exports.mostrarCita = async (req, res, next) => {
     try {
         const cita = await Citas.findById(req.params.idCita)
             .populate("cliente")
-            .populate("tecnico");
+            .populate("tecnico")
+            .populate("servicio", "nombre")
+            .populate("categoria", "nombre");
         if (!cita) {
             res.json({ mensaje: "Esa cita no existe" });
             return next();
@@ -47,7 +52,9 @@ exports.actualizarCita = async (req, res, next) => {
             { new: true }
         )
             .populate("cliente")
-            .populate("tecnico");
+            .populate("tecnico")
+            .populate("servicio", "nombre")
+            .populate("categoria", "nombre");
         res.json(cita);
     } catch (error) {
         console.log(error);

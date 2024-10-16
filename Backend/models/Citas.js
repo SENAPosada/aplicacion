@@ -3,7 +3,7 @@ const Schema = mongoose.Schema;
 
 const citasSchema = new Schema({
     cliente: {
-        type: String, // Asegúrate de que este tipo coincida con el tipo de tu campo 'cedula' en Clientes
+        type: String,
         required: true
     },
     direccion: {
@@ -18,21 +18,34 @@ const citasSchema = new Schema({
     },
     tecnico: {
         type: String,
-        required: true 
+        required: true
     },
-    repuesto: { 
-        type: String,
-        trim: true,
+    repuestos: [{
+        repuesto: { type: mongoose.Schema.Types.ObjectId, ref: 'Repuestos' }, // ID del repuesto
+        nombre: { type: String, required: true } ,
+        cantidad: Number,
+       
+    }],
+    servicio: {
+        type: Schema.Types.ObjectId, // Cambiar a ObjectId
+        ref: 'Servicios', // Referenciar la colección 'Servicios'
+        required: true
+    },
+    categoria: {
+        type: Schema.Types.ObjectId, // Cambiar a ObjectId
+        ref: 'Categorias', // Referenciar la colección 'Categorias'
         required: true
     },
     fecha: {
         type: Date,
         required: true
     },
-    horario: { 
+    horario: {
         type: String,
         required: true
     },
+    horaInicio: { type: String },  // Asegúrate de que estos campos existan
+    horaFin: { type: String },
     estado: {
         type: String,
         enum: [
@@ -43,8 +56,13 @@ const citasSchema = new Schema({
             "Procesando",
             "Finalizado"
         ],
-        default: "Cargado" 
+        default: "Cargado"
     },
+});
+
+// Agrega el método para obtener las citas con el nombre del repuesto
+citasSchema.pre('find', function () {
+    this.populate('repuestos.repuesto');
 });
 
 module.exports = mongoose.model('Citas', citasSchema);

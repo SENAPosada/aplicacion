@@ -5,8 +5,8 @@ const serviciosSchema = new Schema({
     tipo: {
         type: String,
         trim: true,
-        required: true, // Asegurar que el campo sea obligatorio
-        unique: true // Asegurar que este campo sea único
+        required: true, 
+        unique: true
     },
 });
 

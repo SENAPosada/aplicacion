@@ -5,9 +5,14 @@ const categoriasSchema = new Schema({
     tipo: {
         type: String,
         trim: true,
-        required: true, // Agregar esta línea para asegurar que el campo sea obligatorio
-        unique: true // Asegurarse de que este campo sea único
+        required: true, 
+        unique: true
     },
+    servicio:{
+        type: Schema.Types.ObjectId,
+        ref: 'Servicios',
+        required: true
+    }
 });
 
 module.exports = mongoose.model('Categorias', categoriasSchema);

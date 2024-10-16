@@ -6,7 +6,7 @@ const repuestosSchema = new Schema({
         type: String,
         trim: true,
         required: true,
-        uniqued: true
+        unique: true 
     },
     precio: {
         type: Number,
@@ -18,7 +18,12 @@ const repuestosSchema = new Schema({
     },
     descripcion: {
         type: String,
-        required: false, // Este campo no es obligatorio
+        required: false, 
+    },
+    cantidad: {
+        type: Number, 
+        required: true, 
+        default: 0, 
     },
 });
 

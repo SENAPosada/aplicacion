@@ -6,5 +6,7 @@ export const endpoints = {
   spares: `${API_BASE_URL}/repuestos`,
   citas: `${API_BASE_URL}/citas`,
   horarios: `${API_BASE_URL}/horarios`,
+  servicios: `${API_BASE_URL}/servicios`,
+  categorias: `${API_BASE_URL}/categorias`,
 //   deleteTechnicals: (id) => `${API_BASE_URL}/tecnicos/${id}`
 };

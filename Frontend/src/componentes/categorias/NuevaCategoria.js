@@ -1,4 +1,4 @@
-import React, { useState, Fragment } from "react";
+import React, { useState, useEffect, Fragment } from "react";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
 import clienteAxios from "../../config/axios";
@@ -9,24 +9,39 @@ function NuevaCategoria() {
 
     const [categoria, guardarCategoria] = useState({
         tipo: "", 
+        servicio: "" // Añadimos el campo servicio
     });
+
+    const [servicios, setServicios] = useState([]); // Estado para almacenar los servicios
+
+    // Obtener los servicios desde la API cuando el componente cargue
+    useEffect(() => {
+        const obtenerServicios = async () => {
+            try {
+                const respuesta = await clienteAxios.get('/servicios'); // Asegúrate que esta ruta esté en tu backend
+                setServicios(respuesta.data);
+                console.log({servicios})
+                console.log({respuesta})
+            } catch (error) {
+                console.log(error);
+            }
+        };
+        obtenerServicios();
+    }, []);
 
     // Leer datos del formulario
     const handleChange = e => {
-        // Almacenar lo que el usuario escribe en el state
         guardarCategoria({
             ...categoria,
             [e.target.name]: e.target.value
         });
-        console.log(categoria);
     };
 
-    // Añade en la REST API (backend) una categoría nueva
+    // Añade en la REST API una categoría nueva
     const agregarCategoria = e => {
         e.preventDefault();
         clienteAxios.post('/categorias', categoria)
             .then(res => {
-                // Validar si hay errores de mongo
                 if (res.data.code === 11000) {
                     Swal.fire({
                         icon: 'error',
@@ -40,16 +55,14 @@ function NuevaCategoria() {
                         "success"
                     );
                 }
-                // redireccionar 
                 navigate('/categorias'); 
             });
     };
 
     // Validar formulario
     const validarCategoria = () => {
-        const { tipo } = categoria;
-        // Revisar que la propiedad del state tenga contenido
-        return !tipo.length;
+        const { tipo, servicio } = categoria;
+        return !tipo.length || !servicio.length;
     };
 
     return (
@@ -66,6 +79,21 @@ function NuevaCategoria() {
                         name="tipo"
                         onChange={handleChange}
                     />
+                </div>
+
+                <div className="campo">
+                    <label>Seleccionar Servicio:</label>
+                    <select
+                        name="servicio"
+                        onChange={handleChange}
+                    >
+                        <option value="">Selecciona un servicio</option>
+                        {servicios.map(servicio => (
+                            <option key={servicio._id} value={servicio._id}>
+                                {servicio.tipo}
+                            </option>
+                        ))}
+                    </select>
                 </div>
 
                 <div className="enviar">

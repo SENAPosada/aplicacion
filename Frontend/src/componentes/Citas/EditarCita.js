@@ -18,7 +18,7 @@ const EditarCita = () => {
     const [data, setData] = useState({
         cliente: "",
         tecnico: "",
-        repuesto: "",
+        repuestos: [], // Cambiado a un array para manejar múltiples repuestos
         direccion: "",
         ciudad: "",
         fecha: new Date(),
@@ -44,9 +44,6 @@ const EditarCita = () => {
         fetchTechnicals();
         fetchClients();
         fetchSpares();
-        console.log("Clientes:", clients); // Agregar este console.log
-        console.log("Técnicos:", technicals); // Agregar este console.log
-        console.log("Repuestos:", spares); // Agregar este console.log
     }, []);
 
     const handleChange = (e) => {
@@ -67,6 +64,20 @@ const EditarCita = () => {
         setData({
             ...data,
             horario: e.target.value,
+        });
+    };
+
+    // Función para manejar la edición de repuestos
+    const handleRepuestoChange = (index, e) => {
+        const newRepuestos = [...data.repuestos];
+        newRepuestos[index][e.target.name] = e.target.value;
+        setData({ ...data, repuestos: newRepuestos });
+    };
+
+    const agregarRepuesto = () => {
+        setData({
+            ...data,
+            repuestos: [...data.repuestos, { nombre: "", cantidad: 1 }],
         });
     };
 
@@ -97,7 +108,7 @@ const EditarCita = () => {
                 <div className="form-group">
                     <label htmlFor="cliente">Seleccionar Cliente</label>
                     <SelectOptions
-                        data={clients} // Asegúrate de tener los clientes disponibles
+                        data={clients}
                         id="clientes"
                         name="cliente"
                         selectedValue={data.cliente}
@@ -108,7 +119,7 @@ const EditarCita = () => {
                 <div className="form-group">
                     <label htmlFor="tecnico">Seleccionar Técnico</label>
                     <SelectOptions
-                        data={technicals} // Asegúrate de tener los técnicos disponibles
+                        data={technicals}
                         id="tecnicos"
                         name="tecnico"
                         selectedValue={data.tecnico}
@@ -116,15 +127,35 @@ const EditarCita = () => {
                     />
                 </div>
 
+                {/* Aquí se agrega el manejo de repuestos */}
                 <div className="form-group">
-                    <label htmlFor="repuesto">Seleccionar Repuesto</label>
-                    <SelectOptions
-                        data={spares} // Asegúrate de tener los repuestos disponibles
-                        id="repuestos"
-                        name="repuesto"
-                        selectedValue={data.repuesto}
-                        handleChange={handleChange}
-                    />
+                    <label htmlFor="repuestos">Repuestos:</label>
+                    {data.repuestos.map((repuesto, index) => (
+                        <div key={index}>
+                            <select
+                                name="nombre"
+                                value={repuesto.nombre}
+                                onChange={(e) => handleRepuestoChange(index, e)}
+                            >
+                                <option value="">Selecciona un repuesto</option>
+                                {spares.map((repuesto) => (
+                                    <option key={repuesto._id} value={repuesto.nombre}>
+                                        {repuesto.nombre}
+                                    </option>
+                                ))}
+                            </select>
+                            <input
+                                type="number"
+                                name="cantidad"
+                                value={repuesto.cantidad}
+                                onChange={(e) => handleRepuestoChange(index, e)}
+                                min="1"
+                            />
+                        </div>
+                    ))}
+                    <button type="button" onClick={agregarRepuesto}>
+                        Agregar Repuesto
+                    </button>
                 </div>
 
                 <div className="form-group">

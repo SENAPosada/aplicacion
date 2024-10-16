@@ -7,8 +7,12 @@ function Clientes() {
     const [clientes, guardarClientes] = useState([]);
 
     const consultarAPI = async () => {
-        const clientesConsulta = await clienteAxios.get("/clientes");
-        guardarClientes(clientesConsulta.data);
+        // try {
+            const clientesConsulta = await clienteAxios.get("/clientes");
+            guardarClientes(clientesConsulta.data);
+
+            
+      
     };
 
     useEffect(() => {
@@ -17,6 +21,7 @@ function Clientes() {
 
     return (
         <Fragment>
+           {/* { <error & <p></p>} */}
             <h2>Clientes</h2>
 
             {/* Botón para agregar nuevo cliente siempre visible */}
