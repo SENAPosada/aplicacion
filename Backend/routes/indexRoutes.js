@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const clienteController = require("../controllers/clienteController");
 const repuestosController = require("../controllers/repuestosController");
-const pedidosController = require("../controllers/pedidosController");
+const ventasController = require("../controllers/ventasController.js")
 const categoriasController = require("../controllers/categoriasController");
 const tecnicosController = require("../controllers/tecnicosController");
 const citasController = require("../controllers/citasController")
@@ -67,11 +67,11 @@ module.exports = function () {
     router.delete("/citas/:idCita", citasController.eliminarCita);
 
     // Pedidos
-    router.post("/pedidos", pedidosController.nuevoPedido);
-    router.get("/pedidos", pedidosController.mostrarPedidos);
-    router.get("/pedidos/:idPedido", pedidosController.mostrarPedido);
-    router.put("/pedidos/:idPedido", pedidosController.actualizarPedido);
-    router.delete("/pedidos/:idPedido", pedidosController.eliminarPedido);
+    router.post("/ventas", ventasController.nuevaVenta);
+    router.get("/ventas", ventasController.mostrarVentas);
+    router.get("/ventas/:idVenta", ventasController.mostrarVenta);
+    router.put("/ventas/:idVenta", ventasController.actualizarVenta);
+    router.delete("/ventas/:idVenta", ventasController.eliminarVenta);
 
     return router;
 };

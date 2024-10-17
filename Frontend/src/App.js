@@ -35,6 +35,9 @@ import Calendar from "./componentes/Calendar";
 import EditarCita from "./componentes/Citas/EditarCita";
 import Agenda from "./componentes/horarios/Agenda"
 import CrearDisponibilidad from "./componentes/horarios/CrearDisponibilidad";
+
+// Ventas
+import Ventas from "./componentes/ventas/ventas";
 function App() {
   return (
     <Router>
@@ -46,6 +49,7 @@ function App() {
             <Routes>
               <Route exact path="/horarios" element={<Agenda/>} />
               <Route exact path="/horarios/nuevo" element={<CrearDisponibilidad />} />
+
 
               <Route exact path="/" element={<Clientes />} />
               <Route exact path="/clientes/nuevo" element={<NuevoCliente />} />
@@ -70,6 +74,9 @@ function App() {
               <Route exact path="/citas" element={<Citas />} />
               <Route path="/citas/nueva" element={<NuevaCita />} />
               <Route exact path="/citas/editar/:id" element={<EditarCita />} />
+
+              <Route exact path="/ventas" element={<Ventas/>} />
+
             </Routes>
           </main>
         </div>

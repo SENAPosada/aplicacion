@@ -60,9 +60,4 @@ const citasSchema = new Schema({
     },
 });
 
-// Agrega el método para obtener las citas con el nombre del repuesto
-citasSchema.pre('find', function () {
-    this.populate('repuestos.repuesto');
-});
-
 module.exports = mongoose.model('Citas', citasSchema);

@@ -13,6 +13,7 @@ const Navegacion = () => {
                 <Link to={"/categorias"} className="categorias">Categorías de servicios</Link>
                 <Link to={"/repuestos"} className="repuestos">Repuestos</Link>
                 <Link to={"/citas"} className="citas">Citas</Link>
+                <Link to={"/ventas"} className="ventas">Ventas</Link>
             </nav>
         </aside>
     );

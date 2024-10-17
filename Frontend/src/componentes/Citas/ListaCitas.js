@@ -2,28 +2,44 @@ import React, { useEffect, useState, Fragment } from "react";
 import clienteAxios from "../../config/axios";
 import { Link } from 'react-router-dom';
 import Swal from 'sweetalert2';
+import useClientsStore from "../../store/useClients.store";
 
 function CitasList() {
     const [citas, setCitas] = useState([]);
     const [tecnicos, setTecnicos] = useState([]);
     const [repuestoSeleccionado, setRepuestoSeleccionado] = useState(null); // Estado para el modal de repuestos
-
+    const { fetchClients, clients } = useClientsStore();
+    const [estado, setEstados] = useState([]);
     useEffect(() => {
         const fetchCitas = async () => {
-            const response = await clienteAxios.get('/citas');
-            setCitas(response.data);
-            
+            try {
+                const response = await clienteAxios.get('/citas');
+                
+                // Filtra las citas que no tienen estado "Finalizada"
+                const citasActivas = response.data.filter(cita => cita.estado !== "Finalizado");
+                
+                setCitas(citasActivas); // Solo guardamos las citas activas para mostrar en el frontend
+            } catch (error) {
+                console.error("Error al obtener las citas:", error);
+            }
         };
 
         const fetchTecnicos = async () => {
-            const response = await clienteAxios.get('/tecnicos');
-            setTecnicos(response.data);
+            try {
+                const response = await clienteAxios.get('/tecnicos');
+                setTecnicos(response.data);
+            } catch (error) {
+                console.error("Error al obtener los técnicos:", error);
+            }
         };
 
         fetchCitas();
         fetchTecnicos();
-        
+        fetchClients();
+
     }, []);
+    // console.log({estado})
+    // console.log({clients})
     // console.log({citas})
     const eliminarCita = (idCita) => {
         Swal.fire({
@@ -48,18 +64,53 @@ function CitasList() {
             }
         });
     };
-
-    const cambiarEstado = (idCita, nuevoEstado) => {
-        clienteAxios.put(`/citas/${idCita}`, { estado: nuevoEstado })
-            .then(res => {
-                Swal.fire("¡Estado Actualizado!", res.data.mensaje, "success");
-                setCitas(citas.map(cita => cita._id === idCita ? { ...cita, estado: nuevoEstado } : cita));
-            })
-            .catch(error => {
-                Swal.fire("Error", "No se pudo actualizar el estado de la cita", "error");
-            });
+    const cambiarEstado = async (idCita, nuevoEstado, e) => {
+        try {
+            // Actualizar el estado de la cita en la API de citas
+            const response = await clienteAxios.put(`/citas/${idCita}`, { estado: nuevoEstado });
+            Swal.fire("¡Estado Actualizado!", response.data.mensaje, "success");
+    
+            // Actualiza el estado de la cita en el frontend
+            const citaActualizada = citas.find(cita => cita._id === idCita);
+            citaActualizada.estado = nuevoEstado;
+            setCitas(citas.map(cita => cita._id === idCita ? citaActualizada : cita));
+    
+            // Si el nuevo estado es "Finalizado", envía la cita a la API de ventas
+            if (nuevoEstado === "Finalizado") {
+                await clienteAxios.post("/ventas", citaActualizada);
+                Swal.fire("¡Cita Guardada en Ventas!", "La cita se ha enviado correctamente a la sección de ventas", "success");
+            }
+    
+        } catch (error) {
+            Swal.fire("Error", "No se pudo actualizar el estado de la cita", "error");
+        }
     };
-
+    
+    
+    // const cambiarEstado = async (idCita, nuevoEstado) => {
+    //     try {
+    //         // Actualizar el estado de la cita en la API de citas
+    //         const response = await clienteAxios.put(`/citas/${idCita}`, { estado: nuevoEstado });
+    //         Swal.fire("¡Estado Actualizado!", response.data.mensaje, "success");
+    
+    //         // Actualiza el estado de la cita en el frontend
+    //         setCitas((prevCitas) =>
+    //             prevCitas.map((cita) => (cita._id === idCita ? { ...cita, estado: nuevoEstado } : cita))
+    //         );
+    
+    //         // Si el nuevo estado es "Finalizado", envía la cita a la API de ventas
+    //         const citaActualizada = await clienteAxios.get(`/citas/${idCita}`); // Obtener la cita actualizada directamente de la API
+    //         if (nuevoEstado === "Finalizado") {
+    //             console.log(citaActualizada.data)
+    //             await clienteAxios.post("/ventas", citaActualizada.data); // Usar citaActualizada.data
+    //             Swal.fire("¡Cita Guardada en Ventas!", "La cita se ha enviado correctamente a la sección de ventas", "success");
+    //         }
+    
+    //     } catch (error) {
+    //         Swal.fire("Error", "No se pudo actualizar el estado de la cita", "error");
+    //     }
+    // };
+// console.log({citas})
     const mostrarModal = (repuestos) => {
         setRepuestoSeleccionado(repuestos);
        
@@ -90,11 +141,14 @@ function CitasList() {
                     </thead>
                     <tbody>
                         {citas.map(cita => {
-                            console.log("cita en el map: ", cita)
+                            // console.log("cita en el map: ", cita)
                             const tecnico = tecnicos.find(t => t.cedula === cita.tecnico);
+                            const cliente = clients.find(t => t.cedula === cita.cliente);
+                            // console.log({cliente})
+                            // console.log(cliente.nombre)
                             return (
                                 <tr key={cita._id}>
-                                    <td>{cita.cliente}</td>
+                                    <td>{cliente.nombre} {cliente.apellido}</td>
                                     <td>{tecnico ? `${tecnico.nombre} ${tecnico.apellido}` : 'No disponible'}</td>
                                     <td>{cita.direccion}</td>
                                     <td>{cita.ciudad}</td>
@@ -113,7 +167,7 @@ function CitasList() {
                                         </button>
                                     </td>
                                     <td>
-                                        <select value={cita.estado} onChange={(e) => cambiarEstado(cita._id, e.target.value)}>
+                                        <select value={cita.estado} onChange={(e) => cambiarEstado(cita._id, e.target.value,e)}>
                                             <option value="Cargado">Cargado</option>
                                             <option value="Activado">Activado</option>
                                             <option value="No activado">No activado</option>
