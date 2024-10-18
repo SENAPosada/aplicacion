@@ -15,6 +15,9 @@ const repuestoSchema = new Schema({
         type: Number,
         required: true,
         min: 1 // Asegura que la cantidad sea al menos 1
+    },
+    precio: {
+        type: Number
     }
 }, { _id: false }); // Usar _id: false si no deseas un _id para cada subdocumento
 
@@ -39,6 +42,9 @@ const categoriaSchema = new Schema({
         type: String,
         required: true,
         trim: true
+    },
+    precio: {
+        type: Number
     }
 }, { _id: false }); // Usar _id: false si no deseas un _id para cada subdocumento
 

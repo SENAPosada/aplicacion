@@ -23,6 +23,7 @@ const citasSchema = new Schema({
     repuestos: [{
         repuesto: { type: mongoose.Schema.Types.ObjectId, ref: 'Repuestos' }, // ID del repuesto
         nombre: { type: String, required: true } ,
+        precio: Number,
         cantidad: Number,
        
     }],

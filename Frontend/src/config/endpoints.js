@@ -8,5 +8,6 @@ export const endpoints = {
   horarios: `${API_BASE_URL}/horarios`,
   servicios: `${API_BASE_URL}/servicios`,
   categorias: `${API_BASE_URL}/categorias`,
+  ventas: `${API_BASE_URL}/ventas`,
 //   deleteTechnicals: (id) => `${API_BASE_URL}/tecnicos/${id}`
 };

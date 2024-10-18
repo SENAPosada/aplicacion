@@ -35,7 +35,8 @@ import Calendar from "./componentes/Calendar";
 import EditarCita from "./componentes/Citas/EditarCita";
 import Agenda from "./componentes/horarios/Agenda"
 import CrearDisponibilidad from "./componentes/horarios/CrearDisponibilidad";
-
+import NuevaVenta from "./componentes/ventas/NuevaVenta";
+import Dashboard from "./componentes/Dashboard/Dashboard";
 // Ventas
 import Ventas from "./componentes/ventas/ventas";
 function App() {
@@ -47,6 +48,8 @@ function App() {
           <Navegacion />
           <main className="caja-contenido col-9">
             <Routes>
+              <Route exact path="/dashboard" element={<Dashboard/>} />
+
               <Route exact path="/horarios" element={<Agenda/>} />
               <Route exact path="/horarios/nuevo" element={<CrearDisponibilidad />} />
 
@@ -76,6 +79,7 @@ function App() {
               <Route exact path="/citas/editar/:id" element={<EditarCita />} />
 
               <Route exact path="/ventas" element={<Ventas/>} />
+              <Route exact path="/ventas/nueva/:id" element={<NuevaVenta />}/>
 
             </Routes>
           </main>

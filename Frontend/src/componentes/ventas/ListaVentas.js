@@ -23,30 +23,6 @@ function ListaVentas() {
         fetchTecnicos();
     }, []);
 
-    const eliminarVenta = (idVenta) => {
-        Swal.fire({
-            title: "¿Estás seguro?",
-            text: "Una venta eliminada no se puede recuperar.",
-            icon: "warning",
-            showCancelButton: true,
-            confirmButtonColor: "#3085d6",
-            cancelButtonColor: "#d33",
-            confirmButtonText: "Sí, eliminar!",
-            cancelButtonText: 'Cancelar'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                clienteAxios.delete(`/ventas/${idVenta}`)  // Cambiado a /ventas
-                    .then(res => {
-                        Swal.fire("¡Eliminado!", res.data.mensaje, "success");
-                        setVentas(ventas.filter(venta => venta._id !== idVenta));
-                    })
-                    .catch(error => {
-                        Swal.fire("Error", "No se pudo eliminar la venta", "error");
-                    });
-            }
-        });
-    };
-
     const cambiarEstado = (idVenta, nuevoEstado) => {
         clienteAxios.put(`/ventas/${idVenta}`, { estado: nuevoEstado })
             .then(res => {
@@ -66,6 +42,24 @@ function ListaVentas() {
         setRepuestoSeleccionado(null);
     };
 
+    // Función para calcular el total de la venta
+    const calcularTotalVenta = (venta) => {
+        let totalRepuestos = 0;
+
+        // Calcular el total de los repuestos (precio * cantidad)
+        if (venta.repuestos && venta.repuestos.length > 0) {
+            totalRepuestos = venta.repuestos.reduce((total, repuesto) => {
+                return total + repuesto.precio * repuesto.cantidad;
+            }, 0);
+        }
+
+        // Sumar el precio de la categoría (si está disponible)
+        const totalCategoria = venta.categoria && venta.categoria.precio ? venta.categoria.precio : 0;
+
+        // Retornar el total (repuestos + categoría)
+        return totalRepuestos + totalCategoria;
+    };
+
     return (
         <Fragment>
             {ventas.length > 0 ? (
@@ -81,6 +75,7 @@ function ListaVentas() {
                             <th>Servicio</th>
                             <th>Categoría</th>
                             <th>Repuesto</th>
+                            <th>Total</th> {/* Nueva columna para el total */}
                             <th>Estado</th>
                             <th>Acciones</th>
                         </tr>
@@ -88,6 +83,8 @@ function ListaVentas() {
                     <tbody>
                         {ventas.map(venta => {
                             const tecnico = tecnicos.find(t => t.cedula === venta.tecnico);
+                            const totalVenta = calcularTotalVenta(venta); // Calcular el total de la venta
+                            
                             return (
                                 <tr key={venta._id}>
                                     <td>{venta.cliente}</td>
@@ -108,6 +105,7 @@ function ListaVentas() {
                                             <i className="fas fa-eye"></i> Ver
                                         </button>
                                     </td>
+                                    <td>{totalVenta}</td> {/* Mostrar el total calculado */}
                                     <td>
                                         <select value={venta.estado} onChange={(e) => cambiarEstado(venta._id, e.target.value)}>
                                             <option value="Procesando">Procesando</option>
@@ -116,16 +114,9 @@ function ListaVentas() {
                                         </select>
                                     </td>
                                     <td>
-                                        <Link to={`/ventas/editar/${venta._id}`} className="btn btn-azul">
-                                            Editar
+                                        <Link to={`/ventas/nueva/${venta._id}`} className="btn btn-azul">
+                                            NUEVA VENTA
                                         </Link>
-                                        <button
-                                            type="button"
-                                            className="btn btn-rojo btn-eliminar"
-                                            onClick={() => eliminarVenta(venta._id)}
-                                        >
-                                            <i className="fas fa-times"></i>
-                                        </button>
                                     </td>
                                 </tr>
                             );
@@ -145,6 +136,7 @@ function ListaVentas() {
                             repuestoSeleccionado.map((repuesto, index) => (
                                 <div key={index}>
                                     <p>Nombre: {repuesto.nombre}</p>
+                                    <p>Precio: {repuesto.precio}</p>
                                     <p>Cantidad: {repuesto.cantidad}</p>
                                 </div>
                             ))

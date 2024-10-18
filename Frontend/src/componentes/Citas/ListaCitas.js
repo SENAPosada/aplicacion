@@ -3,8 +3,11 @@ import clienteAxios from "../../config/axios";
 import { Link } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import useClientsStore from "../../store/useClients.store";
+import { useNavigate } from "react-router-dom";
+
 
 function CitasList() {
+    const navigate = useNavigate();
     const [citas, setCitas] = useState([]);
     const [tecnicos, setTecnicos] = useState([]);
     const [repuestoSeleccionado, setRepuestoSeleccionado] = useState(null); // Estado para el modal de repuestos
@@ -79,6 +82,7 @@ function CitasList() {
             if (nuevoEstado === "Finalizado") {
                 await clienteAxios.post("/ventas", citaActualizada);
                 Swal.fire("¡Cita Guardada en Ventas!", "La cita se ha enviado correctamente a la sección de ventas", "success");
+                navigate("/ventas");
             }
     
         } catch (error) {
@@ -141,7 +145,7 @@ function CitasList() {
                     </thead>
                     <tbody>
                         {citas.map(cita => {
-                            // console.log("cita en el map: ", cita)
+                            console.log("cita en el map: ", cita)
                             const tecnico = tecnicos.find(t => t.cedula === cita.tecnico);
                             const cliente = clients.find(t => t.cedula === cita.cliente);
                             // console.log({cliente})
@@ -207,6 +211,7 @@ function CitasList() {
                                 <div key={index}>
                                     <p>Nombre: {repuesto.nombre}</p>
                                     <p>Cantidad: {repuesto.cantidad}</p>
+                                    <p>Precio: {repuesto.precio}</p>
                                 </div>
                             ))
                         ) : (

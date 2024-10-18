@@ -129,47 +129,48 @@ const NuevaCita = () => {
     });
   };
 
-  const reservarCita = (e) => {
-    e.preventDefault();
+const reservarCita = (e) => {
+  e.preventDefault();
+
+  // Encuentra el horario seleccionado
+  const horarioSeleccionado = horarios.find(horario => horario._id === Data.horario);
   
-    // Encuentra el horario seleccionado
-    const horarioSeleccionado = horarios.find(horario => horario._id === Data.horario);
-    
-    const citaData = {
-      ...Data,
-      repuestos: Data.repuestos.map(item => {
-        const repuestoEncontrado = spares.find(repuesto => repuesto._id === item.repuesto);
-        return {
-          repuesto: item.repuesto,
-          cantidad: item.cantidad,
-          nombre: repuestoEncontrado ? repuestoEncontrado.nombre : "",
-        };
-      }),
-      // Agrega horaInicio y horaFin al objeto
-      horaInicio: horarioSeleccionado ? horarioSeleccionado.horaInicio : "",
-      horaFin: horarioSeleccionado ? horarioSeleccionado.horaFin : ""
-    };
-  
-    console.log({citaData})
-    
-    clienteAxios.post("/citas", citaData)
-      .then(res => {
-        Swal.fire({
-          icon: "success",
-          title: "Cita Reservada",
-          text: "Tu cita ha sido reservada correctamente",
-        }).then(() => {
-          navigate("/citas");
-        });
-      })
-      .catch(error => {
-        Swal.fire({
-          icon: "error",
-          title: "Error",
-          text: "Hubo un error al reservar la cita",
-        });
-      });
+  const citaData = {
+    ...Data,
+    repuestos: Data.repuestos.map(item => {
+      const repuestoEncontrado = spares.find(repuesto => repuesto._id === item.repuesto);
+      return {
+        repuesto: item.repuesto,
+        cantidad: item.cantidad,
+        nombre: repuestoEncontrado ? repuestoEncontrado.nombre : "",
+        precio: repuestoEncontrado ? repuestoEncontrado.precio : 0  // Agregar el precio
+      };
+    }),
+    horaInicio: horarioSeleccionado ? horarioSeleccionado.horaInicio : "",
+    horaFin: horarioSeleccionado ? horarioSeleccionado.horaFin : ""
   };
+
+  console.log({citaData});
+
+  clienteAxios.post("/citas", citaData)
+    .then(res => {
+      Swal.fire({
+        icon: "success",
+        title: "Cita Reservada",
+        text: "Tu cita ha sido reservada correctamente",
+      }).then(() => {
+        navigate("/citas");
+      });
+    })
+    .catch(error => {
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "Hubo un error al reservar la cita",
+      });
+    });
+};
+
   
 
   return (
