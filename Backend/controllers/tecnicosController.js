@@ -1,5 +1,6 @@
 const Tecnicos = require("../models/Tecnicos");
 
+
 // Crear un nuevo técnico
 exports.nuevoTecnico = async (req, res, next) => {
     const tecnico = new Tecnicos(req.body);
@@ -46,7 +47,7 @@ exports.actualizarTecnico = async (req, res, next) => {
                 new: true,
             }
         );
-        res.send(tecnico);
+        res.status(200).send(tecnico);
     } catch (error) {
         console.log(error);
         next();
