@@ -7,8 +7,9 @@ const categoriasController = require("../controllers/categoriasController");
 const tecnicosController = require("../controllers/tecnicosController");
 const citasController = require("../controllers/citasController")
 const serviciosController = require("../controllers/serviciosController"); // Importar el controlador de servicios
-const horarioController = require ("../controllers/horarioController.js")
+const horarioController = require("../controllers/horarioController.js")
 module.exports = function () {
+
     //Horario
     router.post('/horarios', horarioController.crearHorario);
     router.get('/horarios', horarioController.obtenerHorarios);

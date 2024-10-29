@@ -1,9 +1,5 @@
 const Horario = require ("../models/Horarios.js")
 
-// Crear un nuevo horario
-// Crear un nuevo horario
-// Crear un nuevo horario
-// Crear un nuevo horario
 exports.crearHorario = async (req, res) => {
     try {
         const { horaInicio, horaFin } = req.body;

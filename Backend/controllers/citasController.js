@@ -29,7 +29,7 @@ exports.mostrarCitas = async (req, res, next) => {
 exports.mostrarCita = async (req, res, next) => {
     try {
         const cita = await Citas.findById(req.params.idCita)
-            .populate("cliente")
+            .populate("cliente", "nombre apellido cedula")
             .populate("tecnico")
             .populate("servicio", "nombre")
             .populate("categoria", "nombre");
