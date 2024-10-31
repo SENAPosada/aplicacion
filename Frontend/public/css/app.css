@@ -1379,4 +1379,92 @@ input[type="time"] {
 }
 
 
-/* styles.css */
+/* formulario */
+/** Formularios **/
+form {
+    width: 95%;
+    max-width: 800px;
+    margin: 4rem auto 0 auto;
+    padding: 2rem; /* Añadir padding al formulario */
+    background-color: var(--grisClaro); /* Color de fondo del formulario */
+    border-radius: 1rem; /* Bordes redondeados */
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); /* Sombra sutil */
+}
+
+form legend {
+    font-size: 2.4rem;
+    color: var(--azul);
+    font-family: var(--fontTexto);
+    font-weight: 700;
+    text-align: center;
+    padding: 1rem; /* Padding para el legend */
+    border-bottom: 2px solid var(--azul); /* Línea debajo del legend */
+    margin-bottom: 2rem; /* Espaciado inferior */
+}
+
+form .campo {
+    padding: 1rem; /* Aumentar el padding */
+    display: flex;
+    align-items: center;
+    margin-bottom: 2rem;
+    background-color: white; /* Fondo blanco para los campos */
+    border-radius: 0.5rem; /* Bordes redondeados en campos */
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1); /* Sombra sutil */
+}
+
+form .campo label {
+    font-weight: bold;
+    font-family: var(--fontTexto);
+    flex: 0 0 100px; /* Ancho fijo para las etiquetas */
+    color: var(--grisOscuro); /* Color de texto */
+}
+
+form .campo input:not([type="submit"]) {
+    padding: 1rem;
+    flex: 1;
+    border: 1px solid #e1e1e1; /* Color del borde */
+    border-radius: 0.5rem; /* Bordes redondeados para los inputs */
+    transition: border-color 0.3s; /* Transición suave para el borde */
+}
+
+form .campo input:not([type="submit"]):focus {
+    border-color: var(--azul); /* Cambia el color del borde al enfocar */
+    outline: none; /* Elimina el contorno predeterminado */
+}
+
+form .campo input[readonly] {
+    background-color: #e1e1e1; /* Color de fondo para campos de solo lectura */
+}
+
+.enviar {
+    padding: 1rem; /* Aumentar el padding */
+    display: flex;
+    justify-content: flex-end; /* Alinear el botón a la derecha */
+}
+
+.enviar input[type="submit"] {
+    padding: 1rem 2rem; /* Espaciado del botón */
+    background-color: var(--azul); /* Color de fondo del botón */
+    color: white; /* Color del texto del botón */
+    border: none; /* Sin borde */
+    border-radius: 0.5rem; /* Bordes redondeados */
+    cursor: pointer; /* Cambia el cursor al pasar por encima */
+    transition: background-color 0.3s; /* Transición para el color de fondo */
+}
+
+.enviar input[type="submit"]:hover {
+    background-color: darken(var(--azul), 10%); /* Color más oscuro al pasar el ratón */
+}
+
+/* Estilo para errores o mensajes */
+.error {
+    color: red; /* Color rojo para errores */
+    font-size: 1.4rem; /* Tamaño de fuente para errores */
+    margin-top: 0.5rem; /* Espaciado superior */
+}
+
+.success {
+    color: green; /* Color verde para mensajes de éxito */
+    font-size: 1.4rem; /* Tamaño de fuente para éxito */
+    margin-top: 0.5rem; /* Espaciado superior */
+}

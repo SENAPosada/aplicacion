@@ -43,7 +43,7 @@ function CitasList() {
     }, []);
     // console.log({estado})
     // console.log({clients})
-    // console.log({citas})
+    console.log({citas})
     const eliminarCita = (idCita) => {
         Swal.fire({
             title: "¿Estás seguro?",
@@ -148,7 +148,7 @@ function CitasList() {
                             console.log("cita en el map: ", cita)
                             const tecnico = tecnicos.find(t => t.cedula === cita.tecnico);
                             const cliente = clients.find(t => t.cedula === cita.cliente);
-                            // console.log({cliente})
+                            console.log({cliente})
                             // console.log(cliente.nombre)
                             return (
                                 <tr key={cita._id}>

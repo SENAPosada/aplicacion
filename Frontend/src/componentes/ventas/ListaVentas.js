@@ -2,12 +2,12 @@ import React, { useEffect, useState, Fragment } from "react";
 import clienteAxios from "../../config/axios";
 import { Link } from 'react-router-dom';
 import Swal from 'sweetalert2';
-
+import useClientsStore from "../../store/useClients.store";
 function ListaVentas() {
     const [ventas, setVentas] = useState([]);
     const [tecnicos, setTecnicos] = useState([]);
     const [repuestoSeleccionado, setRepuestoSeleccionado] = useState(null); // Estado para el modal de repuestos
-
+    const { fetchClients, clients } = useClientsStore();
     useEffect(() => {
         const fetchVentas = async () => {
             const response = await clienteAxios.get('/ventas');
@@ -21,6 +21,7 @@ function ListaVentas() {
 
         fetchVentas();
         fetchTecnicos();
+        fetchClients();
     }, []);
 
     const cambiarEstado = (idVenta, nuevoEstado) => {
@@ -84,10 +85,10 @@ function ListaVentas() {
                         {ventas.map(venta => {
                             const tecnico = tecnicos.find(t => t.cedula === venta.tecnico);
                             const totalVenta = calcularTotalVenta(venta); // Calcular el total de la venta
-                            
+                            const cliente = clients.find(t => t.cedula === venta.cliente);
                             return (
                                 <tr key={venta._id}>
-                                    <td>{venta.cliente}</td>
+                                    <td>{cliente.nombre} {cliente.apellido}</td>
                                     <td>{tecnico ? `${tecnico.nombre} ${tecnico.apellido}` : 'No disponible'}</td>
                                     <td>{venta.direccion}</td>
                                     <td>{venta.ciudad}</td>
@@ -115,7 +116,7 @@ function ListaVentas() {
                                     </td>
                                     <td>
                                         <Link to={`/ventas/nueva/${venta._id}`} className="btn btn-azul">
-                                            NUEVA VENTA
+                                            AGREGAR PRECIO FINAL
                                         </Link>
                                     </td>
                                 </tr>
