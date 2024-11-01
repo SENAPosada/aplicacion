@@ -1,13 +1,27 @@
 import React, { useState } from 'react';
+import clienteAxios from '../config/axios';
 
 const Formulario = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
+  const login = async (email, password) => {
+    try {
+      const res = await clienteAxios.post('usuarios/login', { email, password });
+       const token = res.data.token;
+       const user = res.data.user;
+       localStorage.setItem('token', token);
+       localStorage.setItem('user', JSON.stringify(user));
+    } catch (error) {
+      console.log(error);
+    }
+  };  
 
+  
   const handleSubmit = (e) => {
     e.preventDefault();
-
+    console.log(email, password);
+    login(email, password);
   };
 
   return (

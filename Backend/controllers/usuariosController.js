@@ -69,8 +69,3 @@ exports.ObtenerUsuario = async (req, res) => {
         res.status(500).json({ message: 'Error al obtener usuario' });
     }
 };
-
-
-// let tokenClient = 'Bearer your_token_here'
-
-// const token = tokenClient.split(' ')[1];

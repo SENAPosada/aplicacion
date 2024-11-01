@@ -1,8 +1,5 @@
 const mongoose = require("mongoose");
-const Schema = mongoose.Schema;
 
-const mongoose = require("mongoose");
-const Schema = mongoose.Schema;
 
 const usuarioSchema = new mongoose.Schema({
     nombre: {
@@ -51,3 +48,5 @@ const usuarioSchema = new mongoose.Schema({
     timestamps: true
   });
   
+
+  exports.Usuario = mongoose.model("Usuario", usuarioSchema);

@@ -8,7 +8,7 @@ const cors = require('cors')
 const morgan = require('morgan')
 
 // Conectar a MongoDB
-mongoose.connect('mongodb://localhost/omniapp')
+mongoose.connect('mongodb://mongo:fefKApObjLjZokShZdcjCMUdUzlGaTiN@junction.proxy.rlwy.net:24048')
     .then(() => console.log('Conectado a MongoDB puerto 5000'))
     .catch(err => console.error('No se pudo conectar a MongoDB', err));
 
