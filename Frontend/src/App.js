@@ -41,7 +41,7 @@ import Dashboard from "./componentes/Dashboard/Dashboard";
 import Ventas from "./componentes/ventas/ventas";
 
 import Formulario from "./autenticacion/Formulario";
-
+import Registro from "./autenticacion/Registro";
 function App() {
   return (
     <Router>
@@ -52,6 +52,7 @@ function App() {
           <main className="caja-contenido col-9">
             <Routes>
               <Route exact path="/login" element={<Formulario />} />
+              <Route exact path="/register" element={<Registro />} />
 
               <Route exact path="/dashboard" element={<Dashboard />} />
 

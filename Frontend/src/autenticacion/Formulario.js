@@ -1,13 +1,16 @@
 import React, { useState } from 'react';
 
 const Formulario = () => {
+  // Definimos el estado local para el formulario
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-
+  // Maneja el envío del formulario
   const handleSubmit = (e) => {
     e.preventDefault();
-
+    // Aquí puedes agregar la lógica para enviar los datos al backend
+    console.log('Correo:', email);
+    console.log('Contraseña:', password);
   };
 
   return (
