@@ -2,29 +2,32 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const Usuarios = require('../models/Usuarios');
 
-exports.CrearUsuario = async (req, res) => {
+exports.CrearUsuario = async (req, res, next) => {
     try {
-        const usuario = req.body
+        const { nombre, email, telefono, password, direccion } = req.body;
 
-    const salt = await bcrypt.genSalt(12);
-    const hashedPassword = await bcrypt.hash(usuario.password, salt);
+        const usuarioExistente = await Usuarios.findOne({ email });
+        if (usuarioExistente) {
+            return res.status(400).json({ mensaje: "El correo ya está en uso" });
+        }
 
-        const usuarioCreado = new Usuarios({
-            nombre: usuario.nombre,
-            email: usuario.email,
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(password, salt);
+
+        const nuevoUsuario = new Usuarios({
+            nombre,
+            email,
+            telefono,
             password: hashedPassword,
-            telefono: usuario.telefono,
-            direccion: usuario.direccion
+            direccion
         });
 
-        await usuarioCreado.save();
+        await nuevoUsuario.save();
 
-        res.status(201).json({
-            message: 'Usuario creado correctamente',
-        });
+        res.status(201).json({ mensaje: "Usuario registrado exitosamente" });
     } catch (error) {
-        console.log(error);
-        res.status(500).json({ message: 'Error al crear usuario' });
+        console.error(error);
+        next(error);
     }
 };
 

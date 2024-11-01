@@ -1468,3 +1468,47 @@ form .campo input[readonly] {
     font-size: 1.4rem; /* Tamaño de fuente para éxito */
     margin-top: 0.5rem; /* Espaciado superior */
 }
+
+/* register */
+/* Archivo: RegistroUsuario.css */
+.registro-container {
+    max-width: 500px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.registro-titulo {
+    text-align: center;
+    color: #343a40;
+    margin-bottom: 20px;
+}
+
+.registro-form .form-group {
+    margin-bottom: 15px;
+}
+
+.registro-form .form-control {
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ced4da;
+}
+
+.registro-form .btn {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.registro-form .btn-primary {
+    background-color: #007bff;
+    border-color: #007bff;
+}
+
+.registro-form .btn-primary:hover {
+    background-color: #0056b3;
+    border-color: #0056b3;
+}

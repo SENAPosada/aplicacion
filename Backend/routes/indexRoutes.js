@@ -8,8 +8,12 @@ const tecnicosController = require("../controllers/tecnicosController");
 const citasController = require("../controllers/citasController")
 const serviciosController = require("../controllers/serviciosController"); // Importar el controlador de servicios
 const horarioController = require("../controllers/horarioController.js")
+<<<<<<< HEAD
 const usuariosController = require("../controllers/usuariosController"); // Importar el controlador de usuarios
 
+=======
+const usuariosController = require("../controllers/usuariosController.js")
+>>>>>>> 7ec927a4c7433df459af65bbdcefb4ad2876af45
 
 //Middleware para validar los tokens
 //const { protectSession, protectAdmin } = require("../middlewares/auth.middleware");
@@ -20,6 +24,7 @@ module.exports = function () {
     router.get('/horarios', horarioController.obtenerHorarios);
 
 
+<<<<<<< HEAD
     // // Usuaarios
     router.post("/usuarios/login", usuariosController.login);
     // router.post("/usuarios", clienteController.nuevoUsuario);
@@ -29,6 +34,17 @@ module.exports = function () {
     // router.get("/usuarios/:idUsuario", clienteController.mostrarUsuario);
     // router.put("/usuarios/:idUsuario", clienteController.actualizarUsuario);
     // router.delete("/usuarios/:idUsuario", clienteController.eliminarUsuario);
+=======
+    // Usuarios
+    router.post("/usuarios", usuariosController.CrearUsuario);
+    router.get("/usuarios", usuariosController.ObtenerUsuario);
+    // router.use(protectSession)
+    // router.use(protectAdmin)
+    // router.get("/usuarios/:idUsuario", protectSession, protectAdmin, clienteController.mostrarUsuario);
+    // router.put("/usuarios/:idUsuario", clienteController.actualizarUsuario);
+    // router.delete("/usuarios/:idUsuario", clienteController.eliminarUsuario);
+
+>>>>>>> 7ec927a4c7433df459af65bbdcefb4ad2876af45
     // Clientes
     router.post("/clientes", clienteController.nuevoCliente);
     router.get("/clientes", clienteController.mostrarClientes);
