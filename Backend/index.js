@@ -5,6 +5,7 @@ const bodyParser = require('body-parser')
 // 1 Cors permite que un cliente se conecte a otro servidor 
 // para intercambio de recursos
 const cors = require('cors')
+const morgan = require('morgan')
 
 // Conectar a MongoDB
 mongoose.connect('mongodb://localhost/omniapp')
@@ -19,6 +20,8 @@ app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
 // 2 habilitar cors
 app.use(cors())
+app.use(morgan('dev'))
+
 
 // Rutas de la app
 app.use('/', indexRoutes())
@@ -27,5 +30,7 @@ app.use('/', indexRoutes())
 app.use(express.static('uploads'))
 
 // Puerto
-app.listen(5000);
+app.listen(5000, () => {
+    console.log('Server escuchando en el puerto 5000');
+});
 

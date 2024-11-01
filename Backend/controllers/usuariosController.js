@@ -1,12 +1,12 @@
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
+const Usuarios = require('../models/usuarios');
 
 
 exports.CrearUsuario = async (req, res) => {
     
     try {
-        const usuario = req.body
-
+    const usuario = req.body;
     const salt = await bcrypt.genSalt(12);
     const hashedPassword = await bcrypt.hash(usuario.password, salt);
 
@@ -25,15 +25,22 @@ exports.CrearUsuario = async (req, res) => {
     }        
 };
 
-exports.LoginUsuario = async (req, res) => {
+exports.login = async (req, res) => {
     try {
-        const usuario = await Usuarios.findOne({ email: req.body.email });
+          const { email, password } = req.body;
+
+          console.log(email, password);
+          
+           
+        const usuario = await Usuarios.findOne({ email });
+        console.log('usuarios', usuario);
+        
         
         if (!usuario) {
             return res.status(404).json({ message: 'Usuario no encontrado' });
         }
         
-        const validPassword = await bcrypt.compare(req.body.password, usuario.password);
+        const validPassword = await bcrypt.compare(password, usuario.password);
         
         if (!validPassword) {
             return res.status(401).json({ message: 'Contraseña incorrecta' });
