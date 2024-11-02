@@ -24,7 +24,7 @@ exports.CrearUsuario = async (req, res, next) => {
 
         await nuevoUsuario.save();
 
-        res.status(201).json({ mensaje: "Usuario registrado exitosamente" });
+        res.status(201).json({ mensaje: "Usuario registrado exitosamente", data: nuevoUsuario });
     } catch (error) {
         console.error(error);
         next(error);
@@ -48,9 +48,12 @@ exports.login = async (req, res) => {
 
         const token = jwt.sign({ id: usuario._id }, 'your_secret_key', { expiresIn: '20d' });
 
+        usuario.password = undefined;
+
         res.json({
             message: 'Usuario logueado correctamente',
-            token: token
+            token: token,
+            usuario: usuario
         });
     } catch (error) {
         console.log(error);

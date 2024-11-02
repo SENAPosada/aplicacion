@@ -2,6 +2,7 @@ import React, { useEffect, useState, Fragment } from "react";
 import clienteAxios from "../../config/axios";
 import Cliente from "./Cliente";
 import { Link } from 'react-router-dom';
+import getConfig from "../../utils/config";
 
 function Clientes() {
     const [clientes, guardarClientes] = useState([]);

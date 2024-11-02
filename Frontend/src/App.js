@@ -30,6 +30,7 @@ import NuevoServicio from "./componentes/servicios/NuevoServicio";
 import EditarServicio from "./componentes/servicios/EditarServicio";
 import Citas from "./componentes/Citas/Citas";
 import NuevaCita from "./componentes/Citas/NuevaCita";
+
 import Calendar from "./componentes/Calendar";
 import EditarCita from "./componentes/Citas/EditarCita";
 import Agenda from "./componentes/horarios/Agenda";
@@ -38,21 +39,27 @@ import NuevaVenta from "./componentes/ventas/NuevaVenta";
 import Dashboard from "./componentes/Dashboard/Dashboard";
 // Ventas
 import Ventas from "./componentes/ventas/ventas";
+
 import Formulario from "./autenticacion/Formulario";
-import Registro from "./autenticacion/Registro";
+
 function App() {
   return (
     <Router>
-      <Fragment>
-        <Header />
-        <div className="grid contenedor contenido-principal">
-          <Navegacion />
-          <main className="caja-contenido col-9">
-            <Routes>
-              <Route exact path="/login" element={<Formulario />} />
-              <Route exact path="/register" element={<Registro />} />
+      <Routes>
+        {/* Ruta de login, renderiza solo el formulario */}
+        <Route exact path="/login" element={<Formulario />} />
 
-              <Route exact path="/dashboard" element={<Dashboard />} />
+        {/* Otras rutas con layout */}
+        <Route
+          path="*"
+          element={
+            <Fragment>
+              <Header />
+              <div className="grid contenedor contenido-principal">
+                <Navegacion />
+                <main className="caja-contenido col-9">
+                  <Routes>
+                    <Route exact path="/dashboard" element={<Dashboard />} />
 
                     <Route exact path="/horarios" element={<Agenda />} />
                     <Route
