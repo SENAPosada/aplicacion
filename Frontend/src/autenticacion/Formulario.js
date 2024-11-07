@@ -1,36 +1,15 @@
 import React, { useState } from 'react';
-import clienteAxios from '../config/axios';
-import { useNavigate } from'react-router-dom';
+import { useAuthContext } from '../contexts/AuthContext'
 
 const Formulario = () => {
+  const { login } = useAuthContext(); 
 
-  const navigate = useNavigate();
+
   // Definimos el estado local para el formulario
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const login = async (email, password) => {
-    try {
-  
-      const { data } = await clienteAxios.post('usuarios/login', { email, password });
-
-      localStorage.setItem('token', data.token); // Guardamos el token en el local storage
-      localStorage.setItem('usuario', JSON.stringify(data.usuario)); // Guardamos el usuario en el local storage
-
-       navigate('/'); // Redireccionamos a la página de inicio
-      console.log('Sesión iniciada correctamente');
-    } catch (error) {
-      console.error('Error al iniciar sesión:', error.message);
-    }
-  };
-
-  const logout = () => {
-    localStorage.removeItem('token'); // Eliminamos el token del local storage
-    localStorage.removeItem('usuario'); // Eliminamos el usuario del local storage
-    navigate('/login'); // Redireccionamos a la página de login
-  }
-  
-
+ 
   // Maneja el envío del formulario
   const handleSubmit = (e) => {
     e.preventDefault();
