@@ -11,7 +11,7 @@ const horarioController = require("../controllers/horarioController.js")
 const usuariosController = require("../controllers/usuariosController.js")
 
 //Middleware para validar los tokens
-const { protectSession, protectAdmin } = require("../middlewares/auth.middleware");
+// const { protectSession, protectAdmin } = require("../middlewares/auth.middleware");
 module.exports = function () {
 
     //Horario
@@ -23,6 +23,7 @@ module.exports = function () {
     router.post("/usuarios", usuariosController.CrearUsuario);
     router.get("/usuarios", usuariosController.ObtenerUsuario);
     router.post("/usuarios/login", usuariosController.login);
+    router.post('/usuarios/restablecer-password', usuariosController.restablecerPassword);
     //router.use(protectSession)
     // router.use(protectAdmin)
     // router.get("/usuarios/:idUsuario", protectSession, protectAdmin, clienteController.mostrarUsuario);

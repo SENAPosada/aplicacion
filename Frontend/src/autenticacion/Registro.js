@@ -3,8 +3,8 @@ import Swal from 'sweetalert2';
 import clienteAxios from "../config/axios";
 import { useNavigate } from "react-router-dom"; // Para redireccionar
 
-function RegistroUsuario() {
-    // const navigate = useNavigate(); 
+const Registro = () => {
+    const navigate = useNavigate(); // Habilitar redirección
     const [usuario, setUsuario] = useState({
         nombre: '',
         email: '',
@@ -12,6 +12,8 @@ function RegistroUsuario() {
         telefono: '',
         direccion: ''
     });
+
+    const [loading, setLoading] = useState(false); // Estado de carga
 
     const handleChange = (e) => {
         setUsuario({
@@ -23,12 +25,13 @@ function RegistroUsuario() {
     // Validar formulario
     const validarUsuario = () => {
         const { nombre, email, password, telefono, direccion } = usuario;
-        let valido = !nombre.length || !email.length || !password.length;
-        return valido;
+        // Puedes añadir más validaciones si es necesario
+        return !nombre.length || !email.length || !password.length;
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setLoading(true); // Activar carga
         try {
             const respuesta = await clienteAxios.post('/usuarios', usuario); // Ajusta la ruta según tu backend
             Swal.fire(
@@ -36,14 +39,16 @@ function RegistroUsuario() {
                 respuesta.data.message,
                 'success'
             );
-            // navigate('/'); 
+            navigate('/'); // Redireccionar después de éxito
         } catch (error) {
             console.log(error);
             Swal.fire({
                 icon: 'error',
                 title: 'Error',
-                text: "Error al registrar el usuario"
+                text: error.response ? error.response.data.message : 'Error al registrar el usuario'
             });
+        } finally {
+            setLoading(false); // Desactivar carga
         }
     };
 
@@ -105,11 +110,17 @@ function RegistroUsuario() {
                             className="form-control"
                         />
                     </div>
-                    <button type="submit" className="btn btn-primary btn-block" disabled={validarUsuario()}>Registrarse</button>
+                    <button 
+                        type="submit" 
+                        className="btn btn-primary btn-block" 
+                        disabled={validarUsuario() || loading}
+                    >
+                        {loading ? 'Registrando...' : 'Registrarse'}
+                    </button>
                 </form>
             </div>
         </Fragment>
     );
 }
 
-export default RegistroUsuario;
+export default Registro

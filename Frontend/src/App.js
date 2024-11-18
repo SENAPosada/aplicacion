@@ -27,9 +27,13 @@ import CrearDisponibilidad from "./componentes/horarios/CrearDisponibilidad";
 import NuevaVenta from "./componentes/ventas/NuevaVenta";
 import Dashboard from "./componentes/Dashboard/Dashboard";
 import Ventas from "./componentes/ventas/ventas";
-import Formulario from "./autenticacion/Formulario";
+
 import PublicRoutes from "./componentes/routes/PublicRoutes";
 import AdminRoutes from "./componentes/routes/AdminRoutes";
+import Registro from "./autenticacion/Registro";
+import Login from "./autenticacion/Login";
+import RestablecerContraseña from "./autenticacion/RestablecerContraseña";
+import IngresarCodigo from "./autenticacion/IngresarCodigo";
 
 function App() {
   return (
@@ -37,7 +41,19 @@ function App() {
       <Routes>
         {/* Rutas Públicas */}
         <Route path="/login" element={<PublicRoutes />}>
-          <Route index element={<Formulario />} />
+          <Route index element={<Login />} />
+        </Route>
+
+        <Route path="/registro" element={<PublicRoutes />}>
+          <Route index element={<Registro />} />
+        </Route>
+
+        <Route path="/restablecer-password" element={<PublicRoutes />}>
+          <Route index element={<RestablecerContraseña />} />
+        </Route>
+
+        <Route path="/restablecer-password/codigo" element={<PublicRoutes />}>
+          <Route index element={<IngresarCodigo />} />
         </Route>
 
         {/* Rutas Protegidas */}

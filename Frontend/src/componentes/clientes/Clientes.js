@@ -18,7 +18,7 @@ function Clientes() {
 
     useEffect(() => {
         consultarAPI();
-    }, [clientes]); // Solo ejecuta la consulta una vez, al montar el componente
+    }, []); // Solo ejecuta la consulta una vez, al montar el componente
 
     return (
         <Fragment>

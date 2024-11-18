@@ -1,6 +1,5 @@
 const mongoose = require("mongoose");
 
-
 const usuarioSchema = new mongoose.Schema({
     nombre: {
       type: String,
@@ -38,15 +37,24 @@ const usuarioSchema = new mongoose.Schema({
       enum: ['activo', 'inactivo'],
       default: 'activo'
     },
+    // Aquí agregamos el campo para el código de recuperación
+    codigoRecuperacion: {
+      type: Number,  // Tipo numérico para almacenar el código de recuperación
+      default: null
+    },
+    // Este campo almacenará la expiración del código
+    expiracionCodigo: {
+      type: Date,
+      default: null
+    },
     resetPasswordToken: {
       type: String,
     },
     resetPasswordExpires: {
       type: Date,
     }
-  }, {
+}, {
     timestamps: true
-  });
-  
+});
 
-  module.exports = mongoose.model("Usuarios", usuarioSchema);
+module.exports = mongoose.model("Usuarios", usuarioSchema);
