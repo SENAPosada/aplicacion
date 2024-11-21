@@ -7,8 +7,10 @@ const Navegacion = () => {
             <h2>Administración</h2>
             <nav className="navegacion">
                 <Link to={"/dashboard"} className="dashboard">Dashboard</Link>
+                <Link to={"/usuarios"} className="usuarios">Usuarios</Link>
                 <Link to={"/horarios"} className="horarios">Turnos</Link>
-                <Link to={"/"} className="clientes">Clientes</Link>
+                {/* cambio */}
+                <Link to={"/clientes"} className="clientes">Clientes</Link>
                 <Link to={"/tecnicos"} className="tecnicos">Técnicos</Link>
                 <Link to={"/servicios"} className="servicios">Servicios</Link>
                 <Link to={"/categorias"} className="categorias">Categorías de servicios</Link>

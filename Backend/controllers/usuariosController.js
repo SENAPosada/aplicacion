@@ -5,7 +5,7 @@ const nodemailer = require('../utils/nodemailer/nodemailer');
 
 exports.CrearUsuario = async (req, res, next) => {
     try {
-        const { nombre, email, telefono, password, direccion } = req.body;
+        const { nombres, apellidos, email, telefono, password, direccion } = req.body;
 
         const usuarioExistente = await Usuarios.findOne({ email });
         if (usuarioExistente) {
@@ -16,7 +16,8 @@ exports.CrearUsuario = async (req, res, next) => {
         const hashedPassword = await bcrypt.hash(password, salt);
 
         const nuevoUsuario = new Usuarios({
-            nombre,
+            nombres,
+            apellidos,
             email,
             telefono,
             password: hashedPassword,
@@ -101,7 +102,7 @@ exports.restablecerPassword = async (req, res) => {
 
             // Enviar el código de recuperación por correo
             const asunto = 'Código de Recuperación de Contraseña';
-            const mensaje = `Hola ${usuario.nombre},\n\nTu código de recuperación es: ${codigoGenerado}\nEste código expirará en 1 hora.`;
+            const mensaje = `Hola ${usuario.nombres},\n\nTu código de recuperación es: ${codigoGenerado}\nEste código expirará en 1 hora.`;
 
             const correoEnviado = await nodemailer.enviarCorreo(email, asunto, mensaje);
 
@@ -141,3 +142,54 @@ exports.restablecerPassword = async (req, res) => {
     }
 };
 
+exports.actualizarUsuario = async (req, res, next) => {
+    try {
+        const { idUsuario } = req.params;
+        const datosActualizados = req.body;
+
+        // Buscar y actualizar el usuario
+        const usuarioActualizado = await Usuarios.findByIdAndUpdate(
+            idUsuario,
+            datosActualizados,
+            { new: true, runValidators: true }
+        );
+
+        if (!usuarioActualizado) {
+            return res.status(404).json({ mensaje: "Usuario no encontrado" });
+        }
+
+        res.status(200).json({
+            mensaje: "Usuario actualizado exitosamente",
+            usuario: usuarioActualizado
+        });
+    } catch (error) {
+        console.error(error);
+        next(error);
+    }
+};
+
+exports.mostrarUsuarios = async (req, res, next) => {
+    try {
+        const usuarios = await Usuarios.find({}, { password: 0 }); // Excluye las contraseñas
+        res.status(200).json(usuarios);
+    } catch (error) {
+        console.error(error);
+        next(error);
+    }
+};
+
+exports.mostrarUsuarioPorId = async (req, res, next) => {
+    try {
+        const { idUsuario } = req.params;
+
+        const usuario = await Usuarios.findById(idUsuario, { password: 0 }); // Excluye las contraseñas
+        if (!usuario) {
+            return res.status(404).json({ mensaje: "Usuario no encontrado" });
+        }
+
+        res.status(200).json(usuario);
+    } catch (error) {
+        console.error(error);
+        next(error);
+    }
+};

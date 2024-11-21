@@ -9,7 +9,7 @@ const morgan = require('morgan')
 
 // Conectar a MongoDB:
 // mongodb://mongo:fefKApObjLjZokShZdcjCMUdUzlGaTiN@junction.proxy.rlwy.net:24048
-mongoose.connect('mongodb://mongo:fefKApObjLjZokShZdcjCMUdUzlGaTiN@junction.proxy.rlwy.net:24048')
+mongoose.connect('mongodb://localhost/omniapp')
     .then(() => console.log('Conectado a MongoDB puerto 5000'))
     .catch(err => console.error('No se pudo conectar a MongoDB', err));
 

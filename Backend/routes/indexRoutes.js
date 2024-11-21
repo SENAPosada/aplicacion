@@ -21,7 +21,10 @@ module.exports = function () {
 
     // Usuarios
     router.post("/usuarios", usuariosController.CrearUsuario);
-    router.get("/usuarios", usuariosController.ObtenerUsuario);
+    router.get("/usuarios", usuariosController.mostrarUsuarios);
+    router.get("/usuarios/:idUsuario", usuariosController.mostrarUsuarioPorId);
+    router.put("/usuarios/:idUsuario", usuariosController.actualizarUsuario);
+
     router.post("/usuarios/login", usuariosController.login);
     router.post('/usuarios/restablecer-password', usuariosController.restablecerPassword);
     //router.use(protectSession)

@@ -6,7 +6,8 @@ import { useNavigate } from "react-router-dom"; // Para redireccionar
 const Registro = () => {
     const navigate = useNavigate(); // Habilitar redirección
     const [usuario, setUsuario] = useState({
-        nombre: '',
+        nombres: '',
+        apellidos: '',
         email: '',
         password: '',
         telefono: '',
@@ -24,9 +25,9 @@ const Registro = () => {
 
     // Validar formulario
     const validarUsuario = () => {
-        const { nombre, email, password, telefono, direccion } = usuario;
+        const { nombres, apellidos, email, password, telefono, direccion } = usuario;
         // Puedes añadir más validaciones si es necesario
-        return !nombre.length || !email.length || !password.length;
+        return !nombres.length || !apellidos.length || !email.length || !password.length;
     };
 
     const handleSubmit = async (e) => {
@@ -58,11 +59,22 @@ const Registro = () => {
                 <h2 className="registro-titulo">Registro de Usuario</h2>
                 <form onSubmit={handleSubmit} className="registro-form">
                     <div className="form-group">
-                        <label>Nombre</label>
+                        <label>Nombres</label>
                         <input 
                             type="text" 
-                            name="nombre" 
-                            placeholder="Nombre" 
+                            name="nombres" 
+                            placeholder="Nombres" 
+                            onChange={handleChange} 
+                            className="form-control"
+                            required 
+                        />
+                    </div>
+                    <div className="form-group">
+                        <label>Apellidos</label>
+                        <input 
+                            type="text" 
+                            name="apellidos" 
+                            placeholder="apellidos" 
                             onChange={handleChange} 
                             className="form-control"
                             required 

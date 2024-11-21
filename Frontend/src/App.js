@@ -34,6 +34,9 @@ import Registro from "./autenticacion/Registro";
 import Login from "./autenticacion/Login";
 import RestablecerContraseña from "./autenticacion/RestablecerContraseña";
 import IngresarCodigo from "./autenticacion/IngresarCodigo";
+import Usuarios from "./usuarios/Usuarios";
+import NuevoUsuario from "./usuarios/NuevoUsuario";
+import EditarUsuario from "./usuarios/EditarUsuario";
 
 function App() {
   return (
@@ -62,6 +65,12 @@ function App() {
           <Route path="dashboard" element={<Dashboard />} />
           <Route path="horarios" element={<Agenda />} />
           <Route path="horarios/nuevo" element={<CrearDisponibilidad />} />
+
+          {/* Usuarios */}
+          <Route path="usuarios" element={<Usuarios />} />
+          <Route path="usuarios/nuevo" element={<NuevoUsuario />} />
+          <Route path="usuarios/editar/:id" element={<EditarUsuario />} />
+
 
           {/* Clientes */}
           <Route path="clientes" element={<Clientes />} />
