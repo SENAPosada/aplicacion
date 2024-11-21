@@ -1,7 +1,10 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { useAuthContext } from '../../contexts/AuthContext';
 
 const Navegacion = () => {
+
+    const { logout } = useAuthContext();
     return (
         <aside className="sidebar col-3">
             <h2>Administración</h2>
@@ -15,9 +18,13 @@ const Navegacion = () => {
                 <Link to={"/repuestos"} className="repuestos">Repuestos</Link>
                 <Link to={"/citas"} className="citas">Citas</Link>
                 <Link to={"/ventas"} className="ventas">Ventas</Link>
+                 <button onClick={() => logout()}>Cerrar Sesión</button>
             </nav>
         </aside>
     );
 };
 
 export default Navegacion;
+
+
+

@@ -8,8 +8,6 @@ function AdminRoutes() {
 
     const { isAuthenticated } = useAuthContext()
 
-    console.log(typeof isAuthenticated);
-    
 
     if (Boolean(isAuthenticated) === false) {
         return <Navigate to="/login" />
