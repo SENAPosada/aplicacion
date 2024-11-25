@@ -14,6 +14,24 @@ exports.nuevoTecnico = async (req, res, next) => {
     }
 };
 
+// exports.nuevoTecnico = async (req, res, next) => {
+//     console.log("Datos recibidos en POST:", req.body);
+
+//     // Verifica si la solicitud contiene un arreglo de técnicos
+//     const tecnicos = Array.isArray(req.body) ? req.body : [req.body];
+
+//     try {
+//         // Si es un arreglo, guarda todos los técnicos de una vez usando insertMany
+//         await Tecnicos.insertMany(tecnicos);
+//         res.json({ mensaje: "Se agregaron los técnicos correctamente" });
+//     } catch (error) {
+//         console.error(error);
+//         res.status(500).send({ mensaje: "Hubo un error al agregar los técnicos", error });
+//         next();
+//     }
+// };
+
+
 // Muestra todos los técnicos
 exports.mostrarTecnicos = async (req, res, next) => {
     try {

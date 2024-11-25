@@ -13,6 +13,24 @@ exports.nuevoCliente = async (req, res, next) => {
     }
 };
 
+// Para agregar muchos en POSTMAn
+// exports.nuevoCliente = async (req, res, next) => {
+//     console.log("Datos recibidos en POST:", req.body);
+    
+//     // Verifica si la solicitud contiene un arreglo de clientes
+//     const clientes = Array.isArray(req.body) ? req.body : [req.body];
+
+//     try {
+//         // Si es un arreglo, guarda todos los clientes de una vez usando insertMany
+//         await Clientes.insertMany(clientes);
+//         res.json({ mensaje: "Se agregaron los clientes correctamente" });
+//     } catch (error) {
+//         console.error(error);
+//         res.status(500).send({ mensaje: "Hubo un error al agregar los clientes", error });
+//         next();
+//     }
+// };
+
 // Muestra todos los clientes
 exports.mostrarClientes = async (req, res, next) => {
     try {

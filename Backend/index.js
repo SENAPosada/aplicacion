@@ -9,17 +9,21 @@ const morgan = require('morgan')
 
 // Conectar a MongoDB:
 // mongodb://mongo:fefKApObjLjZokShZdcjCMUdUzlGaTiN@junction.proxy.rlwy.net:24048
-mongoose.connect('mongodb://localhost/omniapp')
+mongoose.connect('mongodb://mongo:fefKApObjLjZokShZdcjCMUdUzlGaTiN@junction.proxy.rlwy.net:24048')
     .then(() => console.log('Conectado a MongoDB puerto 5000'))
     .catch(err => console.error('No se pudo conectar a MongoDB', err));
-
+// Mongo Atlas: 
+// mongodb+srv://luisposada:12345@cluster0.1b07q.mongodb.net/omniappdb?retryWrites=true&w=majority&appName=Cluster0
+// Mongo local: 
 // mongodb://localhost/omniapp
 // Crear servidor
 const app = express();
 
 // para leer los valores que pasemos por POST en postman
-app.use(bodyParser.json())
-app.use(bodyParser.urlencoded({ extended: true }))
+// Para leer los valores que pasemos por POST en postman
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
 // 2 habilitar cors
 app.use(cors())
 app.use(morgan('dev'))

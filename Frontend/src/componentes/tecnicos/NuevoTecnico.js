@@ -4,17 +4,18 @@ import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
 import clienteAxios from "../../config/axios";
 
-
-function NuevoTecnico() {
+function NuevoTecnico({cerrarModal}) {
     // Hook para redireccionar
     const navigate = useNavigate();
 
     const [tecnico, guardarTecnico] = useState({
         // objeto para almacenar datos del técnico
-        nombre: "",
-        apellido: "",
+        nombres: "",
+        apellidos: "",
         email: "",
         telefono: "",
+        tipoDocumento: "", // Añadido tipo de documento
+        documento: "",      // Añadido documento
     });
 
     // Leer datos del formulario
@@ -47,52 +48,46 @@ function NuevoTecnico() {
                         res.data.mensaje,
                         "success"
                     );
+                    cerrarModal();
                 }
-                // redireccionar a la lista de técnicos
                 navigate('/tecnicos');
+
+                // redireccionar a la lista de técnicos
+               
             })
-            .catch(error => {
-                console.error(error);
-                Swal.fire({
-                    type: 'error',
-                    title: 'Error',
-                    text: 'No se pudo agregar el técnico'
-                });
-            });
     }
 
     // Validar formulario
     const validarTecnico = () => {
-        const { nombre, apellido, email, telefono } = tecnico;
+        const { nombres, apellidos, email, telefono, documento } = tecnico;
         // Revisar que las propiedades del state tengan contenido
-        let valido = !nombre.length || !apellido.length || !email.length || !telefono.length;
+        let valido = !nombres.length || !apellidos.length || !email.length || !telefono.length || !documento.length;
         return valido;
     }
 
     return (
         <Fragment>
-            <h2>Nuevo Técnico</h2>
             <form
                 onSubmit={agregarTecnico}
             >
-                <legend>Llena todos los campos</legend>
+                <legend>Crear Técnico</legend>
 
                 <div className="campo">
-                    <label>Nombre:</label>
+                    <label>Nombres:</label>
                     <input
                         type="text"
                         placeholder="Nombre Técnico"
-                        name="nombre"
+                        name="nombres"  // Cambio aquí para que coincida con el estado
                         onChange={handleChange}
                     />
                 </div>
 
                 <div className="campo">
-                    <label>Apellido:</label>
+                    <label>Apellidos:</label>
                     <input
                         type="text"
                         placeholder="Apellido Técnico"
-                        name="apellido"
+                        name="apellidos"  // Cambio aquí para que coincida con el estado
                         onChange={handleChange}
                     />
                 </div>
@@ -113,13 +108,13 @@ function NuevoTecnico() {
                 </div>
 
                 <div className="campo">
-                    <label>Cédula:</label>
+                    <label>Documento:</label>
                     <input
                         type="text"
-                        placeholder="Cédula o Documento"
-                        name="cedula"
+                        placeholder="Documento"
+                        name="documento"
                         onChange={handleChange}
-                        value={tecnico.cedula}
+                        value={tecnico.documento}
                     />
                 </div>
 

@@ -8,8 +8,8 @@ const SelectOptions = ({ data, id, name, selectedValue, handleChange, label }) =
           <option value="">-- {label} --</option>
           {data.length > 0 ? (
             data.map((item) => (
-              <option key={item.cedula} value={item.cedula}> {/* Aquí usamos cedula como valor */}
-                {item.nombre} {item.apellido} {/* Mostramos el nombre y apellido */}
+              <option key={item.documento} value={item.documento}> {/* Aquí usamos documento como valor */}
+                {item.nombres} {item.apellidos} {/* Mostramos el nombre y apellido */}
               </option>
             ))
           ) : (

@@ -83,9 +83,9 @@ function ListaVentas() {
                     </thead>
                     <tbody>
                         {ventas.map(venta => {
-                            const tecnico = tecnicos.find(t => t.cedula === venta.tecnico);
+                            const tecnico = tecnicos.find(t => t.documento === venta.tecnico);
                             const totalVenta = calcularTotalVenta(venta); // Calcular el total de la venta
-                            const cliente = clients.find(t => t.cedula === venta.cliente);
+                            const cliente = clients.find(t => t.documento === venta.cliente);
                             return (
                                 <tr key={venta._id}>
                                     <td>{cliente.nombre} {cliente.apellido}</td>
