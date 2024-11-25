@@ -11,33 +11,27 @@ const horarioController = require("../controllers/horarioController.js");
 const usuariosController = require("../controllers/usuariosController.js");
 
 //Middleware para validar los tokens
-const {
-  protectSession,
-  protectAdmin,
-} = require("../middlewares/auth.middleware");
+
 module.exports = function () {
   //Horario
   router.post("/horarios", horarioController.crearHorario);
   router.get("/horarios", horarioController.obtenerHorarios);
 
-  // Usuarios
-  router.post("/usuarios", usuariosController.CrearUsuario);
-  router.get("/usuarios", usuariosController.ObtenerUsuario);
-  router.post("/usuarios/login", usuariosController.login);
-  router.post(
-    "/usuarios/password-reset",
-    usuariosController.restablecerPassword
-  );
-  //router.use(protectSession)
-  // router.use(protectAdmin)
-  //router.get("/usuarios/:idUsuario", protectSession, protectAdmin, clienteController.mostrarUsuario);
-  // router.put("/usuarios/:idUsuario", clienteController.actualizarUsuario);
-  // router.delete("/usuarios/:idUsuario", clienteController.eliminarUsuario);
+    // Usuarios
+    router.post("/usuarios", usuariosController.CrearUsuario);
+    router.get("/usuarios", usuariosController.ObtenerUsuario);
+    router.post("/usuarios/login", usuariosController.login);
+    //router.use(protectSession)
+    // router.use(protectAdmin)
+    // router.get("/usuarios/:idUsuario", protectSession, protectAdmin, clienteController.mostrarUsuario);
+    // router.put("/usuarios/:idUsuario", clienteController.actualizarUsuario);
+    // router.delete("/usuarios/:idUsuario", clienteController.eliminarUsuario);
 
   // Clientes
   router.post("/clientes", clienteController.nuevoCliente);
   router.get("/clientes", clienteController.mostrarClientes);
   router.get("/clientes/:idCliente", clienteController.mostrarCliente);
+
   router.put("/clientes/:idCliente", clienteController.actualizarCliente);
   router.delete("/clientes/:idCliente", clienteController.EliminarCliente);
 

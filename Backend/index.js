@@ -7,11 +7,13 @@ const bodyParser = require('body-parser')
 const cors = require('cors')
 const morgan = require('morgan')
 
-// Conectar a MongoDB
-mongoose.connect('mongodb://mongo:fefKApObjLjZokShZdcjCMUdUzlGaTiN@junction.proxy.rlwy.net:24048')
+// Conectar a MongoDB:
+// mongodb://mongo:fefKApObjLjZokShZdcjCMUdUzlGaTiN@junction.proxy.rlwy.net:24048
+mongoose.connect('mongodb://localhost/omniapp')
     .then(() => console.log('Conectado a MongoDB puerto 5000'))
     .catch(err => console.error('No se pudo conectar a MongoDB', err));
 
+// mongodb://localhost/omniapp
 // Crear servidor
 const app = express();
 
@@ -33,4 +35,5 @@ app.use(express.static('uploads'))
 app.listen(5000, () => {
     console.log('Server escuchando en el puerto 5000');
 });
+
 
