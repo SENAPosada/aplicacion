@@ -30,6 +30,7 @@ import Ventas from "./componentes/ventas/ventas";
 
 import PublicRoutes from "./componentes/routes/PublicRoutes";
 import AdminRoutes from "./componentes/routes/AdminRoutes";
+import EditorRoutes from "./componentes/routes/EditorRoutes";
 import Registro from "./autenticacion/Registro";
 import Login from "./autenticacion/Login";
 import RestablecerContraseña from "./autenticacion/RestablecerContraseña";
@@ -60,7 +61,18 @@ function App() {
           <Route index element={<IngresarCodigo />} />
         </Route>
 
+        {/* A estas rutas solo se pueden acceder si estás autenticadoy el rol es admin o editor */}
+        {/* Rutas De editores */}
+        <Route path="/" element={<EditorRoutes allowedRoles={['editor', 'admin']} />}>
+          <Route path="citas" element={<Citas />} />
+          <Route path="citas/nueva" element={<NuevaCita />} />
+          <Route path="citas/editar/:id" element={<EditarCita />} />
+          <Route path="ventas" element={<Ventas />} />
+          <Route path="ventas/nueva" element={<NuevaVenta />} />
+        </Route>
+
         {/* Rutas Protegidas */}
+
 
         <Route path="/" element={<AdminRoutes />}>
           <Route path="dashboard" element={<Dashboard />} />

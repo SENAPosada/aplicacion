@@ -51,7 +51,7 @@ exports.login = async (req, res) => {
       return res.status(401).json({ message: "Contraseña incorrecta" });
     }
 
-    const token = jwt.sign({ id: usuario._id }, your_secret_key, {
+    const token = jwt.sign({ id: usuario._id, roles: usuario.roles }, your_secret_key, {
       expiresIn: "20d",
     });
 
