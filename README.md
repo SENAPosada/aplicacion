@@ -45,16 +45,22 @@ export default Modal;
   const cerrarModal = () => {
     setModalVisible(false);
   };
-4. colocar el modal en el boton de nuevo cliente y mandar CerrarModal como prop al componente Nuevocliente que es donde está el formulario:
+
+   <Link to="#" onClick={abrirModal} className="btn btn-verde nvo-cliente">
+         <i className="fas fa-plus-circle"></i>
+          Nuevo Cliente
+   </Link>
+   
+5. colocar el modal en el boton de nuevo cliente y mandar CerrarModal como prop al componente Nuevocliente que es donde está el formulario:
       {/* Mostrar el Modal si modalVisible es true */}
       {modalVisible && (
         <Modal cerrarModal={cerrarModal} titulo="Nuevo Cliente">
           <NuevoCliente cerrarModal={cerrarModal} />
         </Modal>
       )}
-5. En NuevoCliente.js:
+6. En NuevoCliente.js:
    recibir el prop de cerrarModal: function NuevoCliente({cerrarModal}) {...}
-6. invocar el cerrarModal() al agregar un cliente para que se cierre por fin:
+7. invocar el cerrarModal() al agregar un cliente para que se cierre por fin:
     const agregarCliente = e => {
         e.preventDefault();
         // Enviar petición
@@ -79,7 +85,7 @@ export default Modal;
                 navigate('/clientes');
             });
     };
-7. colocar estilos:
+8. colocar estilos:
 .modal-overlay {
     position: fixed;
     top: 0;
