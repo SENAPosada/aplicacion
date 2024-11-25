@@ -352,11 +352,11 @@ form .campo input:not([type="submit"]){
 form .campo input[readonly] {
     background-color: #e1e1e1;
 }
-.enviar {
+/* .enviar {
     padding: .5rem 2rem;
     display: flex;
-    justify-content: flex-end;
-}
+    justify-content: center;
+} */
 .resumen {
     padding: 0;
 }
@@ -451,9 +451,8 @@ h3.resumen-titulo {
 .login h2 {
     text-align: center;
 }
-.login .contenedor-formulario {
 
-}
+/* Estilos propios de OmniApp */
 
 .imagen-producto {
     width: 150px; /* O el tamaño que prefieras */
@@ -667,6 +666,7 @@ input:checked + .slider:before {
     --grisOscuro : #707070;
     --grisClaro: rgb(243, 243, 243);
 }
+
 body {
     background-color: var(--grisClaro);
     font-size: 1.6rem;
@@ -1005,11 +1005,11 @@ form .campo input:not([type="submit"]){
 form .campo input[readonly] {
     background-color: #e1e1e1;
 }
-.enviar {
+/* .enviar {
     padding: .5rem 2rem;
     display: flex;
     justify-content: flex-end;
-}
+} */
 .resumen {
     padding: 0;
 }
@@ -1108,6 +1108,7 @@ h3.resumen-titulo {
 
 }
 
+Estilos propios de OmniApp
 .imagen-producto {
     width: 150px; /* O el tamaño que prefieras */
     height: auto; /* Mantener la proporción */
@@ -1338,16 +1339,18 @@ NuevaCita.js */
     border-radius: 5px;
   }
   
-  .btn-azul {
+.btn-azul {
+    margin-bottom: 20px;
     background-color: #007bff;
     color: white;
     border: none;
-    padding: 10px 20px;
     cursor: pointer;
     border-radius: 5px;
-    width: 100%;
-    font-size: 16px;
-  }
+    width: 60%; /* Ajusta el ancho a lo que necesites */
+    font-size: 15px; /* Disminuir el tamaño de la fuente */
+    padding: 5px 10px; /* Ajusta el padding para hacer el botón más pequeño */
+}
+
   
   .btn-azul:hover {
     background-color: #0056b3;
@@ -1438,8 +1441,8 @@ form .campo input[readonly] {
 
 .enviar {
     padding: 1rem; /* Aumentar el padding */
-    display: flex;
-    justify-content: flex-end; /* Alinear el botón a la derecha */
+     display: flex;
+    justify-content: center;/* Alinear el botón a la derecha */
 }
 
 .enviar input[type="submit"] {
@@ -1469,46 +1472,178 @@ form .campo input[readonly] {
     margin-top: 0.5rem; /* Espaciado superior */
 }
 
-/* register */
-/* Archivo: RegistroUsuario.css */
-.registro-container {
-    max-width: 500px;
-    margin: 0 auto;
-    padding: 20px;
-    background-color: #f8f9fa;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+/* Nuevos estilos OmniApp */
+
+/*Estilos para el sidebar */
+
+.navegacion a {
+    display: block;
+    padding: 10px;
+    text-decoration: none;
+    color: #504848;
 }
 
-.registro-titulo {
-    text-align: center;
-    color: #343a40;
+/* Estilo para los enlaces dentro de los dropdowns */
+.dropdown a {
+    padding-left: 20px; /* Mueve los enlaces más a la derecha */
+    margin-left: 10px; /* Opcional: Da un margen adicional */
+    font-size: 18px; /* Puedes ajustar el tamaño de fuente si lo deseas */
+}
+
+/* Opcional: Estilo de hover */
+.navegacion a:hover, .dropdown a:hover {
+    background-color: #f0f0f0;
+}
+
+
+/* Colocar el input de barra de buqueda al final  */
+.barra-busqueda {
+    display: flex;
+    justify-content: flex-end; /* Alinea el contenido al final del contenedor */
+    margin-bottom: 20px; /* Añade espacio entre la búsqueda y la tabla */
+}
+
+.busqueda {
+    width: 250px; /* Establece el tamaño del campo de búsqueda */
+    padding: 10px; /* Estilo para el padding */
+    font-size: 16px; /* Tamaño de fuente */
+    border-radius: 5px; /* Bordes redondeados */
+    border: 1px solid #ccc; /* Borde del campo de búsqueda */
+}
+
+.tabla-clientes {
+    width: 100%; /* La tabla ocupa todo el ancho disponible */
+    margin-top: 20px;
+}
+
+
+/* 
+Estilos para la paginacion */
+.paginacion {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+}
+
+.btn-paginacion {
+    background-color: #f8f9fa;
+    border: 1px solid #ccc;
+    padding: 5px 10px;
+    margin: 0 5px;
+    cursor: pointer;
+    font-size: 18px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.btn-paginacion:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+
+.btn-paginacion i {
+    font-size: 20px;
+}
+
+.btn-paginacion.activo {
+    background-color: #007bff;
+    color: white;
+}
+
+.barra-busqueda {
+    display: flex;
+    justify-content: flex-end;
     margin-bottom: 20px;
 }
 
-.registro-form .form-group {
-    margin-bottom: 15px;
-}
-
-.registro-form .form-control {
-    padding: 10px;
-    border-radius: 5px;
-    border: 1px solid #ced4da;
-}
-
-.registro-form .btn {
-    width: 100%;
+.busqueda {
+    width: 250px;
     padding: 10px;
     font-size: 16px;
-    font-weight: bold;
+    border-radius: 5px;
+    border: 1px solid #ccc;
 }
 
-.registro-form .btn-primary {
-    background-color: #007bff;
-    border-color: #007bff;
+/* Colocar lupa de busqueda adentro del input */
+.barra-busqueda {
+    position: relative;
 }
 
-.registro-form .btn-primary:hover {
-    background-color: #0056b3;
-    border-color: #0056b3;
+.barra-busqueda input {
+    padding-right: 30px; /* Espacio para el ícono */
+}
+
+.lupa-icono {
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    transform: translateY(-50%);
+    font-size: 16px;
+    color: #999;
+}
+
+/* Estilo CSS para el botón de exportar (sin texto): */
+.btn-pdf {
+    background-color: #ff5a5f;
+    color: white;
+    padding: 8.5px 10px; /* Reducir el padding horizontal */
+    cursor: pointer;
+    margin-left: 20px;
+}
+
+.btn-pdf i {
+    font-size: 20px;
+}
+
+
+/* estilos para los modales de los foormularios despues de el boton crear */
+/* Estilo para centrar y dar fondo al modal */
+/* src/components/Modal.css */
+
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);  /* Fondo oscuro */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;  /* Asegurarse de que el modal esté encima */
+}
+
+.modal-contenido {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    max-width: 500px;
+    width: 100%;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.modal-cerrar {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: none;
+    border: none;
+    font-size: 2rem;
+    cursor: pointer;
+}
+
+.modal-cerrar:focus {
+    outline: none;
+}
+
+/* Aseguramos que el SweetAlert se muestre encima del modal */
+.swal2-container {
+    z-index: 9999 !important;
+}
+
+/* Si el modal tiene un z-index muy alto, ajusta su valor */
+.modal {
+    z-index: 999 !important;
 }

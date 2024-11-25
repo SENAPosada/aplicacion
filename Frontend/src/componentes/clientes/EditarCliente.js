@@ -12,10 +12,10 @@ function EditarCliente() {
 
     const [cliente, datosCliente] = useState({
         // objeto con los nuevos campos
-        nombre: "",
-        apellido: "",
+        nombres: "",
+        apellidos: "",
         tipoDocumento: "",
-        cedula: "",
+        documento: "",
         empresa: "",
         email: "",
         telefono: "",
@@ -46,7 +46,7 @@ function EditarCliente() {
                     );
                 }
                 // Redireccionar a la página principal
-                navigate('/');
+                navigate('/clientes');
             });
     }
 
@@ -64,9 +64,9 @@ function EditarCliente() {
 
     // Validar formulario
     const validarCliente = () => {
-        const { nombre, apellido, email, empresa, telefono, tipoDocumento, cedula } = cliente;
-        let valido = !nombre.length || !apellido.length || !email.length || !empresa.length || 
-                     !telefono.length || !tipoDocumento.length || !cedula.length;
+        const { nombres, apellidos, email, empresa, telefono, tipoDocumento, documento } = cliente;
+        let valido = !nombres.length || !apellidos.length || !email.length || !empresa.length || 
+                     !telefono.length || !tipoDocumento.length || !documento.length;
         return valido;
     }
 
@@ -77,22 +77,22 @@ function EditarCliente() {
                 <legend>Llena todos los campos</legend>
 
                 <div className="campo">
-                    <label>Nombre:</label>
+                    <label>Nombres:</label>
                     <input type="text"
                         placeholder="Nombre Cliente"
                         name="nombre"
                         onChange={handleChange}
-                        value={cliente.nombre}
+                        value={cliente.nombres}
                     />
                 </div>
 
                 <div className="campo">
-                    <label>Apellido:</label>
+                    <label>Apellidos:</label>
                     <input type="text"
                         placeholder="Apellido Cliente"
                         name="apellido"
                         onChange={handleChange}
-                        value={cliente.apellido}
+                        value={cliente.apellidos}
                     />
                 </div>
 
@@ -111,9 +111,9 @@ function EditarCliente() {
                     <label>Cédula:</label>
                     <input type="text"
                         placeholder="Número de Documento"
-                        name="cedula"
+                        name="documento"
                         onChange={handleChange}
-                        value={cliente.cedula}
+                        value={cliente.documento}
                     />
                 </div>
 
