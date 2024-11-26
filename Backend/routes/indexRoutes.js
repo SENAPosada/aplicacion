@@ -30,7 +30,7 @@ module.exports = function () {
     // router.delete("/usuarios/:idUsuario", clienteController.eliminarUsuario);
 
   // Clientes
-  router.post("/clientes", protectSession, authorizeRoles("admin"), clienteController.nuevoCliente);
+  router.post("/clientes", clienteController.nuevoCliente);
   router.get("/clientes", clienteController.mostrarClientes);
   router.get("/clientes/:idCliente", clienteController.mostrarCliente);
 

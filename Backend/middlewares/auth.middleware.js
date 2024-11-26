@@ -1,10 +1,10 @@
 const Usuarios = require("../models/Usuarios");
 const jwt = require("jsonwebtoken");
-const catchAsync = require("./../utils/catchAsync");
-const AppError = require("./../utils/appError");
-const dotenv = require("dotenv");
+// const catchAsync = require("./../utils/catchAsync");
+// const AppError = require("./../utils/appError");
+// const dotenv = require("dotenv");
 
-dotenv.config();
+// dotenv.config();
 
 exports.protectSession = async (req, res, next) => {
   // Get token
@@ -51,15 +51,15 @@ exports.protectAdmin = (req, res, next) => {
   next();
 };
 
-exports.authorizeRoles = (...allowedRoles) => {
-  return (req, res, next) => {
-    const userRoles = req.sessionUser.roles;
-    const hasPermission = userRoles.some((role) => allowedRoles.includes(role));
-    if (!hasPermission) {
-      return res
-        .status(403)
-        .json({ message: "No tienes permisos suficientes" });
-    }
-    next();
-  };
-};
+// exports.authorizeRoles = (...allowedRoles) => {
+//   return (req, res, next) => {
+//     const userRoles = req.sessionUser.roles;
+//     const hasPermission = userRoles.some((role) => allowedRoles.includes(role));
+//     if (!hasPermission) {
+//       return res
+//         .status(403)
+//         .json({ message: "No tienes permisos suficientes" });
+//     }
+//     next();
+//   };
+// };
