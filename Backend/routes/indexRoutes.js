@@ -9,6 +9,8 @@ const citasController = require("../controllers/citasController");
 const serviciosController = require("../controllers/serviciosController"); // Importar el controlador de servicios
 const horarioController = require("../controllers/horarioController.js");
 const usuariosController = require("../controllers/usuariosController.js");
+const protectSession = require("../middlewares/auth.middleware.js");
+const authorizeRoles = require("../middlewares/auth.middleware.js");
 
 //Middleware para validar los tokens
 
@@ -28,7 +30,7 @@ module.exports = function () {
     // router.delete("/usuarios/:idUsuario", clienteController.eliminarUsuario);
 
   // Clientes
-  router.post("/clientes", clienteController.nuevoCliente);
+  router.post("/clientes", protectSession, authorizeRoles("admin"), clienteController.nuevoCliente);
   router.get("/clientes", clienteController.mostrarClientes);
   router.get("/clientes/:idCliente", clienteController.mostrarCliente);
 

@@ -1,0 +1,209 @@
+[33mcommit 04effe4ac72a7b4041835db922d4c5267ccb8a46[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m
+Merge: 19513ac 14027f6
+Author: Luis Soracá <98796413+LuisSoraca27@users.noreply.github.com>
+Date:   Mon Nov 25 16:09:38 2024 -0500
+
+    Merge branch 'main' of https://github.com/SENAPosada/aplicacion
+
+[33mcommit 19513ac858b6b37deab413f4968f6abb4b24f541[m
+Merge: 9d5aad1 47d2e68
+Author: Luis Soracá <98796413+LuisSoraca27@users.noreply.github.com>
+Date:   Mon Nov 25 16:08:26 2024 -0500
+
+    Merge branch 'main' of https://github.com/SENAPosada/aplicacion
+
+[33mcommit 9d5aad1c179a4fabe54e0182157d4326344f6987[m
+Merge: 39f00e0 bd94839
+Author: Luis Soracá <98796413+LuisSoraca27@users.noreply.github.com>
+Date:   Mon Nov 25 16:01:50 2024 -0500
+
+    Cambios Luis
+
+[33mcommit 14027f6a1cd99adfb6b0e0c9d39d742b8c1282a2[m
+Merge: bca588a 47d2e68
+Author: luisposada <luisgasthof@hotmail.com>
+Date:   Mon Nov 25 16:01:21 2024 -0500
+
+    Merge branch 'main' of https://github.com/SENAPosada/aplicacion
+
+[33mcommit bca588a8e34ec70abc5716fe1cd317336ac8723e[m
+Author: luisposada <luisgasthof@hotmail.com>
+Date:   Mon Nov 25 15:59:06 2024 -0500
+
+    estilos
+
+[33mcommit 47d2e681cde7358838f1d3336508ed00865e3455[m
+Author: henryposa <75101335+henryposa@users.noreply.github.com>
+Date:   Mon Nov 25 10:21:44 2024 -0500
+
+    Update README.md
+
+[33mcommit 4bf8c78c08d521fc357e01f175da69f33d8cf94d[m
+Author: henryposa <75101335+henryposa@users.noreply.github.com>
+Date:   Mon Nov 25 01:22:55 2024 -0500
+
+    Update README.md
+
+[33mcommit 1939f90463b30fc35c5905e023cc86430bb4739b[m
+Author: henryposa <75101335+henryposa@users.noreply.github.com>
+Date:   Sun Nov 24 16:24:45 2024 -0500
+
+    Create README.md
+
+[33mcommit 39f00e063a250ad467ee555d8fa5237372fa9a0d[m
+Author: Luis Soracá <98796413+LuisSoraca27@users.noreply.github.com>
+Date:   Thu Nov 21 18:10:18 2024 -0500
+
+    Añadidos middlewares
+
+[33mcommit bd9483978944347b19278920eac6c1321fbd1767[m
+Author: luisposada <luisgasthof@hotmail.com>
+Date:   Thu Nov 21 16:20:34 2024 -0500
+
+    Creacion CRUD usuarios Frontend
+
+[33mcommit 0d352b02181fee9d8db8e7c6ff6a0cffba043931[m
+Author: luisposada <luisgasthof@hotmail.com>
+Date:   Mon Nov 18 12:53:07 2024 -0500
+
+    ruta registro, restablecer contraseña e ingresarCodigo.js
+
+[33mcommit cb7456febdaf9a39817282866773cc3f642c895c[m
+Author: Luis Soracá <98796413+LuisSoraca27@users.noreply.github.com>
+Date:   Wed Nov 6 21:00:11 2024 -0500
+
+    Añadiendo nodemailer & controller para restablecer
+
+[33mcommit 2c7784ba94c01f9d20ea5f7e860a511fa9eb6f55[m
+Author: Luis Soracá <98796413+LuisSoraca27@users.noreply.github.com>
+Date:   Wed Nov 6 19:04:35 2024 -0500
+
+    login terminado
+
+[33mcommit 16bfb5979fd00c5aad51d0fb5c2bf6f1aa2b49d4[m
+Author: Luis Soracá <98796413+LuisSoraca27@users.noreply.github.com>
+Date:   Sat Nov 2 18:23:20 2024 -0500
+
+    Añadido login y logout
+
+[33mcommit bfabfbdea840fc0d13144d282d19234ca1a44732[m
+Merge: b72e74e 7ec927a
+Author: Luis Soracá <98796413+LuisSoraca27@users.noreply.github.com>
+Date:   Fri Nov 1 16:17:14 2024 -0500
+
+    Merge branch 'main' of https://github.com/SENAPosada/aplicacion
+
+[33mcommit b72e74e5bd0d7ce343d47c2ab84c8ed31e949df8[m
+Author: Luis Soracá <98796413+LuisSoraca27@users.noreply.github.com>
+Date:   Fri Nov 1 16:13:50 2024 -0500
+
+    Añadido librerias y controladores del login
+
+[33mcommit 7ec927a4c7433df459af65bbdcefb4ad2876af45[m
+Author: luisposada <luisgasthof@hotmail.com>
+Date:   Fri Nov 1 16:00:38 2024 -0500
+
+    usuariosController y ruta usuarios
+
+[33mcommit 5e0116b7cd27c1d6109ea4189b84e6508a9b9c7c[m
+Author: luisposada <luisgasthof@hotmail.com>
+Date:   Fri Nov 1 15:59:52 2024 -0500
+
+    usuariosController y ruta usuarios
+
+[33mcommit 737eaf944e5255c8ed034b7ea1d4d3c1df78c5fb[m
+Merge: d2dbfe4 af51c76
+Author: Luis Soracá <98796413+LuisSoraca27@users.noreply.github.com>
+Date:   Fri Nov 1 15:46:29 2024 -0500
+
+    Merge branch 'main' of https://github.com/SENAPosada/aplicacion
+
+[33mcommit d2dbfe49c2b4f631c9911d9b72553d6a83ecf650[m
+Author: Luis Soracá <98796413+LuisSoraca27@users.noreply.github.com>
+Date:   Fri Nov 1 15:43:59 2024 -0500
+
+    Añadido librerias y controladores del login
+
+[33mcommit af51c764c0bf200679cbc3c97af7d9261149972a[m
+Author: luisposada <luisgasthof@hotmail.com>
+Date:   Thu Oct 31 20:10:37 2024 -0500
+
+    usuariosController
+
+[33mcommit 1fb9329fa3397911d45c66b11a043d97cb38a347[m
+Author: luisposada <luisgasthof@hotmail.com>
+Date:   Thu Oct 31 15:02:37 2024 -0500
+
+    formulario
+
+[33mcommit bd648fbf23a72d03eee70acb0b155ee97aec007e[m
+Author: Luis Soracá <98796413+LuisSoraca27@users.noreply.github.com>
+Date:   Tue Oct 29 16:20:58 2024 -0500
+
+    Añadido librerias y controladores del login
+
+[33mcommit b7473d70b35534d339c4b50b9ae65fa812453f28[m
+Author: luisposada <luisgasthof@hotmail.com>
+Date:   Tue Oct 29 14:59:49 2024 -0500
+
+    modelo usuario
+
+[33mcommit 8636cbb8a36e79b8e719932fca9df01672772bc5[m
+Author: luisposada <luisgasthof@hotmail.com>
+Date:   Fri Oct 18 18:00:41 2024 -0500
+
+    noveno commit
+
+[33mcommit ad10f8c5dbc46b469e1593c580b768fdbbcddc43[m[33m ([m[1;31morigin/Mario[m[33m)[m
+Author: luisposada <luisgasthof@hotmail.com>
+Date:   Thu Oct 17 16:37:28 2024 -0500
+
+    noveno commit
+
+[33mcommit 70b30e713af61b2f3d40fac7a0401a51c4ba1ead[m
+Author: luisposada <luisgasthof@hotmail.com>
+Date:   Wed Oct 16 16:21:55 2024 -0500
+
+    octavo commit
+
+[33mcommit 510b1887dc74c8c5a497d869add2b1696c2f44f2[m
+Author: luisposada <luisgasthof@hotmail.com>
+Date:   Wed Oct 16 05:24:32 2024 -0500
+
+    septimo commit
+
+[33mcommit fe3366c759e63549262706282f6aec5934de3240[m
+Author: luisposada <luisgasthof@hotmail.com>
+Date:   Mon Oct 14 12:01:25 2024 -0500
+
+    sexto commit
+
+[33mcommit 2202c5d12e5e399ba5c416ce73fa79644588b618[m
+Author: luisposada <luisgasthof@hotmail.com>
+Date:   Sat Oct 12 10:00:57 2024 -0500
+
+    quinto commit
+
+[33mcommit 0876452c5fe3103766bdb2fe50a2ad864f6317fa[m
+Author: luisposada <luisgasthof@hotmail.com>
+Date:   Fri Oct 11 16:59:00 2024 -0500
+
+    cuarto commit
+
+[33mcommit 71f3a371614536558020da1aeffcfa995600100f[m
+Author: luisposada <luisgasthof@hotmail.com>
+Date:   Thu Oct 10 17:59:02 2024 -0500
+
+    tercer commit
+
+[33mcommit ca6c3c5687fd09925d938298bb0cfc011d7a0cfe[m
+Author: luisposada <luisgasthof@hotmail.com>
+Date:   Tue Oct 8 17:45:05 2024 -0500
+
+    segundo commit
+
+[33mcommit 4d81d7cb9734ae0c028fe8f76fab67e4a2d3ca08[m
+Author: luisposada <luisgasthof@hotmail.com>
+Date:   Sun Oct 6 09:29:22 2024 -0500
+
+    primer commit

@@ -26,9 +26,9 @@ const usuarioSchema = new mongoose.Schema({
       type: String,
       required: true,
     },
-    role: {
+    roles: {
       type: String,
-      enum: ['usuario', 'admin'], 
+      enum: ['usuario', 'admin', 'editor', 'suscriptor'], 
       default: 'usuario'
     },
     direccion: {
@@ -55,7 +55,7 @@ const usuarioSchema = new mongoose.Schema({
     },
     resetPasswordExpires: {
       type: Date,
-    }
+    },
 }, {
     timestamps: true
 });
