@@ -5,7 +5,7 @@ const nodemailer = require('../utils/nodemailer/nodemailer');
 
 exports.CrearUsuario = async (req, res, next) => {
     try {
-        const { nombre, email, telefono, password, direccion } = req.body;
+        const { nombres, apellidos, email, telefono, password, direccion } = req.body;
 
     const usuarioExistente = await Usuarios.findOne({ email });
     if (usuarioExistente) {
@@ -16,7 +16,8 @@ exports.CrearUsuario = async (req, res, next) => {
     const hashedPassword = await bcrypt.hash(password, salt);
 
         const nuevoUsuario = new Usuarios({
-            nombre,
+            nombres,
+            apellidos,
             email,
             telefono,
             password: hashedPassword,
@@ -36,6 +37,7 @@ exports.CrearUsuario = async (req, res, next) => {
 
 exports.login = async (req, res) => {
   try {
+    console.log(req.body)
     const usuario = await Usuarios.findOne({ email: req.body.email });
 
     if (!usuario) {
@@ -51,7 +53,7 @@ exports.login = async (req, res) => {
       return res.status(401).json({ message: "Contraseña incorrecta" });
     }
 
-    const token = jwt.sign({ id: usuario._id }, your_secret_key, {
+    const token = jwt.sign({ id: usuario._id }, "your_secret_key", {
       expiresIn: "20d",
     });
 
