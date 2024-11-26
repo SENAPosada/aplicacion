@@ -38,6 +38,9 @@ import IngresarCodigo from "./autenticacion/IngresarCodigo";
 import Usuarios from "./usuarios/Usuarios";
 import NuevoUsuario from "./usuarios/NuevoUsuario";
 import EditarUsuario from "./usuarios/EditarUsuario";
+import Roles from "./roles/Roles";
+import NuevoRol from "./roles/NuevoRol";
+import EditarRol from "./roles/EditarRol";
 
 
 function App() {
@@ -63,13 +66,13 @@ function App() {
 
         {/* A estas rutas solo se pueden acceder si estás autenticadoy el rol es admin o editor */}
         {/* Rutas De editores */}
-        <Route path="/" element={<EditorRoutes allowedRoles={['editor', 'admin']} />}>
+        {/* <Route path="/" element={<EditorRoutes allowedRoles={['editor', 'admin']} />}> */}
           <Route path="citas" element={<Citas />} />
           <Route path="citas/nueva" element={<NuevaCita />} />
           <Route path="citas/editar/:id" element={<EditarCita />} />
           <Route path="ventas" element={<Ventas />} />
           <Route path="ventas/nueva" element={<NuevaVenta />} />
-        </Route>
+        {/* </Route> */}
 
         {/* Rutas Protegidas */}
 
@@ -84,6 +87,10 @@ function App() {
           <Route path="usuarios/nuevo" element={<NuevoUsuario />} />
           <Route path="usuarios/editar/:id" element={<EditarUsuario />} />
 
+          {/* Roles */}
+          <Route path="roles" element={<Roles />} />
+          <Route path="roles/nuevo" element={<NuevoRol />} />
+          <Route path="roles/editar/:id" element={<EditarRol />} />
 
           {/* Clientes */}
           <Route path="clientes" element={<Clientes />} />

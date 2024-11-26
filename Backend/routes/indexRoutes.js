@@ -12,6 +12,7 @@ const usuariosController = require("../controllers/usuariosController.js");
 const protectSession = require("../middlewares/auth.middleware.js");
 const authorizeRoles = require("../middlewares/auth.middleware.js");
 
+const rolesController = require("../controllers/rolesController")
 //Middleware para validar los tokens
 
 module.exports = function () {
@@ -30,6 +31,13 @@ module.exports = function () {
     // router.delete("/usuarios/:idUsuario", clienteController.eliminarUsuario);
 
   // Ruta para clientes
+
+    // Rutas para Roles
+    router.post("/roles", rolesController.nuevoRol); // Crear un nuevo rol
+    router.get("/roles", rolesController.mostrarRoles); // Mostrar todos los roles
+    router.get("/roles/:idRol", rolesController.mostrarRol); // Mostrar un rol por su ID
+    router.put("/roles/:idRol", rolesController.actualizarRol); // Actualizar un rol
+    router.delete("/roles/:idRol", rolesController.eliminarRol); // Eliminar un rol
 
   router.post("/clientes", clienteController.nuevoCliente);
   router.get("/clientes", clienteController.mostrarClientes);
