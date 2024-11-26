@@ -29,7 +29,8 @@ module.exports = function () {
     // router.put("/usuarios/:idUsuario", clienteController.actualizarUsuario);
     // router.delete("/usuarios/:idUsuario", clienteController.eliminarUsuario);
 
-  // Clientes
+  // Ruta para clientes
+
   router.post("/clientes", clienteController.nuevoCliente);
   router.get("/clientes", clienteController.mostrarClientes);
   router.get("/clientes/:idCliente", clienteController.mostrarCliente);
