@@ -2,9 +2,20 @@ import React, { useEffect, useState, Fragment } from "react";
 import clienteAxios from "../../config/axios";
 import Servicio from "./Servicio"; // Componente individual para mostrar cada servicio
 import { Link } from 'react-router-dom';
-
+import Modal from "../../Modal";
+import NuevoServicio from "./NuevoServicio"
 function Servicios() {
     const [servicios, guardarServicios] = useState([]);
+    const [modalVisible, setModalVisible] = useState(false); // Estado para controlar la visibilidad del modal
+
+    const abrirModal = () => {
+        setModalVisible(true);
+    };
+
+    // Función para cerrar el modal
+    const cerrarModal = () => {
+        setModalVisible(false);
+    };
 
     // Función para consultar los servicios desde la API
     const consultarAPI = async () => {
@@ -19,13 +30,20 @@ function Servicios() {
 
     return (
         <Fragment>
-            <h2>Servicios</h2>
+            <h2>Gestión de servicios</h2>
 
             {/* Botón para agregar un nuevo servicio */}
-            <Link to={"/servicios/nuevo"} className="btn btn-verde nvo-servicio">
+            <Link to="#" onClick={abrirModal} className="btn btn-verde nvo-servicio">
                 <i className="fas fa-plus-circle"></i>
                 Nuevo Servicio
             </Link>
+
+            {/* Mostrar el Modal si modalVisible es true */}
+            {modalVisible && (
+                <Modal cerrarModal={cerrarModal} titulo="Nuevo servicio">
+                    <NuevoServicio cerrarModal={cerrarModal} />
+                </Modal>
+            )}
 
             {/* Mostrar la tabla solo si hay servicios */}
             {servicios.length > 0 ? (

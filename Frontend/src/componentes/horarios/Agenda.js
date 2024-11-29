@@ -21,7 +21,7 @@ const Agenda = () => {
         };
 
         cargarHorarios();
-    }, [horariosPosibles]);
+    }, []);
 
     const convertir24Horas = (hora12) => {
         const [time, modifier] = hora12.split(' ');

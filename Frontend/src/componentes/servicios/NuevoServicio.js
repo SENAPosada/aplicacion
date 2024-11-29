@@ -3,7 +3,7 @@ import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
 import clienteAxios from "../../config/axios";
 
-function NuevoServicio() {
+function NuevoServicio({cerrarModal}) {
     // Hook para redireccionar
     const navigate = useNavigate();
 
@@ -39,6 +39,7 @@ function NuevoServicio() {
                         res.data.mensaje,
                         "success"
                     );
+                    cerrarModal();
                 }
                 // Redireccionar 
                 navigate('/servicios'); // Redirige a la lista de servicios
@@ -54,9 +55,8 @@ function NuevoServicio() {
 
     return (
         <Fragment>
-            <h2>Nuevo Servicio</h2>
             <form onSubmit={agregarServicio}>
-                <legend>Llena todos los campos</legend>
+                <legend>Crear servicio</legend>
 
                 <div className="campo">
                     <label>Tipo de Servicio:</label>

@@ -42,7 +42,6 @@ const CrearDisponibilidad = ({ onCrear }) => {
             try {
                 console.log("horario creado: ", nuevoHorario); // Ver el formato correcto
                 const response = await clienteAxios.post('/horarios', nuevoHorario);
-                Swal.fire('Horario creado', 'El horario ha sido creado exitosamente', 'success');
 
                 // Llamar a la función onCrear pasando el nuevo horario
                 if (typeof onCrear === 'function') {
@@ -50,12 +49,14 @@ const CrearDisponibilidad = ({ onCrear }) => {
                     onCrear(horarioCreado);
                 }
 
-                navigate('/horarios');
             } catch (error) {
                 console.error('Error al crear el horario:', error);
                 Swal.fire('Error', 'Hubo un problema al crear el horario', 'error');
             }
         }
+        Swal.fire('Horario creado', 'El horario ha sido creado exitosamente', 'success');
+
+        navigate('/horarios');
     };
 
     const validarHorario = (horario) => {

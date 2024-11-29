@@ -9,7 +9,7 @@ const Ventas = () => {
 
       <Link to="/ventas/nueva" className="btn btn-verde nvo-cita">
         <i className="fas fa-plus-circle"></i>
-        Nueva anotación
+        Crear venta
       </Link>
 
       <ListaVentas />

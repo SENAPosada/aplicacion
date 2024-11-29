@@ -3,7 +3,7 @@ import Swal from 'sweetalert2';
 import clienteAxios from '../../config/axios';
 import { useNavigate } from "react-router-dom";
 
-function NuevoRepuesto() { // Cambiar a NuevoRepuesto
+function NuevoRepuesto({cerrarModale}) { // Cambiar a NuevoRepuesto
     const navigate = useNavigate();
 
     const [repuesto, guardarRepuesto] = useState({ // Cambiar a repuesto
@@ -40,6 +40,7 @@ function NuevoRepuesto() { // Cambiar a NuevoRepuesto
                     'success'
                 );
             }
+            cerrarModale()
             navigate('/repuestos'); // Cambiar a /repuestos
         } catch (error) {
             console.log(error);
@@ -64,9 +65,8 @@ function NuevoRepuesto() { // Cambiar a NuevoRepuesto
 
     return (
         <Fragment>
-            <h2>Nuevo Repuesto</h2> {/* Cambiar a Nuevo Repuesto */}
             <form onSubmit={agregarRepuesto}> {/* Cambiar a agregarRepuesto */}
-                <legend>Llena todos los campos</legend>
+                <legend>Crear repuesto</legend>
 
                 <div className="campo">
                     <label>Nombre:</label>

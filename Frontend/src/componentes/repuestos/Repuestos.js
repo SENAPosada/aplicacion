@@ -3,11 +3,13 @@ import { Link } from "react-router-dom";
 import clienteAxios from "../../config/axios";
 import Repuesto from "./Repuesto"; // Cambiar a Repuesto
 import Swal from "sweetalert2";
+import Modal from "../../Modal";
+import NuevoRepuesto from "./NuevoRepuesto";
 
 function Repuestos() { // Cambiar a Repuestos
     const [repuestos, guardarRepuestos] = useState([]); // Cambiar a repuestos
     const [repuestoSeleccionado, setRepuestoSeleccionado] = useState(null); // Cambiar a repuestoSeleccionado
-
+    const [modalVisible, setModalVisible] = useState(false); // Estado para controlar la visibilidad del modal
     const consultarAPI = async () => {
         const repuestosConsulta = await clienteAxios.get('/repuestos'); // Cambiar a repuestos
         guardarRepuestos(repuestosConsulta.data); // Cambiar a guardarRepuestos
@@ -25,15 +27,30 @@ function Repuestos() { // Cambiar a Repuestos
         setRepuestoSeleccionado(null); // Cambiar a setRepuestoSeleccionado
     };
 
+    const abrirModal = () => {
+        setModalVisible(true);
+      };
+    
+      // Función para cerrar el modal
+      const cerrarModale = () => {
+        setModalVisible(false);
+      };
+    
     return (
         <Fragment>
             <h2>Repuestos</h2> {/* Cambiar a Repuestos */}
 
-            <Link to={'/repuestos/nuevo'} className="btn btn-verde nvo-cliente">
+            <Link to="#" onClick={abrirModal} className="btn btn-verde nvo-cliente">
                 <i className="fas fa-plus-circle"></i>
                 Nuevo Repuesto {/* Cambiar a Nuevo Repuesto */}
             </Link>
 
+      {/* Mostrar el Modal si modalVisible es true */}
+      {modalVisible && (
+        <Modal cerrarModal={cerrarModale} titulo="Nuevo repuesto">
+          <NuevoRepuesto cerrarModal={cerrarModale} />
+        </Modal>
+      )}
             {repuestos.length > 0 && ( // Cambiar a repuestos
                 <table className="tabla-clientes">
                     <thead>

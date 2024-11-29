@@ -52,6 +52,9 @@ const Navegacion = () => {
                                 <Link to={"/clientes"} className="clientes-item">
                                     <i className="fa-solid fa-users"></i> Clientes
                                 </Link>
+                                <Link to={"/horarios"} className="horarios-item">
+                                    <i className="fa-solid fa-users"></i> Horarios
+                                </Link>
                                 <Link to={"/tecnicos"} className="tecnico-item">
                                     <i className="fa-solid fa-screwdriver-wrench"></i> Técnicos
                                 </Link>

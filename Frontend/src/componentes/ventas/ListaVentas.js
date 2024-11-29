@@ -78,7 +78,7 @@ function ListaVentas() {
                             <th>Repuesto</th>
                             <th>Total</th> {/* Nueva columna para el total */}
                             <th>Estado</th>
-                            <th>Acciones</th>
+                            {/* <th>Acciones</th> */}
                         </tr>
                     </thead>
                     <tbody>
@@ -88,8 +88,8 @@ function ListaVentas() {
                             const cliente = clients.find(t => t.documento === venta.cliente);
                             return (
                                 <tr key={venta._id}>
-                                    <td>{cliente.nombre} {cliente.apellido}</td>
-                                    <td>{tecnico ? `${tecnico.nombre} ${tecnico.apellido}` : 'No disponible'}</td>
+                                    <td>{cliente.nombres} {cliente.apellidos}</td>
+                                    <td>{tecnico ? `${tecnico.nombres} ${tecnico.apellidos}` : 'No disponible'}</td>
                                     <td>{venta.direccion}</td>
                                     <td>{venta.ciudad}</td>
                                     <td>
@@ -114,11 +114,11 @@ function ListaVentas() {
                                             <option value="Entregado">Entregado</option>
                                         </select>
                                     </td>
-                                    <td>
+                                    {/* <td>
                                         <Link to={`/ventas/nueva/${venta._id}`} className="btn btn-azul">
                                             AGREGAR PRECIO FINAL
                                         </Link>
-                                    </td>
+                                    </td> */}
                                 </tr>
                             );
                         })}

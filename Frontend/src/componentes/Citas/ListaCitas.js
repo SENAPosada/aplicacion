@@ -82,6 +82,13 @@ function CitasList() {
             if (nuevoEstado === "Finalizado") {
                 await clienteAxios.post("/ventas", citaActualizada);
                 Swal.fire("¡Cita Guardada en Ventas!", "La cita se ha enviado correctamente a la sección de ventas", "success");
+    
+                // Eliminar la cita de la API de citas
+                await clienteAxios.delete(`/citas/${idCita}`);
+                // Actualizar la lista de citas en el frontend después de eliminarla
+                setCitas(citas.filter(cita => cita._id !== idCita));
+    
+                // Redirigir a la sección de ventas
                 navigate("/ventas");
             }
     
@@ -89,6 +96,7 @@ function CitasList() {
             Swal.fire("Error", "No se pudo actualizar el estado de la cita", "error");
         }
     };
+    
     
     
     // const cambiarEstado = async (idCita, nuevoEstado) => {

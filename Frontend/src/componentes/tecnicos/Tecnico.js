@@ -26,6 +26,37 @@ function Tecnico({ tecnico }) {
         }
     };
 
+    const eliminarTecnico = idTecnico => {
+        Swal.fire({
+            title: "¿Estás seguro?",
+            text: "Una categoría eliminada no se puede recuperar.",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Sí, eliminar!",
+            cancelButtonText: 'Cancelar'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Llamar a la API para eliminar la categoría
+                clienteAxios.delete(`/tecnicos/${idTecnico}`)
+                    .then(res => {
+                        Swal.fire(
+                            "¡Eliminado!",
+                            res.data.mensaje,
+                            "success"
+                        );
+                    })
+                    .catch(error => {
+                        Swal.fire(
+                            "Error",
+                            "No se pudo eliminar la categoría",
+                            "error"
+                        );
+                    });
+            }
+        });
+    };
     return (
         <Fragment>
             <tr className="cliente">
@@ -35,7 +66,7 @@ function Tecnico({ tecnico }) {
                 <td>{email}</td>
                 <td>{telefono}</td>
                 <td>
-                <label className="switch">
+                    <label className="switch">
                         <input
                             type="checkbox"
                             checked={activo} // Vincula el estado local al checkbox
@@ -47,8 +78,17 @@ function Tecnico({ tecnico }) {
                 <td>
                     <Link to={`/tecnicos/editar/${_id}`} className="btn btn-azul">
                         <i className="fas fa-pen-alt"></i>
-                       
+
                     </Link>
+                    {/* Botón para eliminar la categoría */}
+                    <button
+                        type="button"
+                        className="btn btn-rojo btn-eliminar"
+                        onClick={() => eliminarTecnico(_id)}
+                    >
+                        <i className="fas fa-times"></i>
+
+                    </button>
                 </td>
             </tr>
         </Fragment>

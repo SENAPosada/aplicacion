@@ -66,13 +66,13 @@ function App() {
 
         {/* A estas rutas solo se pueden acceder si estás autenticadoy el rol es admin o editor */}
         {/* Rutas De editores */}
-        {/* <Route path="/" element={<EditorRoutes allowedRoles={['editor', 'admin']} />}> */}
+        {/* <Route path="/" element={<AdminRoutes />}>
           <Route path="citas" element={<Citas />} />
           <Route path="citas/nueva" element={<NuevaCita />} />
           <Route path="citas/editar/:id" element={<EditarCita />} />
           <Route path="ventas" element={<Ventas />} />
           <Route path="ventas/nueva" element={<NuevaVenta />} />
-        {/* </Route> */}
+        </Route> */}
 
         {/* Rutas Protegidas */}
 
@@ -124,7 +124,7 @@ function App() {
 
           {/* Ventas */}
           <Route path="ventas" element={<Ventas />} />
-          <Route path="ventas/nueva/:id" element={<NuevaVenta />} />
+          <Route path="ventas/nueva" element={<NuevaVenta />} />
         </Route>
       </Routes>
     </Router>
