@@ -10,32 +10,64 @@ function EditarRol() {
     const [rol, setRol] = useState({
         nombre: "",
         descripcion: "",
+        permisos: [], // Se añade el campo para permisos
     });
 
+    // Lista de componentes
+    const componentes = [
+        { id: "roles", nombre: "Roles" },
+        { id: "dashboard", nombre: "Dashboard" },
+        { id: "horarios", nombre: "Horarios" },
+        { id: "usuarios", nombre: "Usuarios" },
+        { id: "clientes", nombre: "Clientes" },
+        { id: "categorias", nombre: "Categorías" },
+        { id: "servicios", nombre: "Servicios" },
+        { id: "tecnicos", nombre: "Técnicos" },
+        { id: "repuestos", nombre: "Repuestos" },
+        { id: "citas", nombre: "Citas" },
+        { id: "ventas", nombre: "Ventas" },
+    ];
+
+    // Función para consultar el rol desde la API
     const consultarAPI = async () => {
         const rolConsulta = await clienteAxios.get(`/roles/${id}`);
         setRol(rolConsulta.data);
     };
 
-    const actualizarRol = e => {
+    // Función para manejar la actualización del rol
+    const actualizarRol = async (e) => {
         e.preventDefault();
-        clienteAxios.put(`/roles/${rol._id}`, rol)
-            .then(res => {
-                Swal.fire('Correcto', 'Se actualizó correctamente', "success");
-                navigate('/roles');
-            });
+        try {
+            await clienteAxios.put(`/roles/${rol._id}`, rol);
+            Swal.fire('Correcto', 'Se actualizó correctamente', 'success');
+            navigate('/roles');
+        } catch (error) {
+            Swal.fire('Error', 'Hubo un error al actualizar el rol', 'error');
+        }
+    };
+
+    // Función para manejar el cambio de los campos de texto
+    const handleChange = (e) => {
+        setRol({
+            ...rol,
+            [e.target.name]: e.target.value,
+        });
+    };
+
+    // Función para manejar la selección/deselección de permisos
+    const handleCheckboxChange = (e) => {
+        const componentId = e.target.value;
+        setRol((prevRol) => ({
+            ...prevRol,
+            permisos: prevRol.permisos.includes(componentId)
+                ? prevRol.permisos.filter((id) => id !== componentId) // Deseleccionar
+                : [...prevRol.permisos, componentId], // Seleccionar
+        }));
     };
 
     useEffect(() => {
         consultarAPI();
-    }, []);
-
-    const handleChange = e => {
-        setRol({
-            ...rol,
-            [e.target.name]: e.target.value
-        });
-    };
+    }, [id]);
 
     return (
         <Fragment>
@@ -63,6 +95,23 @@ function EditarRol() {
                         onChange={handleChange}
                         value={rol.descripcion}
                     />
+                </div>
+
+                <div className="campo">
+                    <label>Selecciona los permisos:</label>
+                    <div>
+                        {componentes.map((componente) => (
+                            <div key={componente.id}>
+                                <input
+                                    type="checkbox"
+                                    value={componente.id}
+                                    checked={rol.permisos.includes(componente.id)}
+                                    onChange={handleCheckboxChange}
+                                />
+                                <label>{componente.nombre}</label>
+                            </div>
+                        ))}
+                    </div>
                 </div>
 
                 <div className="enviar">
