@@ -11,83 +11,38 @@ function NuevoRol({ cerrarModal }) {
 
     const navigate = useNavigate();
 
-    // Lista de componentes con las acciones CRUD para cada uno
+    // Lista de componentes
     const componentes = [
-        {
-            id: "clientes",
-            nombre: "Clientes",
-            acciones: ["verClientes", "crearClientes", "actualizarClientes", "eliminarClientes"]
-        },
-        {
-            id: "tecnicos",
-            nombre: "Técnicos",
-            acciones: ["verTecnicos", "crearTecnicos", "actualizarTecnicos", "eliminarTecnicos"]
-        },
-        {
-            id: "repuestos",
-            nombre: "Repuestos",
-            acciones: ["verRepuestos", "crearRepuestos", "actualizarRepuestos", "eliminarRepuestos"]
-        },
-        {
-            id: "servicios",
-            nombre: "Servicios",
-            acciones: ["verServicios", "crearServicios", "actualizarServicios", "eliminarServicios"]
-        },
-        {
-            id: "citas",
-            nombre: "Citas",
-            acciones: ["verCitas", "crearCitas", "actualizarCitas", "eliminarCitas"]
-        },
-        {
-            id: "ventas",
-            nombre: "Ventas",
-            acciones: ["verVentas", "crearVentas", "actualizarVentas", "eliminarVentas"]
-        },
-        {
-            id: "usuarios",
-            nombre: "Usuarios",
-            acciones: ["verUsuarios", "crearUsuarios", "actualizarUsuarios", "eliminarUsuarios"]
-        },
-        {
-            id: "roles",
-            nombre: "Roles",
-            acciones: ["verRoles", "crearRoles", "actualizarRoles", "eliminarRoles"]
-        }
+        { id: "roles", nombre: "Roles" },
+        { id: "dashboard", nombre: "dashboard" },
+        { id: "horarios", nombre: "horarios" },
+        { id: "usuarios", nombre: "Usuarios" },
+        { id: "clientes", nombre: "Clientes" },
+        { id: "categorias", nombre: "categorias" },
+        { id: "servicios", nombre: "Servicios" },
+        { id: "tecnicos", nombre: "Técnicos" },
+        { id: "repuestos", nombre: "Repuestos" },
+        { id: "citas", nombre: "Citas" },
+        { id: "ventas", nombre: "Ventas" },
     ];
 
-    // Estado para manejar la selección del componente y las acciones
-    const [selectedComponent, setSelectedComponent] = useState('');
-    const [selectedActions, setSelectedActions] = useState([]);
-
-    // Función para manejar el cambio en la selección del componente
-    const handleComponentChange = (e) => {
-        const componentId = e.target.value;
-        setSelectedComponent(componentId);
-        setSelectedActions([]); // Limpiar las acciones seleccionadas cuando se cambia el componente
-    };
-
     // Función para manejar la selección de los checkboxes
-    const handleActionChange = (e) => {
-        const action = e.target.value;
-        setSelectedActions((prevSelected) =>
-            prevSelected.includes(action)
-                ? prevSelected.filter((item) => item !== action)
-                : [...prevSelected, action]
-        );
+    const handleCheckboxChange = (e) => {
+        const componentId = e.target.value;
+        setRol((prevRol) => ({
+            ...prevRol,
+            permisos: prevRol.permisos.includes(componentId)
+                ? prevRol.permisos.filter((id) => id !== componentId) // Deseleccionar
+                : [...prevRol.permisos, componentId] // Seleccionar
+        }));
     };
 
     // Función para manejar el envío del formulario
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        // Combina los permisos seleccionados con el rol
-        const rolData = {
-            nombre: rol.nombre,
-            permisos: selectedActions,
-        };
-
         try {
-            const respuesta = await clienteAxios.post('/roles', rolData);
+            const respuesta = await clienteAxios.post('/roles', rol);
 
             // Si la respuesta es exitosa, mostrar un mensaje de éxito y cerrar el modal
             Swal.fire({
@@ -125,37 +80,21 @@ function NuevoRol({ cerrarModal }) {
                 </div>
 
                 <div className="campo">
-                    <label>Selecciona un componente:</label>
-                    <select onChange={handleComponentChange} value={selectedComponent}>
-                        <option value="">-- Selecciona --</option>
+                    <label>Selecciona los permisos:</label>
+                    <div>
                         {componentes.map((componente) => (
-                            <option key={componente.id} value={componente.id}>
-                                {componente.nombre}
-                            </option>
+                            <div key={componente.id}>
+                                <input
+                                    type="checkbox"
+                                    value={componente.id}
+                                    checked={rol.permisos.includes(componente.id)}
+                                    onChange={handleCheckboxChange}
+                                />
+                                <label>{componente.nombre}</label>
+                            </div>
                         ))}
-                    </select>
-                </div>
-
-                {selectedComponent && (
-                    <div className="campo">
-                        <label>Permisos:</label>
-                        <div>
-                            {componentes
-                                .find((componente) => componente.id === selectedComponent)
-                                ?.acciones.map((accion) => (
-                                    <div key={accion}>
-                                        <input
-                                            type="checkbox"
-                                            value={accion}
-                                            checked={selectedActions.includes(accion)}
-                                            onChange={handleActionChange}
-                                        />
-                                        <label>{accion}</label>
-                                    </div>
-                                ))}
-                        </div>
                     </div>
-                )}
+                </div>
 
                 <div className="enviar">
                     <input type="submit" value="Crear Rol" />

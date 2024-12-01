@@ -3,7 +3,8 @@ const Schema = mongoose.Schema;
 
 const citasSchema = new Schema({
     cliente: {
-        type: String,
+        type: Schema.Types.ObjectId,
+        ref: 'Clientes', 
         required: true
     },
     direccion: {
@@ -17,23 +18,26 @@ const citasSchema = new Schema({
         required: true
     },
     tecnico: {
-        type: String,
+        type: Schema.Types.ObjectId, 
+        ref: 'Tecnicos',
         required: true
     },
     repuestos: [{
-        repuesto: { type: mongoose.Schema.Types.ObjectId, ref: 'Repuestos' }, // ID del repuesto
+        repuesto: { 
+        type: Schema.Types.ObjectId, 
+        ref: 'Repuestos' },
         nombre: { type: String, required: true } ,
         precio: Number,
         cantidad: Number,
        
     }],
     servicio: {
-        type: Schema.Types.ObjectId, // Cambiar a ObjectId
+        type: Schema.Types.ObjectId, 
         ref: 'Servicios', // Referenciar la colección 'Servicios'
         required: true
     },
     categoria: {
-        type: Schema.Types.ObjectId, // Cambiar a ObjectId
+        type: Schema.Types.ObjectId, 
         ref: 'Categorias', // Referenciar la colección 'Categorias'
         required: true
     },
@@ -45,7 +49,7 @@ const citasSchema = new Schema({
         type: String,
         required: true
     },
-    horaInicio: { type: String },  // Asegúrate de que estos campos existan
+    horaInicio: { type: String }, 
     horaFin: { type: String },
     estado: {
         type: String,

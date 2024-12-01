@@ -11,28 +11,36 @@ exports.nuevaCita = async (req, res, next) => {
     }
 };
 
+// cuando no se utiliza populate se nenesita usar find para obetener los datos completos
 exports.mostrarCitas = async (req, res, next) => {
     try {
+        // Usamos populate para los campos que contienen ObjectId
         const citas = await Citas.find({})
-            .populate("cliente") // Poblar información del cliente
-            .populate("tecnico") // Poblar información del técnico
-            .populate("servicio", "tipo") // Poblar solo el campo 'nombre' del servicio
-            .populate("categoria", "tipo")
-            .populate("repuestos", "nombre")
-        res.json(citas);
+            .populate('cliente') // Poblamos el cliente
+            .populate('tecnico') // Poblamos el cliente
+            .populate('servicio') // Poblamos el servicio
+            .populate('categoria') // Poblamos la categoria
+            .populate('repuestos.repuesto') // Poblamos los repuestos (en caso de que también tengas un ObjectId en repuesto)
+            .exec(); // Ejecutamos la consulta
+
+        res.json(citas); // Regresamos las citas con los datos poblados
     } catch (error) {
         console.log(error);
         next();
     }
 };
 
+
+
 exports.mostrarCita = async (req, res, next) => {
     try {
         const cita = await Citas.findById(req.params.idCita)
-            .populate("cliente", "nombre apellido documento")
-            .populate("tecnico")
-            .populate("servicio", "nombre")
-            .populate("categoria", "nombre");
+        .populate('cliente') // Poblamos el cliente
+        .populate('tecnico') // Poblamos el cliente
+        .populate('servicio') // Poblamos el servicio
+        .populate('categoria') // Poblamos la categoria
+        .populate('repuestos.repuesto') // Poblamos los repuestos (en caso de que también tengas un ObjectId en repuesto)
+        .exec(); // Ejecutamos la consulta
         if (!cita) {
             res.json({ mensaje: "Esa cita no existe" });
             return next();

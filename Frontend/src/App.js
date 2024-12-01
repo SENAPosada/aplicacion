@@ -79,6 +79,7 @@ function App() {
 
         <Route path="/" element={<AdminRoutes />}>
           <Route path="dashboard" element={<Dashboard />} />
+          
           <Route path="horarios" element={<Agenda />} />
           <Route path="horarios/nuevo" element={<CrearDisponibilidad />} />
 

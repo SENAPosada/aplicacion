@@ -154,14 +154,14 @@ function CitasList() {
                     <tbody>
                         {citas.map(cita => {
                             console.log("cita en el map: ", cita)
-                            const tecnico = tecnicos.find(t => t.documento === cita.tecnico);
-                            const cliente = clients.find(t => t.documento === cita.cliente);
-                            console.log({cliente})
+                            // const tecnico = tecnicos.find(t => t._id === cita.tecnico);
+                            // const cliente = clients.find(t => t._id === cita.cliente);
+                            // console.log({cliente})
                             // console.log(cliente.nombre)
                             return (
                                 <tr key={cita._id}>
-                                    <td>{cliente.nombres} {cliente.apellidos}</td>
-                                    <td>{tecnico ? `${tecnico.nombres} ${tecnico.apellidos}` : 'No disponible'}</td>
+                                    <td>{cita.cliente.nombres} {cita.cliente.apellidos}</td>
+                                    <td>{cita.tecnico.nombres} {cita.tecnico.apellidos}</td>
                                     <td>{cita.direccion}</td>
                                     <td>{cita.ciudad}</td>
                                     <td>
