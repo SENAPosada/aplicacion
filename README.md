@@ -133,8 +133,34 @@ export default Modal;
 }
 
 
+Cada vez que queramos implementar un modal en un componente:
+cuando se implementa un modal en React y este se muestra en el mismo contexto de página, el cambio en la URL no ocurre, ya que el modal se renderiza dentro de la misma ruta y no en una nueva.
+Al hacer clic en un enlace (por ejemplo, para editar o asignar permisos a un rol), la URL de la página cambia y se ejecuta una nueva carga de componentes según esa URL. Esto permite que los hooks como useParams() obtengan valores actualizados de la URL, como el ID de un rol, que luego puedes usar para hacer solicitudes a la API o mostrar información.
 
-
+1. Agregar un estado modalVisible en Rol.js
+Definí el estado modalVisible para controlar la visibilidad del modal.
+El estado se inicializa como false, lo que significa que el modal está oculto al principio.
+const [modalVisible, setModalVisible] = useState(false);
+2. Botón de apertura del modal en Rol.js
+Añadí un botón con el texto "Asignar Permisos", que, al hacer clic, cambia el estado modalVisible a true, mostrando el modal.
+<button onClick={abrirModal} className="btn btn-warning ml-2">
+  <i className="fas fa-key"></i> Asignar Permisos
+</button>
+La función abrirModal cambia el estado modalVisible a true.
+const abrirModal = () => setModalVisible(true);
+3. Renderizar el modal en Rol.js
+Condicionalmente rendericé el modal solo si modalVisible es true.
+Dentro del modal, rendericé el componente AsignarPermisos, pasándole el rolId como propiedad para obtener el rol en el modal.
+{modalVisible && (
+  <Modal cerrarModal={cerrarModal} titulo="Asignar Permisos">
+    <AsignarPermisos rolId={_id} cerrarModal={cerrarModal} />
+  </Modal>
+)}
+4. Cerrar el modal en Rol.js
+Añadí una función cerrarModal que cambia el estado modalVisible a false, lo que oculta el modal.
+const cerrarModal = () => setModalVisible(false);
+5. si al hacer click redirige a otro componente, en ese componente le puedes colocar un cerrar justo despues del </form>:
+   <button onClick={cerrarModal} className="mt-3">Cerrar Modal</button>
 
 
 
