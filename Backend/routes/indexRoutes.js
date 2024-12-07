@@ -8,36 +8,46 @@ const tecnicosController = require("../controllers/tecnicosController");
 const citasController = require("../controllers/citasController");
 const serviciosController = require("../controllers/serviciosController"); // Importar el controlador de servicios
 const horarioController = require("../controllers/horarioController.js");
-const usuariosController = require("../controllers/usuariosController.js");
-const protectSession = require("../middlewares/auth.middleware.js");
-const authorizeRoles = require("../middlewares/auth.middleware.js");
+const usuariosController = require("../controllers/usuariosController")
+const roleController = require("../controllers/roleController.js")
+const permissionController = require("../controllers/permissionController.js")
 
-const rolesController = require("../controllers/rolesController")
+const rolePermissionController = require("../controllers/rolePermissionController")
+// Paso 1
+// const { authenticateUser } = require("../middlewares/authenticateUser.js")
 //Middleware para validar los tokens
-
+// Paso 2
+// const checkPermission = require("../middlewares/checkUserPermission.js")
 module.exports = function () {
+  // Roles
+  router.post('/roles', roleController.createRole);
+  router.get('/roles', roleController.getRoles);
+  router.get('/roles/:id', roleController.getRoleById);
+  router.put('/roles/:id', roleController.updateRole);
+
+  // Rutas para permisos
+  router.post('/permissions', permissionController.createPermission); // Crear un permiso
+  router.get('/permissions', permissionController.getPermissions); // Obtener todos los permisos
+  router.get('/permissions/:id', permissionController.getPermissionById); // Obtener un permiso por ID
+  router.put('/permissions/:id', permissionController.updatePermission); // Actualizar un permiso por ID
+  router.delete('/permissions/:id', permissionController.deletePermission);
+
+  // Rutas para asignar permisos a un rol
+  // Asignar permiso a un rol
+  router.post("/roles/asignar-permisos/:id", rolePermissionController.assignPermissionToRole);
+
+  // Obtener permisos asignados a un rol
+  router.get("/roles/:roleId/permisos", rolePermissionController.getRolePermissions);
+
+
   //Horario
   router.post("/horarios", horarioController.crearHorario);
   router.get("/horarios", horarioController.obtenerHorarios);
 
-    // Usuarios
-    router.post("/usuarios", usuariosController.CrearUsuario);
-    router.get("/usuarios", usuariosController.ObtenerUsuario);
-    router.post("/usuarios/login", usuariosController.login);
-    //router.use(protectSession)
-    // router.use(protectAdmin)
-    // router.get("/usuarios/:idUsuario", protectSession, protectAdmin, clienteController.mostrarUsuario);
-    // router.put("/usuarios/:idUsuario", clienteController.actualizarUsuario);
-    // router.delete("/usuarios/:idUsuario", clienteController.eliminarUsuario);
-
-  // Ruta para clientes
-
-    // Rutas para Roles
-    router.post("/roles", rolesController.nuevoRol); // Crear un nuevo rol
-    router.get("/roles", rolesController.mostrarRoles); // Mostrar todos los roles
-    router.get("/roles/:idRol", rolesController.mostrarRol); // Mostrar un rol por su ID
-    router.put("/roles/:idRol", rolesController.actualizarRol); // Actualizar un rol
-    router.delete("/roles/:idRol", rolesController.eliminarRol); // Eliminar un rol
+  router.post("/usuarios/login", usuariosController.login);
+  router.post('/usuarios', usuariosController.CrearUsuario);
+  router.get('/usuarios', usuariosController.mostrarUsuarios);
+  router.put("/usuarios/:id", usuariosController.mostrarUsuarioPorId);
 
   router.post("/clientes", clienteController.nuevoCliente);
   router.get("/clientes", clienteController.mostrarClientes);

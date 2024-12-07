@@ -10,13 +10,13 @@ function NuevoCliente({cerrarModal}) {
 
     const [cliente, guardarCliente] = useState({
         // objeto
-        nombres: "",
-        apellidos: "",
+        nombre: "",
+        apellido: "",
         empresa: "",
         email: "",
         telefono: "",
         tipoDocumento: "", // Añadido tipo de documento
-        documento: "",      // Añadido documento
+        cedula: "",      // Añadido documento
         direccion: ""        // Añadido dirección
     });
 
@@ -33,6 +33,8 @@ function NuevoCliente({cerrarModal}) {
 
     // Añade en la REST API (backend) un cliente nuevo
     const agregarCliente = e => {
+        console.log({cliente});
+        
         e.preventDefault();
         // Enviar petición
         clienteAxios.post('/clientes', cliente)
@@ -59,10 +61,10 @@ function NuevoCliente({cerrarModal}) {
 
     // Validar formulario
     const validarCliente = () => {
-        const { nombres, apellidos, email, empresa, telefono, tipoDocumento, documento, direccion } = cliente;
+        const { nombre, apellido, email, empresa, telefono, tipoDocumento, cedula, direccion } = cliente;
         // Revisar que las propiedades del state tengan contenido
-        let valido = !nombres.length || !apellidos.length || !email.length || !empresa.length ||
-            !telefono.length || !tipoDocumento.length || !documento.length || !direccion.length;
+        let valido = !nombre.length || !apellido.length || !email.length || !empresa.length ||
+            !telefono.length || !tipoDocumento.length || !cedula.length || !direccion.length;
         return valido;
     };
 
@@ -74,9 +76,11 @@ function NuevoCliente({cerrarModal}) {
         <label>Nombres:</label>
         <input
             type="text"
-            placeholder="Nombres Cliente"
-            name="nombres"
+            placeholder="Nombre Cliente"
+            name="nombre"
             onChange={handleChange}
+            value={cliente.nombre}
+
         />
     </div>
 
@@ -84,9 +88,11 @@ function NuevoCliente({cerrarModal}) {
         <label>Apellidos:</label>
         <input
             type="text"
-            placeholder="Apellidos Cliente"
-            name="apellidos"
+            placeholder="Apellido Cliente"
+            name="apellido"
             onChange={handleChange}
+            value={cliente.apellido}
+
         />
     </div>
 
@@ -109,10 +115,10 @@ function NuevoCliente({cerrarModal}) {
         <label>Documento:</label>
         <input
             type="text"
-            placeholder="Documento"
-            name="documento"
+            placeholder="cedula"
+            name="cedula"
             onChange={handleChange}
-            value={cliente.documento}
+            value={cliente.cedula}
         />
     </div>
 
@@ -123,6 +129,8 @@ function NuevoCliente({cerrarModal}) {
             placeholder="Empresa Cliente"
             name="empresa"
             onChange={handleChange}
+            value={cliente.empresa}
+
         />
     </div>
 
@@ -133,6 +141,8 @@ function NuevoCliente({cerrarModal}) {
             placeholder="Email Cliente"
             name="email"
             onChange={handleChange}
+            value={cliente.email}
+
         />
     </div>
 
@@ -143,6 +153,8 @@ function NuevoCliente({cerrarModal}) {
             placeholder="Teléfono Cliente"
             name="telefono"
             onChange={handleChange}
+            value={cliente.telefono}
+
         />
     </div>
 

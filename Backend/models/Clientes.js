@@ -2,12 +2,12 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 const clientesSchema = new Schema({
-    nombres: {
+    nombre: {
         type: String,
         trim: true,
         required: true 
     },
-    apellidos: {
+    apellido: {
         type: String,
         trim: true,
         required: true 
@@ -17,7 +17,7 @@ const clientesSchema = new Schema({
         enum: ['Cédula de Ciudadanía', 'Pasaporte', 'Tarjeta de Identidad', 'Cédula de Extranjería'],
         required: true 
     },
-    documento: {
+    cedula: {
         type: String,
         trim: true,
         required: true,

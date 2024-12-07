@@ -28,10 +28,10 @@ function Tecnicos() {
     }, [fetchTechnicals]);
     console.log({ technicals })
     // Filtrar los técnicos por el término de búsqueda
-    const tecnicosFiltrados = technicals.filter(tecnico =>
-        tecnico.nombres.toLowerCase().includes(busqueda.toLowerCase())
+    const tecnicosFiltrados = (technicals || []).filter(tecnico =>
+        tecnico.nombre && tecnico.nombre.toLowerCase().includes(busqueda.toLowerCase())
     );
-
+    
     // Calcular la paginación
     const indiceUltimoTecnico = paginaActual * tecnicosPorPagina;
     const indicePrimerTecnico = indiceUltimoTecnico - tecnicosPorPagina;
@@ -66,9 +66,10 @@ function Tecnicos() {
 
         const filas = technicals.map(tecnico => {
             return [
-                tecnico.nombres,
+                tecnico.nombre,
+                tecnico.apellido,
                 tecnico.tipoDocumento,
-                tecnico.documento,
+                tecnico.cedula,
                 tecnico.email,
                 tecnico.telefono,
                 tecnico.activo ? "Activo" : "Inactivo" // Verifica que 'activo' sea booleano
@@ -125,7 +126,7 @@ function Tecnicos() {
                         <tr>
                             <th>Cliente</th>
                             <th>Tipo documento</th>
-                            <th>Documento</th>
+                            <th>Cedula</th>
                             <th>Email</th>
                             <th>Teléfono</th>
                             <th>Estado</th>

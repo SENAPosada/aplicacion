@@ -10,12 +10,12 @@ function NuevoTecnico({cerrarModal}) {
 
     const [tecnico, guardarTecnico] = useState({
         // objeto para almacenar datos del técnico
-        nombres: "",
-        apellidos: "",
+        nombre: "",
+        apellido: "",
         email: "",
         telefono: "",
         tipoDocumento: "", // Añadido tipo de documento
-        documento: "",      // Añadido documento
+        cedula: "",      // Añadido documento
     });
 
     // Leer datos del formulario
@@ -59,9 +59,9 @@ function NuevoTecnico({cerrarModal}) {
 
     // Validar formulario
     const validarTecnico = () => {
-        const { nombres, apellidos, email, telefono, documento } = tecnico;
+        const { nombre, apellido, email, telefono, cedula } = tecnico;
         // Revisar que las propiedades del state tengan contenido
-        let valido = !nombres.length || !apellidos.length || !email.length || !telefono.length || !documento.length;
+        let valido = !nombre.length || !apellido.length || !email.length || !telefono.length || !cedula.length;
         return valido;
     }
 
@@ -73,12 +73,14 @@ function NuevoTecnico({cerrarModal}) {
                 <legend>Crear Técnico</legend>
 
                 <div className="campo">
-                    <label>Nombres:</label>
+                    <label>Nombre:</label>
                     <input
                         type="text"
                         placeholder="Nombre Técnico"
-                        name="nombres"  // Cambio aquí para que coincida con el estado
+                        name="nombre"  // Cambio aquí para que coincida con el estado
                         onChange={handleChange}
+                        value={tecnico.nombre}
+
                     />
                 </div>
 
@@ -87,8 +89,10 @@ function NuevoTecnico({cerrarModal}) {
                     <input
                         type="text"
                         placeholder="Apellido Técnico"
-                        name="apellidos"  // Cambio aquí para que coincida con el estado
+                        name="apellido"  // Cambio aquí para que coincida con el estado
                         onChange={handleChange}
+                        value={tecnico.apellido}
+
                     />
                 </div>
 
@@ -111,10 +115,10 @@ function NuevoTecnico({cerrarModal}) {
                     <label>Documento:</label>
                     <input
                         type="text"
-                        placeholder="Documento"
-                        name="documento"
+                        placeholder="cedula"
+                        name="cedula"
                         onChange={handleChange}
-                        value={tecnico.documento}
+                        value={tecnico.cedula}
                     />
                 </div>
 
@@ -125,6 +129,8 @@ function NuevoTecnico({cerrarModal}) {
                         placeholder="Email Técnico"
                         name="email"
                         onChange={handleChange}
+                        value={tecnico.email}
+
                     />
                 </div>
 
@@ -135,6 +141,8 @@ function NuevoTecnico({cerrarModal}) {
                         placeholder="Teléfono Técnico"
                         name="telefono"
                         onChange={handleChange}
+                        value={tecnico.telefono}
+
                     />
                 </div>
 

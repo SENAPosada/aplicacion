@@ -2,10 +2,25 @@ import React, { useEffect, useState, Fragment } from "react";
 import clienteAxios from "../../config/axios";
 import Categoria from "./Categoria";
 import { Link } from 'react-router-dom';
+import Modal from "../../Modal";
+import NuevaCategoria from "./NuevaCategoria";
 
 function Categorias() {
     const [categorias, guardarCategorias] = useState([]);
-
+    const [modalVisible, setModalVisible] = useState(false); // Estado para controlar la visibilidad del modal
+    const abrirModal = () => {
+      setModalVisible(true);
+    };
+  
+    // Función para cerrar el modal
+    const cerrarModal = () => {
+      setModalVisible(false);
+    };
+  
+     <Link to="#" onClick={abrirModal} className="btn btn-verde nvo-cliente">
+           <i className="fas fa-plus-circle"></i>
+            Nuevo Cliente
+     </Link>
     // Función para consultar las categorías desde la API
     const consultarAPI = async () => {
         const categoriasConsulta = await clienteAxios.get("/categorias");
@@ -15,7 +30,7 @@ function Categorias() {
     // Ejecutar la consulta una sola vez al montar el componente
     useEffect(() => {
         consultarAPI();
-    }, [categorias]); // Solo necesita ejecutarse una vez al montar el componente
+    }, []); // Solo necesita ejecutarse una vez al montar el componente
 
     return (
         <Fragment>
@@ -26,6 +41,13 @@ function Categorias() {
                 <i className="fas fa-plus-circle"></i>
                 Nueva Categoría
             </Link>
+
+      {/* Mostrar el Modal si modalVisible es true */}
+      {modalVisible && (
+        <Modal cerrarModal={cerrarModal} titulo="Nueva categoria">
+          <NuevaCategoria cerrarModal={cerrarModal} />
+        </Modal>
+      )}
 
             {/* Mostrar la tabla solo si hay categorías */}
             {categorias.length > 0 ? (

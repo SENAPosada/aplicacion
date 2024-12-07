@@ -26,11 +26,11 @@ const usuarioSchema = new mongoose.Schema({
       type: String,
       required: true,
     },
-    roles: {
-      type: String,
-      enum: ['usuario', 'admin', 'editor', 'suscriptor'], 
-      default: 'usuario'
-    },
+    role: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Role',
+      required: true // Un usuario siempre debe tener un rol asignado
+  },
     direccion: {
       type: String,
       required: false,

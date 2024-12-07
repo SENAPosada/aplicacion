@@ -13,8 +13,8 @@ function EditarTecnico() {
 
     const [tecnico, datosTecnico] = useState({
         // Objeto para almacenar los datos del técnico
-        nombres: "",
-        apellidos: "",
+        nombre: "",
+        apellido: "",
         email: "",
         telefono: "",
     });
@@ -77,9 +77,9 @@ function EditarTecnico() {
 
     // Validar formulario
     const validarTecnico = () => {
-        const { nombres, apellidos, email, telefono } = tecnico;
+        const { nombre, apellido, email, telefono } = tecnico;
         // Revisar que las propiedades del state tengan contenido
-        let valido = !nombres.length || !apellidos.length || !email.length || !telefono.length;
+        let valido = !nombre.length || !apellido.length || !email.length || !telefono.length;
         return valido;
     };
 
@@ -95,10 +95,10 @@ function EditarTecnico() {
                     <label>Nombre:</label>
                     <input 
                         type="text"
-                        placeholder="Nombres Técnico"
-                        name="nombres"
+                        placeholder="Nombre Técnico"
+                        name="nombre"
                         onChange={handleChange}
-                        value={tecnico.nombres}
+                        value={tecnico.nombre}
                     />
                 </div>
 
@@ -106,8 +106,8 @@ function EditarTecnico() {
                     <label>Apellido:</label>
                     <input 
                         type="text"
-                        placeholder="Apellidos Técnico"
-                        name="apellidos"
+                        placeholder="Apellido Técnico"
+                        name="apellido"
                         onChange={handleChange}
                         value={tecnico.apellidos}
                     />

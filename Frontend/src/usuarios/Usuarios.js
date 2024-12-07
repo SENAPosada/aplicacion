@@ -2,23 +2,19 @@ import React, { useEffect, useState, Fragment } from "react";
 import clienteAxios from "../config/axios";
 import Usuario from "./Usuario";
 import { Link } from "react-router-dom";
+import useUsuariosStore from "../store/useUsuarios.store";
 
 function Usuarios() {
-    const [usuarios, guardarUsuarios] = useState([]);
+    const { fetchUsuarios, usuarios } = useUsuariosStore();
 
-    const consultarAPI = async () => {
-        try {
-            const usuariosConsulta = await clienteAxios.get("/usuarios");
-            guardarUsuarios(usuariosConsulta.data);
-        } catch (error) {
-            console.error("Error al cargar usuarios", error);
-        }
-    };
+
 
     useEffect(() => {
-        consultarAPI();
-    }, []);
-
+        fetchUsuarios()
+      
+        
+    }, [fetchUsuarios]);
+    console.log({usuarios});
     return (
         <Fragment>
             <h2>Usuarios</h2>
@@ -29,7 +25,7 @@ function Usuarios() {
             </Link>
 
             {usuarios.length > 0 ? (
-                <table className="tabla-usuarios">
+                <table className="tabla-clientes">
                     <thead>
                         <tr>
                             <th>Nombres</th>

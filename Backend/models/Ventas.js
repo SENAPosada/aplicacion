@@ -1,105 +1,71 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-
-const repuestoSchema = new Schema({
-    repuesto: {
-        type: Schema.Types.ObjectId, // Suponiendo que este es un ObjectId
-        required: true,
-    },
-    nombre: {
-        type: String,
-        required: true,
-        trim: true
-    },
-    cantidad: {
-        type: Number,
-        required: true,
-        min: 1 // Asegura que la cantidad sea al menos 1
-    },
-    precio: {
-        type: Number
-    }
-}, { _id: false }); // Usar _id: false si no deseas un _id para cada subdocumento
-
-const servicioSchema = new Schema({
-    _id: {
-        type: Schema.Types.ObjectId,
-        required: true
-    },
-    tipo: {
-        type: String,
-        required: true,
-        trim: true
-    }
-}, { _id: false }); // Usar _id: false si no deseas un _id para cada subdocumento
-
-const categoriaSchema = new Schema({
-    _id: {
-        type: Schema.Types.ObjectId,
-        required: true
-    },
-    tipo: {
-        type: String,
-        required: true,
-        trim: true
-    },
-    precio: {
-        type: Number
-    }
-}, { _id: false }); // Usar _id: false si no deseas un _id para cada subdocumento
 
 const ventasSchema = new Schema({
     cliente: {
-        type: String,
-        required: true,
-        trim: true
-    },
-    direccion: {
-        type: String,
-        required: true,
-        trim: true
-    },
-    ciudad: {
-        type: String,
-        required: true,
-        trim: true
+        type: mongoose.Schema.Types.ObjectId, // Referencia al modelo 'Clientes'
+        ref: 'Clientes',
+        required: true
     },
     tecnico: {
-        type: String,
-        required: true,
-        trim: true
+        type: mongoose.Schema.Types.ObjectId, // Referencia al modelo 'Tecnicos'
+        ref: 'Tecnicos',
+        required: true
     },
-    repuestos: [repuestoSchema], // Array de repuestos
-    servicio: servicioSchema, // Referencia al servicio
-    categoria: categoriaSchema, // Referencia a la categoría
+    repuestos: [{
+        repuesto: { type: mongoose.Schema.Types.ObjectId, ref: 'Repuestos' }, // ID del repuesto
+        nombre: { type: String, required: true },
+        precio: { type: Number, required: true },
+        cantidad: { type: Number, required: true },
+    }],
+    servicio: {
+        type: mongoose.Schema.Types.ObjectId, // Referencia al modelo 'Servicios'
+        ref: 'Servicios',
+        required: true
+    },
+    categoria: {
+        type: mongoose.Schema.Types.ObjectId, // Referencia al modelo 'Categorias'
+        ref: 'Categorias',
+        required: true
+    },
     fecha: {
         type: Date,
         required: true
     },
     horario: {
-        type: String,
+        type: mongoose.Schema.Types.ObjectId, // Referencia al modelo 'Horarios'
+        ref: 'Horarios',
         required: true
     },
-    horaInicio: {
-        type: String,
-        required: true
-    },
-    horaFin: {
-        type: String,
-        required: true
-    },
+    horaInicio: { type: String, required: true },
+    horaFin: { type: String, required: true },
     estado: {
         type: String,
-                enum: [
+        enum: [
             "Cargado",
             "Activado",
             "No activado",
             "Asignado",
             "Procesando",
-            "Finalizado"
-        ], // Agregar todos los estados posibles
-        default: 'Cargado'
-    }
-}, { timestamps: true }); // Habilitar timestamps si lo necesitas
+            "Finalizado",
+            "Entregado",
+            "Anulado"
+        ],
 
-module.exports = mongoose.model("Ventas", ventasSchema);
+    },
+    direccion: {
+        type: String,
+        required: true
+    },
+    anotaciones: { // Nuevo campo
+        type: String,
+        default: ""
+    },
+    total: { // Nuevo campo
+        type: Number,
+    }
+}, {
+    timestamps: true // Agrega las marcas de tiempo createdAt y updatedAt
+});
+
+module.exports = mongoose.model('Ventas', ventasSchema);

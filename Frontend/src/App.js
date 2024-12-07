@@ -30,7 +30,6 @@ import Ventas from "./componentes/ventas/ventas";
 
 import PublicRoutes from "./componentes/routes/PublicRoutes";
 import AdminRoutes from "./componentes/routes/AdminRoutes";
-import EditorRoutes from "./componentes/routes/EditorRoutes";
 import Registro from "./autenticacion/Registro";
 import Login from "./autenticacion/Login";
 import RestablecerContraseña from "./autenticacion/RestablecerContraseña";
@@ -38,10 +37,16 @@ import IngresarCodigo from "./autenticacion/IngresarCodigo";
 import Usuarios from "./usuarios/Usuarios";
 import NuevoUsuario from "./usuarios/NuevoUsuario";
 import EditarUsuario from "./usuarios/EditarUsuario";
-import Roles from "./roles/Roles";
-import NuevoRol from "./roles/NuevoRol";
-import EditarRol from "./roles/EditarRol";
 
+import 'primereact/resources/themes/lara-light-indigo/theme.css';  // Tema de PrimeReact
+import 'primereact/resources/primereact.min.css'; // Estilos de los componentes
+import 'primeicons/primeicons.css'; // Iconos de PrimeReact
+import Roles from "./roles/Roles";
+import Permissions from "./roles/Permissions";
+import EditarRol from "./roles/EditarRol";
+import EditPermission from "./roles/EditPermission";
+import NewPermission from "./roles/NewPermission";
+import AsignarPermisos from "./roles/AsignarPermisos"; // Nuevo componente para asignar permisos a rol
 
 function App() {
   return (
@@ -64,24 +69,9 @@ function App() {
           <Route index element={<IngresarCodigo />} />
         </Route>
 
-        {/* A estas rutas solo se pueden acceder si estás autenticadoy el rol es admin o editor */}
-        {/* Rutas De editores */}
-        {/* <Route path="/" element={<AdminRoutes />}>
-          <Route path="citas" element={<Citas />} />
-          <Route path="citas/nueva" element={<NuevaCita />} />
-          <Route path="citas/editar/:id" element={<EditarCita />} />
-          <Route path="ventas" element={<Ventas />} />
-          <Route path="ventas/nueva" element={<NuevaVenta />} />
-        </Route> */}
-
         {/* Rutas Protegidas */}
-
-
         <Route path="/" element={<AdminRoutes />}>
           <Route path="dashboard" element={<Dashboard />} />
-          
-          <Route path="horarios" element={<Agenda />} />
-          <Route path="horarios/nuevo" element={<CrearDisponibilidad />} />
 
           {/* Usuarios */}
           <Route path="usuarios" element={<Usuarios />} />
@@ -90,9 +80,18 @@ function App() {
 
           {/* Roles */}
           <Route path="roles" element={<Roles />} />
-          <Route path="roles/nuevo" element={<NuevoRol />} />
           <Route path="roles/editar/:id" element={<EditarRol />} />
 
+          <Route path="permissions" element={<Permissions />} />
+          <Route path="permissions/nuevo" element={<NewPermission />} />
+          <Route path="permissions/editar/:id" element={<EditPermission />} />
+
+          {/* Asignación de Permisos por Rol */}
+          <Route path="roles/asignar-permisos/:id" element={<AsignarPermisos />} /> {/* Nueva ruta para asignar permisos */}
+
+          <Route path="horarios" element={<Agenda />} />
+          <Route path="horarios/nuevo" element={<CrearDisponibilidad />} />
+          
           {/* Clientes */}
           <Route path="clientes" element={<Clientes />} />
           <Route path="clientes/nuevo" element={<NuevoCliente />} />

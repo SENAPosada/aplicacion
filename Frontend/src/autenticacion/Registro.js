@@ -12,6 +12,7 @@ const Registro = () => {
         password: '',
         telefono: '',
         direccion: '',
+        role: '', // Por defecto asignamos el rol de Cliente
     });
 
     const [confirmPassword, setConfirmPassword] = useState(''); // Estado para confirmación de contraseña
@@ -33,7 +34,7 @@ const Registro = () => {
         e.preventDefault();
         setLoading(true);
         try {
-            const respuesta = await clienteAxios.post('/usuarios', usuario);
+            const respuesta = await clienteAxios.post('/usuarios', usuario);  // Asegúrate de que el backend acepte el campo 'rol'
             Swal.fire('Registro Exitoso', respuesta.data.message, 'success');
             navigate('/');
         } catch (error) {
@@ -155,6 +156,23 @@ const Registro = () => {
                                 onChange={handleChange}
                                 className="form-control"
                             />
+                        </div>
+
+                        {/* Selector de Rol */}
+                        <div className="form-group">
+                            <label>Rol</label>
+                            <select
+                                name="role"
+                                value={usuario.role}
+                                onChange={handleChange}
+                                className="form-control"
+                                required
+                            >
+                                <option value="Administrador">Administrador</option>
+                                <option value="Usuario">Usuario</option>
+                                <option value="Técnico">Técnico</option>
+                                {/* Puedes agregar más roles aquí */}
+                            </select>
                         </div>
 
                         <div style={{ display: 'flex', justifyContent: 'center', marginTop: '1rem' }}>

@@ -48,7 +48,7 @@ const NuevaCita = () => {
     fetchCategorias();
     fetchHorarios();
   }, []);
-// console.log({horariosDisponibles})
+  // console.log({horariosDisponibles})
   useEffect(() => {
     if (Data.servicio) {
       const categoriasFiltradas = categorias.filter(
@@ -62,6 +62,10 @@ const NuevaCita = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
+
+      if (name === "cliente") {
+    console.log("Cliente seleccionado:", value); // Muestra el cliente seleccionado
+  }
     setData({
       ...Data,
       [name]: value,
@@ -76,8 +80,10 @@ const NuevaCita = () => {
 
     if (Data.tecnico) {
       const citasDelDia = citas.filter(cita =>
-        new Date(cita.fecha).toDateString() === new Date(date).toDateString() && cita.tecnico === Data.tecnico
+        new Date(cita.fecha).toDateString() === new Date(date).toDateString() &&
+        cita.tecnico._id === Data.tecnico
       );
+      
 
       const horariosOcupados = citasDelDia.map(cita => cita.horario);
       const horariosDisponibles = horarios.filter(
@@ -98,8 +104,10 @@ const NuevaCita = () => {
 
     if (Data.fecha) {
       const citasDelDia = citas.filter(cita =>
-        new Date(cita.fecha).toDateString() === new Date(Data.fecha).toDateString() && cita.tecnico === value
+        new Date(cita.fecha).toDateString() === new Date(Data.fecha).toDateString() &&
+        cita.tecnico._id === value
       );
+      
 
       const horariosOcupados = citasDelDia.map(cita => cita.horario);
       const horariosDisponibles = horarios.filter(
@@ -129,49 +137,49 @@ const NuevaCita = () => {
     });
   };
 
-const reservarCita = (e) => {
-  e.preventDefault();
+  const reservarCita = (e) => {
+    e.preventDefault();
 
-  // Encuentra el horario seleccionado
-  const horarioSeleccionado = horarios.find(horario => horario._id === Data.horario);
-  
-  const citaData = {
-    ...Data,
-    repuestos: Data.repuestos.map(item => {
-      const repuestoEncontrado = spares.find(repuesto => repuesto._id === item.repuesto);
-      return {
-        repuesto: item.repuesto,
-        cantidad: item.cantidad,
-        nombre: repuestoEncontrado ? repuestoEncontrado.nombre : "",
-        precio: repuestoEncontrado ? repuestoEncontrado.precio : 0  // Agregar el precio
-      };
-    }),
-    horaInicio: horarioSeleccionado ? horarioSeleccionado.horaInicio : "",
-    horaFin: horarioSeleccionado ? horarioSeleccionado.horaFin : ""
+    // Encuentra el horario seleccionado
+    const horarioSeleccionado = horarios.find(horario => horario._id === Data.horario);
+
+    const citaData = {
+      ...Data,
+      repuestos: Data.repuestos.map(item => {
+        const repuestoEncontrado = spares.find(repuesto => repuesto._id === item.repuesto);
+        return {
+          repuesto: item.repuesto,
+          cantidad: item.cantidad,
+          nombre: repuestoEncontrado ? repuestoEncontrado.nombre : "",
+          precio: repuestoEncontrado ? repuestoEncontrado.precio : 0  // Agregar el precio
+        };
+      }),
+      horaInicio: horarioSeleccionado ? horarioSeleccionado.horaInicio : "",
+      horaFin: horarioSeleccionado ? horarioSeleccionado.horaFin : ""
+    };
+
+    console.log({ citaData });
+
+    clienteAxios.post("/citas", citaData)
+      .then(res => {
+        Swal.fire({
+          icon: "success",
+          title: "Cita Reservada",
+          text: "Tu cita ha sido reservada correctamente",
+        }).then(() => {
+          navigate("/citas");
+        });
+      })
+      .catch(error => {
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: "Hubo un error al reservar la cita",
+        });
+      });
   };
 
-  console.log({citaData});
 
-  clienteAxios.post("/citas", citaData)
-    .then(res => {
-      Swal.fire({
-        icon: "success",
-        title: "Cita Reservada",
-        text: "Tu cita ha sido reservada correctamente",
-      }).then(() => {
-        navigate("/citas");
-      });
-    })
-    .catch(error => {
-      Swal.fire({
-        icon: "error",
-        title: "Error",
-        text: "Hubo un error al reservar la cita",
-      });
-    });
-};
-
-  
 
   return (
     <div className="nueva-cita-container">
@@ -292,22 +300,22 @@ const reservarCita = (e) => {
       <div className="form-group">
         <label htmlFor="horario">Horario:</label>
         <select
-  id="horario"
-  name="horario"
-  className="select-horario"
-  value={Data.horario}
-  onChange={handleChange}
->
-  <option value="">Seleccione horario:</option>
-  {horariosDisponibles.map((horario) => {
-    console.log({horariosDisponibles})
-    return (
-      <option key={horario._id} value={horario._id}>
-        {horario.horaInicio}-{horario.horaFin}
-      </option>
-    );
-  })}
-</select>
+          id="horario"
+          name="horario"
+          className="select-horario"
+          value={Data.horario}
+          onChange={handleChange}
+        >
+          <option value="">Seleccione horario:</option>
+          {horariosDisponibles.map((horario) => {
+            console.log({ horariosDisponibles })
+            return (
+              <option key={horario._id} value={horario._id}>
+                {horario.horaInicio}-{horario.horaFin}
+              </option>
+            );
+          })}
+        </select>
 
 
       </div>

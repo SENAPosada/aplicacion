@@ -47,8 +47,8 @@ function Repuestos() { // Cambiar a Repuestos
 
       {/* Mostrar el Modal si modalVisible es true */}
       {modalVisible && (
-        <Modal cerrarModal={cerrarModale} titulo="Nuevo repuesto">
-          <NuevoRepuesto cerrarModal={cerrarModale} />
+        <Modal cerrarModale={cerrarModale} titulo="Nuevo repuesto">
+          <NuevoRepuesto cerrarModale={cerrarModale} />
         </Modal>
       )}
             {repuestos.length > 0 && ( // Cambiar a repuestos

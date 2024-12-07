@@ -9,5 +9,11 @@ export const endpoints = {
   servicios: `${API_BASE_URL}/servicios`,
   categorias: `${API_BASE_URL}/categorias`,
   ventas: `${API_BASE_URL}/ventas`,
+  usuarios: `${API_BASE_URL}/usuarios`,
 //   deleteTechnicals: (id) => `${API_BASE_URL}/tecnicos/${id}`
+
+  // Endpoints para Permisos, Roles y RolePermissions
+  permissions: `${API_BASE_URL}/permissions`, // Gestión de permisos
+  roles: `${API_BASE_URL}/roles`, // Gestión de roles
+  rolePermissions: `${API_BASE_URL}/role-permissions`, // Asignar permisos a roles
 };

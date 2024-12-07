@@ -31,6 +31,7 @@ function NuevoUsuario() {
 
     // Añadir un nuevo usuario a la base de datos
     const agregarUsuario = e => {
+        
         e.preventDefault();
         // Verificar si las contraseñas coinciden
         if (usuario.password !== usuario.confirmarPassword) {
@@ -158,9 +159,10 @@ function NuevoUsuario() {
                     <label>Role:</label>
                     <select name="role" onChange={handleChange} value={usuario.role}>
                         <option value="usuario">Usuario</option>
-                        <option value="admin">Administrador</option>
+                        <option value="Administrador">Administrador</option> {/* Usa el nombre correcto del rol */}
                     </select>
                 </div>
+
 
                 <div className="enviar">
                     <input

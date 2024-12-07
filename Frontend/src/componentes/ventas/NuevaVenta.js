@@ -1,184 +1,172 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from 'react';
 import clienteAxios from "../../config/axios";
 import Swal from 'sweetalert2';
-import { useParams } from 'react-router-dom';
 
-const NuevaVenta = () => {
-  const { id } = useParams();
-  const [precioCategoria, setPrecioCategoria] = useState(0);
-  const [categoria, setCategoria] = useState({});
-  const [citaData, setCitaData] = useState({
-    cliente: "",
-    tecnico: "",
-    repuestos: [{ repuesto: "", cantidad: 1 }],
-    direccion: "",
-    ciudad: "",
-    fecha: new Date(),
-    servicio: "",
-    categoria: "",
-    horario: "",
-    estado: "Activado",
+function NuevaVenta() {
+  const [clientes, setClientes] = useState([]);
+  const [servicios, setServicios] = useState([]);
+  const [categorias, setCategorias] = useState([]);
+  const [repuestos, setRepuestos] = useState([]);
+  const [formData, setFormData] = useState({
+    cliente: '',
+    servicio: '',
+    categoria: '',
+    repuesto: '',
+    cantidad: 1,
+    precioServicio: 0,
+    iva: 0,
+    estado: 'Procesando',
   });
 
-  // Obtener la venta existente al montar el componente
+  const [detalleVenta, setDetalleVenta] = useState({
+    subtotal: 0,
+    iva: 0,
+    total: 0,
+  });
+
   useEffect(() => {
-    const fetchVenta = async () => {
-      try {
-        const response = await clienteAxios.get(`/ventas`);
-        const venta = response.data;
-        console.log("esta es la venta antes de la setCategoria(venta.categoria); ", venta);
-        
-        setCategoria(venta.categoria);
-        setPrecioCategoria(venta.categoria.precio || 0);
-        setCitaData({
-          cliente: venta.cliente,
-          tecnico: venta.tecnico,
-          repuestos: venta.repuestos,
-          direccion: venta.direccion,
-          ciudad: venta.ciudad,
-          fecha: venta.fecha,
-          servicio: venta.servicio,
-          categoria: venta.categoria._id,
-          horario: venta.horario,
-          estado: venta.estado,
-        });
-      } catch (error) {
-        console.error("Error al obtener la venta:", error);
-      }
-      console.log("esto es lo que trae el fetch ventas: ", citaData);
-      
+    const fetchData = async () => {
+      const [clientesRes, serviciosRes, categoriasRes, repuestosRes] = await Promise.all([
+        clienteAxios.get('/clientes'),
+        clienteAxios.get('/servicios'),
+        clienteAxios.get('/categorias'),
+        clienteAxios.get('/repuestos'),
+      ]);
+      setClientes(clientesRes.data);
+      setServicios(serviciosRes.data);
+      setCategorias(categoriasRes.data);
+      setRepuestos(repuestosRes.data);
     };
-    fetchVenta();
-  }, [id]);
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    const repuestoSeleccionado = repuestos.find(r => r._id === formData.repuesto);
+    const subtotalRepuesto = repuestoSeleccionado
+      ? repuestoSeleccionado.precio * formData.cantidad
+      : 0;
+    const subtotal = subtotalRepuesto + parseFloat(formData.precioServicio || 0);
+    const iva = (subtotal * parseFloat(formData.iva || 0)) / 100;
+    const total = subtotal + iva;
+
+    setDetalleVenta({ subtotal, iva, total });
+  }, [formData, repuestos]);
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      // Crear un objeto que incluya el campo existente de categoria y el nuevo precio
-      const updatedData = {
-        categoria: {
-          ...categoria, // Mantener los campos existentes de categoria
-          precio: precioCategoria, // Actualizar el precio de la categoria
-        },
-        cliente: citaData.cliente,
-        tecnico: citaData.tecnico,
-        repuestos: citaData.repuestos,
-        direccion: citaData.direccion,
-        ciudad: citaData.ciudad,
-        fecha: citaData.fecha,
-        servicio: citaData.servicio,
-        categoriaId: citaData.categoria,
-        horario: citaData.horario,
-        estado: citaData.estado,
+      const repuestoSeleccionado = repuestos.find(r => r._id === formData.repuesto);
+      const nuevaVenta = {
+        cliente: formData.cliente,
+        servicio: formData.servicio,
+        categoria: formData.categoria,
+        repuestos: [repuestoSeleccionado && {
+          nombre: repuestoSeleccionado.nombre,
+          precio: repuestoSeleccionado.precio,
+          cantidad: formData.cantidad,
+        }],
+        subtotal: detalleVenta.subtotal,
+        iva: detalleVenta.iva,
+        total: detalleVenta.total,
+        estado: formData.estado,
       };
-
-      const response = await clienteAxios.put(`/ventas/${id}`, updatedData);
-      console.log("Venta actualizada:", updatedData); // Verifica aquí la venta actualizada
-      Swal.fire("¡Venta Actualizada!", response.data.mensaje, "success");
+      await clienteAxios.post('/ventas', nuevaVenta);
+      Swal.fire("¡Venta creada!", "La venta se ha registrado correctamente.", "success");
     } catch (error) {
-      Swal.fire("Error", "No se pudo actualizar la venta", "error");
+      Swal.fire("Error", "No se pudo registrar la venta.", "error");
     }
   };
 
   return (
-    <>
-      <h2>Nueva Venta</h2>
+    <div className="nueva-venta">
       <form onSubmit={handleSubmit}>
-        <div>
+        <h2>Crear Venta</h2>
+        <div className="form-group">
           <label>Cliente:</label>
-          <input
-            type="text"
-            value={citaData.cliente}
-            disabled
-          />
+          <select name="cliente" value={formData.cliente} onChange={handleInputChange} required>
+            <option value="">Seleccione un cliente</option>
+            {clientes.map(cliente => (
+              <option key={cliente._id} value={cliente._id}>
+                {cliente.nombre} {cliente.apellido}
+              </option>
+            ))}
+          </select>
         </div>
-
-        <div>
-          <label>Técnico:</label>
-          <input
-            type="text"
-            value={citaData.tecnico}
-            disabled
-          />
-        </div>
-
-        <div>
-          <label>Repuestos:</label>
-          {citaData.repuestos.map((item, index) => (
-            <div key={index}>
-              <input
-                type="text"
-                value={item.repuesto}
-                disabled
-              />
-              <input
-                type="number"
-                value={item.cantidad}
-                disabled
-              />
-            </div>
-          ))}
-        </div>
-
-        <div>
-          <label>Dirección:</label>
-          <input
-            type="text"
-            value={citaData.direccion}
-            disabled
-          />
-        </div>
-
-        <div>
-          <label>Ciudad:</label>
-          <input
-            type="text"
-            value={citaData.ciudad}
-            disabled
-          />
-        </div>
-
-        <div>
-          <label>Fecha:</label>
-          <input
-            type="text"
-            value={new Date(citaData.fecha).toLocaleString()}
-            disabled
-          />
-        </div>
-
-        <div>
+        <div className="form-group">
           <label>Servicio:</label>
-          <input
-            type="text"
-            value={citaData.servicio}
-            disabled
-          />
+          <select name="servicio" value={formData.servicio} onChange={handleInputChange} required>
+            <option value="">Seleccione un servicio</option>
+            {servicios.map(servicio => (
+              <option key={servicio._id} value={servicio._id}>{servicio.tipo}</option>
+            ))}
+          </select>
         </div>
-
-        <div>
-          <label>Horario:</label>
-          <input
-            type="text"
-            value={citaData.horario}
-            disabled
-          />
+        <div className="form-group">
+          <label>Categoría:</label>
+          <select name="categoria" value={formData.categoria} onChange={handleInputChange} required>
+            <option value="">Seleccione una categoría</option>
+            {categorias.map(categoria => (
+              <option key={categoria._id} value={categoria._id}>{categoria.tipo}</option>
+            ))}
+          </select>
         </div>
-
-        <div>
-          <label>Precio del Servicio:</label>
+        <div className="form-group">
+          <label>Repuesto:</label>
+          <select name="repuesto" value={formData.repuesto} onChange={handleInputChange} required>
+            <option value="">Seleccione un repuesto</option>
+            {repuestos.map(repuesto => (
+              <option key={repuesto._id} value={repuesto._id}>{repuesto.nombre}</option>
+            ))}
+          </select>
+        </div>
+        <div className="form-group">
+          <label>Cantidad:</label>
           <input
             type="number"
-            value={precioCategoria}
-            onChange={(e) => setPrecioCategoria(e.target.value)}
+            name="cantidad"
+            value={formData.cantidad}
+            onChange={handleInputChange}
+            min="1"
             required
           />
         </div>
-
-        <button type="submit">Guardar</button>
+        <div className="form-group">
+          <label>Precio del Servicio:</label>
+          <input
+            type="number"
+            name="precioServicio"
+            value={formData.precioServicio}
+            onChange={handleInputChange}
+            required
+          />
+        </div>
+        <div className="form-group">
+          <label>IVA (%):</label>
+          <input
+            type="number"
+            name="iva"
+            value={formData.iva}
+            onChange={handleInputChange}
+            min="0"
+          />
+        </div>
+        <button type="submit" className="btn btn-verde">Guardar Venta</button>
       </form>
-    </>
+
+      <div className="detalle-venta">
+        <h2>Detalle de la Venta</h2>
+        <p>Subtotal: ${detalleVenta.subtotal.toFixed(2)}</p>
+        <p>IVA: ${detalleVenta.iva.toFixed(2)}</p>
+        <p>Total: ${detalleVenta.total.toFixed(2)}</p>
+        <p>Estado: {formData.estado}</p>
+      </div>
+    </div>
   );
-};
+}
 
 export default NuevaVenta;

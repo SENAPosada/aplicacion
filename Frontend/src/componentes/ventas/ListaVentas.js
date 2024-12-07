@@ -1,21 +1,24 @@
 import React, { useEffect, useState, Fragment } from "react";
 import clienteAxios from "../../config/axios";
-import { Link } from 'react-router-dom';
-import Swal from 'sweetalert2';
+import Swal from "sweetalert2";
 import useClientsStore from "../../store/useClients.store";
+
 function ListaVentas() {
     const [ventas, setVentas] = useState([]);
     const [tecnicos, setTecnicos] = useState([]);
-    const [repuestoSeleccionado, setRepuestoSeleccionado] = useState(null); // Estado para el modal de repuestos
+    const [ventaSeleccionada, setVentaSeleccionada] = useState(null);
+    const [detalleVenta, setDetalleVenta] = useState({ subtotal: 0, iva: 0, total: 0 });
+    const [repuestosSeleccionados, setRepuestosSeleccionados] = useState([]); // Modal para ver repuestos
     const { fetchClients, clients } = useClientsStore();
+
     useEffect(() => {
         const fetchVentas = async () => {
-            const response = await clienteAxios.get('/ventas');
+            const response = await clienteAxios.get("/ventas");
             setVentas(response.data);
         };
 
         const fetchTecnicos = async () => {
-            const response = await clienteAxios.get('/tecnicos');
+            const response = await clienteAxios.get("/tecnicos");
             setTecnicos(response.data);
         };
 
@@ -25,125 +28,290 @@ function ListaVentas() {
     }, []);
 
     const cambiarEstado = (idVenta, nuevoEstado) => {
-        clienteAxios.put(`/ventas/${idVenta}`, { estado: nuevoEstado })
-            .then(res => {
+        clienteAxios
+            .put(`/ventas/${idVenta}`, { estado: nuevoEstado })
+            .then((res) => {
                 Swal.fire("¡Estado Actualizado!", res.data.mensaje, "success");
-                setVentas(ventas.map(venta => venta._id === idVenta ? { ...venta, estado: nuevoEstado } : venta));
+                setVentas(
+                    ventas.map((venta) =>
+                        venta._id === idVenta ? { ...venta, estado: nuevoEstado } : venta
+                    )
+                );
             })
-            .catch(error => {
-                Swal.fire("Error", "No se pudo actualizar el estado de la venta", "error");
+            .catch(() => {
+                Swal.fire("Error", "No se puede editar una venta finalizada", "error");
             });
     };
 
-    const mostrarModal = (repuestos) => {
-        setRepuestoSeleccionado(repuestos);
+    const abrirModalRepuestos = (repuestos) => {
+        setRepuestosSeleccionados(repuestos);
     };
 
-    const cerrarModal = () => {
-        setRepuestoSeleccionado(null);
+    const cerrarModalRepuestos = () => {
+        setRepuestosSeleccionados([]);
     };
 
-    // Función para calcular el total de la venta
-    const calcularTotalVenta = (venta) => {
-        let totalRepuestos = 0;
+    const abrirModalCrearVenta = (venta) => {
+        setVentaSeleccionada({
+            ...venta,
+            repuestoNombre: venta.repuestos?.[0]?.nombre || "",
+            repuestoCantidad: venta.repuestos?.[0]?.cantidad || 0,
+            repuestoPrecio: venta.repuestos?.[0]?.precio || 0,
+            precioServicio: venta.total || 0,
+            iva: 19,
+            anotaciones: "",
+            estado: "Procesando",
+        });
 
-        // Calcular el total de los repuestos (precio * cantidad)
-        if (venta.repuestos && venta.repuestos.length > 0) {
-            totalRepuestos = venta.repuestos.reduce((total, repuesto) => {
-                return total + repuesto.precio * repuesto.cantidad;
-            }, 0);
+        calcularDetalleVenta(
+            venta.repuestos?.[0]?.precio || 0,
+            venta.repuestos?.[0]?.cantidad || 0,
+            venta.total || 0,
+            19
+        );
+    };
+
+    const cerrarModalCrearVenta = () => {
+        setVentaSeleccionada(null);
+    };
+
+    const calcularDetalleVenta = (precioRepuesto, cantidadRepuesto, precioServicio, iva) => {
+        const subtotal = precioRepuesto * cantidadRepuesto + parseFloat(precioServicio || 0);
+        const ivaCalculado = (subtotal * parseFloat(iva || 0)) / 100;
+        const total = subtotal + ivaCalculado;
+
+        setDetalleVenta({ subtotal, iva: ivaCalculado, total });
+    };
+
+    const handleInputChange = (e) => {
+        const { name, value } = e.target;
+        setVentaSeleccionada((prev) => ({ ...prev, [name]: value }));
+
+        if (name === "precioServicio" || name === "iva") {
+            calcularDetalleVenta(
+                ventaSeleccionada.repuestoPrecio,
+                ventaSeleccionada.repuestoCantidad,
+                name === "precioServicio" ? value : ventaSeleccionada.precioServicio,
+                name === "iva" ? value : ventaSeleccionada.iva
+            );
         }
-
-        // Sumar el precio de la categoría (si está disponible)
-        const totalCategoria = venta.categoria && venta.categoria.precio ? venta.categoria.precio : 0;
-
-        // Retornar el total (repuestos + categoría)
-        return totalRepuestos + totalCategoria;
     };
+
+    const handleGuardarVenta = async () => {
+        try {
+            // Crea el objeto con los datos actualizados
+            const datosActualizados = {
+                cliente: ventaSeleccionada.cliente._id,
+                tecnico: ventaSeleccionada.tecnico._id,
+                repuestos: ventaSeleccionada.repuestos,
+                servicio: ventaSeleccionada.servicio._id,
+                categoria: {
+                    ...ventaSeleccionada.categoria,
+                    precio: ventaSeleccionada.precioCategoria || 0, // Incluye el nuevo campo "precio"
+                },
+                fecha: ventaSeleccionada.fecha,
+                horario: ventaSeleccionada.horario,
+                horaInicio: ventaSeleccionada.horaInicio,
+                horaFin: ventaSeleccionada.horaFin,
+                estado: ventaSeleccionada.estado,
+                direccion: ventaSeleccionada.direccion,
+                anotaciones: ventaSeleccionada.anotaciones,
+                total: detalleVenta.total,
+            };
+
+            // Enviar datos actualizados al backend usando PUT
+            const response = await clienteAxios.put(`/ventas/${ventaSeleccionada._id}`, datosActualizados);
+
+            Swal.fire("¡Venta actualizada!", "Se han guardado los cambios correctamente.", "success");
+
+            // Actualizar la lista de ventas en el frontend
+            setVentas((prevVentas) =>
+                prevVentas.map((venta) =>
+                    venta._id === ventaSeleccionada._id ? { ...venta, ...response.data } : venta
+                )
+            );
+
+            cerrarModalCrearVenta();
+        } catch (error) {
+            console.error(error);
+            Swal.fire("Error", "No se pudieron guardar los cambios.", "error");
+        }
+    };
+
 
     return (
         <Fragment>
-            {ventas.length > 0 ? (
-                <table className="tabla-clientes">
-                    <thead>
-                        <tr>
-                            <th>Cliente</th>
-                            <th>Técnico</th>
-                            <th>Dirección</th>
-                            <th>Ciudad</th>
-                            <th>Fecha</th>
-                            <th>Horario</th> {/* Nueva columna */}
-                            <th>Servicio</th>
-                            <th>Categoría</th>
-                            <th>Repuesto</th>
-                            <th>Total</th> {/* Nueva columna para el total */}
-                            <th>Estado</th>
-                            {/* <th>Acciones</th> */}
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {ventas.map(venta => {
-                            const tecnico = tecnicos.find(t => t.documento === venta.tecnico);
-                            const totalVenta = calcularTotalVenta(venta); // Calcular el total de la venta
-                            const cliente = clients.find(t => t.documento === venta.cliente);
-                            return (
-                                <tr key={venta._id}>
-                                    <td>{cliente.nombres} {cliente.apellidos}</td>
-                                    <td>{tecnico ? `${tecnico.nombres} ${tecnico.apellidos}` : 'No disponible'}</td>
-                                    <td>{venta.direccion}</td>
-                                    <td>{venta.ciudad}</td>
-                                    <td>
-                                        {venta.fecha ?
-                                            new Date(venta.fecha).toLocaleDateString('es-ES', {
-                                                timeZone: 'America/Bogota', 
-                                            }) : 'Fecha no disponible'}
-                                    </td>
-                                    <td>{venta.horaInicio} - {venta.horaFin}</td>
-                                    <td>{venta.servicio ? venta.servicio.tipo : 'No disponible'}</td>
-                                    <td>{venta.categoria ? venta.categoria.tipo : 'No disponible'}</td>
-                                    <td>
-                                        <button onClick={() => mostrarModal(venta.repuestos)} className="btn btn-info">
-                                            <i className="fas fa-eye"></i> Ver
-                                        </button>
-                                    </td>
-                                    <td>{totalVenta}</td> {/* Mostrar el total calculado */}
-                                    <td>
-                                        <select value={venta.estado} onChange={(e) => cambiarEstado(venta._id, e.target.value)}>
-                                            <option value="Procesando">Procesando</option>
-                                            <option value="En ruta">En ruta</option>
-                                            <option value="Entregado">Entregado</option>
-                                        </select>
-                                    </td>
-                                    {/* <td>
-                                        <Link to={`/ventas/nueva/${venta._id}`} className="btn btn-azul">
-                                            AGREGAR PRECIO FINAL
-                                        </Link>
-                                    </td> */}
-                                </tr>
-                            );
-                        })}
-                    </tbody>
-                </table>
-            ) : (
-                <p>No hay ventas disponibles</p>
+            <table className="tabla-clientes">
+                <thead>
+                    <tr>
+                        <th>Cliente</th>
+                        <th>Técnico</th>
+                        <th>Dirección</th>
+                        <th>Fecha</th>
+                        <th>Horario</th>
+                        <th>Servicio</th>
+                        <th>Categoría</th>
+                        <th>Repuesto</th>
+                        <th>Total</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {ventas.map((venta) => {
+                        const tecnico = tecnicos.find((t) => t.cedula === venta.tecnico);
+                        const cliente = clients.find((c) => c.cedula === venta.cliente);
+                        return (
+                            <tr key={venta._id}>
+                                <td>{`${venta.cliente?.nombre || ""} ${venta.cliente?.apellido || ""}`}</td>
+                                <td>{`${venta.tecnico?.nombre || ""} ${venta.tecnico?.apellido || ""}`}</td>
+                                <td>{venta.direccion}</td>
+                                <td>
+                                    {venta.fecha
+                                        ? new Date(venta.fecha).toLocaleDateString("es-ES")
+                                        : "Fecha no disponible"}
+                                </td>
+                                <td>{venta.horaInicio} - {venta.horaFin}</td>
+                                <td>{venta.servicio?.tipo || "No disponible"}</td>
+                                <td>{venta.categoria?.tipo || "No disponible"}</td>
+                                <td>
+                                    <button
+                                        onClick={() => abrirModalRepuestos(venta.repuestos)}
+                                        className="btn btn-info"
+                                    >
+                                        Ver
+                                    </button>
+                                </td>
+                                <td>{venta.total || "0"}</td>
+                                <td>
+                                    <select
+                                        value={venta.estado}
+                                        onChange={(e) => cambiarEstado(venta._id, e.target.value)}
+                                    >
+                                        <option value="Procesando">Procesando</option>
+                                        <option value="En ruta">En ruta</option>
+                                        <option value="Entregado">Entregado</option>
+                                        <option value="Anulado">Anulado</option>
+                                        <option value="Finalizado">Finalizado</option>
+                                    </select>
+                                </td>
+                                <td>
+                                    <button
+                                        className="btn btn-success custom-button"
+                                        onClick={() => abrirModalCrearVenta(venta)}
+                                        disabled={venta.estado === "Finalizado"}
+                                        title={venta.estado === "Finalizado" ? "La venta ya está finalizada y no se puede editar." : ""}
+                                    >
+                                        Crear Venta
+                                    </button>
+
+
+                                </td>
+                            </tr>
+                        );
+                    })}
+                </tbody>
+            </table>
+
+            {repuestosSeleccionados.length > 0 && (
+                <div className="modal-overlay">
+                    <div className="modal-contenido">
+                        <h2>Detalles de Repuestos</h2>
+                        <ul>
+                            {repuestosSeleccionados.map((repuesto, index) => (
+                                <li key={index}>
+                                    <p><strong>Nombre:</strong> {repuesto.nombre}</p>
+                                    <p><strong>Precio:</strong> ${repuesto.precio}</p>
+                                    <p><strong>Cantidad:</strong> {repuesto.cantidad}</p>
+                                </li>
+                            ))}
+                        </ul>
+                        <button className="btn btn-primary" onClick={cerrarModalRepuestos}>
+                            Cerrar
+                        </button>
+                    </div>
+                </div>
             )}
 
-            {repuestoSeleccionado && (
-                <div className="modal">
-                    <div className="modal-content">
-                        <span className="close" onClick={cerrarModal}>&times;</span>
-                        <h2>Repuestos</h2>
-                        {repuestoSeleccionado.length > 0 ? (
-                            repuestoSeleccionado.map((repuesto, index) => (
-                                <div key={index}>
-                                    <p>Nombre: {repuesto.nombre}</p>
-                                    <p>Precio: {repuesto.precio}</p>
-                                    <p>Cantidad: {repuesto.cantidad}</p>
-                                </div>
-                            ))
-                        ) : (
-                            <p>No hay repuestos disponibles.</p>
-                        )}
+            {ventaSeleccionada && (
+                <div className="modal-overlay">
+                    <div className="modal-contenido modal-crear-venta">
+                        <span className="close" onClick={cerrarModalCrearVenta}>
+                            &times;
+                        </span>
+                        <h2>Nueva Venta</h2>
+                        <div className="modal-grid">
+                            {/* Información del Cliente */}
+                            <div className="modal-seccion">
+                                <h3>Información del Cliente</h3>
+                                <p><strong>Cliente:</strong> {ventaSeleccionada.cliente?.nombre || ""} {ventaSeleccionada.cliente?.apellido || ""}</p>
+                                <p><strong>Servicio:</strong> {ventaSeleccionada.servicio?.tipo || "No disponible"}</p>
+                                <p><strong>Categoría:</strong> {ventaSeleccionada.categoria?.tipo || "No disponible"}</p>
+                            </div>
+                            {/* Detalle del Servicio */}
+                            <div className="modal-seccion">
+                                <h3>Detalle del Servicio</h3>
+                                <p><strong>Repuesto:</strong> {ventaSeleccionada.repuestoNombre || "No disponible"}</p>
+                                <p><strong>Cantidad:</strong> {ventaSeleccionada.repuestoCantidad || "0"}</p>
+                                <p><strong>Precio unitario:</strong> ${ventaSeleccionada.repuestoPrecio || "0"}</p>
+                                <p>
+                                    <label>Precio del Servicio:</label>
+                                    <input
+                                        type="number"
+                                        name="precioServicio"
+                                        value={ventaSeleccionada.precioServicio}
+                                        onChange={handleInputChange}
+                                    />
+                                </p>
+                                <p>
+                                    <label>IVA (%):</label>
+                                    <input
+                                        type="number"
+                                        name="iva"
+                                        value={ventaSeleccionada.iva}
+                                        onChange={handleInputChange}
+                                    />
+                                </p>
+                                <p>
+                                    <label>Anotaciones:</label>
+                                    <textarea
+                                        name="anotaciones"
+                                        value={ventaSeleccionada.anotaciones}
+                                        onChange={handleInputChange}
+                                        placeholder="Escribe aquí tus anotaciones..."
+                                    />
+                                </p>
+                            </div>
+                            {/* Resumen de la Venta */}
+                            <div className="modal-seccion">
+                                <h3>Resumen de la Venta</h3>
+                                <p><strong>Subtotal:</strong> ${detalleVenta.subtotal.toFixed(2)}</p>
+                                <p><strong>IVA:</strong> ${detalleVenta.iva.toFixed(2)}</p>
+                                <p><strong>Total:</strong> ${detalleVenta.total.toFixed(2)}</p>
+                                <p>
+                                    <label>Estado:</label>
+                                    <select
+                                        name="estado"
+                                        value={ventaSeleccionada.estado}
+                                        onChange={handleInputChange}
+                                    >
+                                        <option value="Procesando">Procesando</option>
+                                        <option value="En ruta">En ruta</option>
+                                        <option value="Entregado">Entregado</option>
+                                        <option value="Anulado">Anulado</option>
+                                        <option value="Finalizado">Finalizado</option>
+                                    </select>
+                                </p>
+                            </div>
+                        </div>
+                        <button
+                            type="button"
+                            className="btn btn-primary"
+                            onClick={handleGuardarVenta}
+                        >
+                            Guardar Venta
+                        </button>
+
                     </div>
                 </div>
             )}

@@ -38,9 +38,10 @@ function Clientes() {
     };
 
     // Filtrar los clientes por el término de búsqueda
-    const clientesFiltrados = clientes.filter(cliente =>
-        cliente.nombres.toLowerCase().includes(busqueda.toLowerCase())
+    const clientesFiltrados = (clientes || []).filter(cliente =>
+        cliente.nombre && cliente.nombre.toLowerCase().includes(busqueda.toLowerCase())
     );
+    
 
     // Calcular la paginación
     const indiceUltimoCliente = paginaActual * clientesPorPagina;
@@ -76,10 +77,10 @@ function Clientes() {
 
         const filas = clientes.map(cliente => {
             return [
-                cliente.nombres,
-                cliente.apellidos,
+                cliente.nombre,
+                cliente.apellido,
                 cliente.tipoDocumento,
-                cliente.documento,
+                cliente.cedula,
                 cliente.email,
                 cliente.telefono,
                 cliente.activo ? "Activo" : "Inactivo" // Verifica que 'activo' sea booleano

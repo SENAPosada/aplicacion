@@ -8,7 +8,7 @@ const useServiciosStore = create((set) => ({
     fetchServicios: async () => {
       const data = await GetMethod(endpoints.servicios); 
       set({ servicios: data }); 
-      console.log({data})
+      // console.log({data})
     },
   }));
 

@@ -40,7 +40,7 @@ function NuevoRepuesto({cerrarModale}) { // Cambiar a NuevoRepuesto
                     'success'
                 );
             }
-            cerrarModale()
+            cerrarModale();
             navigate('/repuestos'); // Cambiar a /repuestos
         } catch (error) {
             console.log(error);

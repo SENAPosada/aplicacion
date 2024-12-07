@@ -1,26 +1,42 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAuthContext } from '../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { FaFacebook, FaTwitter, FaInstagram } from 'react-icons/fa';
 
 const Login = () => {
-  const { login } = useAuthContext();
+  const { login, userAuth } = useAuthContext();
   const navigate = useNavigate();
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState(null);
 
+  // Verificación del estado de autenticación
+  useEffect(() => {
+    const storedUser = localStorage.getItem('usuario');
+    const storedAuth = localStorage.getItem('auth');
+    
+    if (storedUser && storedAuth === 'true') {
+      navigate('/clientes');  // Si ya está autenticado, redirigir
+    }
+  }, [navigate]);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
+      // Llamada al login desde el contexto de autenticación
       await login(email, password);
-      setError(null);
-      navigate('/clientes');
+      setError(null);  // Limpiar el error en caso de éxito
+
+      // Redirigir según el rol del usuario
+      if (userAuth?.role === 'Administrador') {
+        navigate('/dashboard'); // Si es administrador, redirige al dashboard
+      } else {
+        navigate('/clientes'); // Si no, redirige a clientes
+      }
     } catch (error) {
       setError('Credenciales incorrectas o no registrado');
-      navigate('/registro');
     }
   };
 

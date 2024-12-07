@@ -16,11 +16,11 @@ exports.mostrarCitas = async (req, res, next) => {
     try {
         // Usamos populate para los campos que contienen ObjectId
         const citas = await Citas.find({})
-            .populate('cliente') // Poblamos el cliente
-            .populate('tecnico') // Poblamos el cliente
+            .populate('cliente', 'nombre apellido cedula email direccion') // Poblamos el cliente
+            .populate('tecnico', 'nombre apellido cedula email direccion') // Poblamos el cliente
             .populate('servicio') // Poblamos el servicio
             .populate('categoria') // Poblamos la categoria
-            .populate('repuestos.repuesto') // Poblamos los repuestos (en caso de que también tengas un ObjectId en repuesto)
+            .populate('repuestos') // Poblamos los repuestos (en caso de que también tengas un ObjectId en repuesto)
             .exec(); // Ejecutamos la consulta
 
         res.json(citas); // Regresamos las citas con los datos poblados

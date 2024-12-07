@@ -4,7 +4,7 @@ import Swal from 'sweetalert2';
 import clienteAxios from '../../config/axios';
 
 function Tecnico({ tecnico }) {
-    const { _id, nombres, apellidos, tipoDocumento, documento, email, telefono, activo: estadoInicial } = tecnico;
+    const { _id, nombre, apellido, tipoDocumento, cedula, email, telefono, activo: estadoInicial } = tecnico;
     const [activo, setActivo] = useState(estadoInicial); // Mantener el estado local
 
     const cambiarEstado = async (idTecnico) => {
@@ -60,9 +60,9 @@ function Tecnico({ tecnico }) {
     return (
         <Fragment>
             <tr className="cliente">
-                <td>{nombres} {apellidos}</td>
+                <td>{nombre} {apellido}</td>
                 <td>{tipoDocumento}</td>
-                <td>{documento}</td>
+                <td>{cedula}</td>
                 <td>{email}</td>
                 <td>{telefono}</td>
                 <td>

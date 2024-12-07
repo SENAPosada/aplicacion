@@ -11,15 +11,24 @@ exports.nuevaVenta = async (req, res, next) => {
     }
 };
 
-exports.mostrarVentas = async (req, res) => {
+exports.mostrarVentas = async (req, res, next) => {
     try {
+        // Usamos populate para los campos que contienen ObjectId
         const ventas = await Ventas.find({})
-        res.json(ventas);
+        .populate('cliente', 'nombre apellido cedula email direccion') // Poblamos el cliente
+        .populate('tecnico', 'nombre apellido cedula email direccion') // Poblamos el cliente
+        .populate('servicio') // Poblamos el servicio
+        .populate('categoria') // Poblamos la categoria
+        .populate('repuestos') // Poblamos los repuestos (en caso de que también tengas un ObjectId en repuesto)
+        .exec(); // Ejecutamos la consulta
+
+        res.json(ventas); // Regresamos las ventas con los datos poblados
     } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: 'Error al obtener las ventas', error });
+        console.log(error);
+        next();
     }
 };
+
 
 exports.mostrarVenta = async (req, res, next) => {
     try {
@@ -38,16 +47,33 @@ exports.mostrarVenta = async (req, res, next) => {
 
 exports.actualizarVenta = async (req, res, next) => {
     try {
-        const venta = await Ventas.findByIdAndUpdate({ _id: req.params.idVenta },
-            req.body, {
-            new: true
-        })
-        res.json(venta)
+        // Busca la venta por ID
+        const venta = await Ventas.findById(req.params.idVenta);
+
+        if (!venta) {
+            return res.status(404).json({ mensaje: "Venta no encontrada" });
+        }
+
+        // Verifica si el estado de la venta es "Finalizado"
+        if (venta.estado === "Finalizado") {
+            return res.status(403).json({ mensaje: "No se puede editar una venta finalizada." });
+        }
+
+        // Si no está finalizada, permite la actualización
+        const ventaActualizada = await Ventas.findByIdAndUpdate(
+            req.params.idVenta,
+            req.body, // Actualiza con los datos del cliente
+            { new: true, runValidators: true } // Devuelve la venta actualizada
+        );
+
+        res.json(ventaActualizada);
     } catch (error) {
-        console.log(error);
-        next();
+        console.error(error);
+        res.status(500).json({ mensaje: "Error al actualizar la venta" });
     }
-}
+};
+
+
 
 exports.eliminarVenta = async (req, res, next) => {
     try {

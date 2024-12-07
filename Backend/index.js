@@ -6,10 +6,11 @@ const bodyParser = require('body-parser')
 // para intercambio de recursos
 const cors = require('cors')
 const morgan = require('morgan')
+require('dotenv').config(); // Esto carga las variables de entorno desde el archivo .env
 
 // Conectar a MongoDB:
 // mongodb://mongo:fefKApObjLjZokShZdcjCMUdUzlGaTiN@junction.proxy.rlwy.net:24048
-mongoose.connect('mongodb+srv://luisposada:12345@cluster0.1b07q.mongodb.net/omniappdb?retryWrites=true&w=majority&appName=Cluster0')
+mongoose.connect('mongodb://localhost:27017/omniapp')
     .then(() => console.log('Conectado a MongoDB puerto 5000'))
     .catch(err => console.error('No se pudo conectar a MongoDB', err));
 // Mongo Atlas: 
@@ -20,7 +21,6 @@ mongoose.connect('mongodb+srv://luisposada:12345@cluster0.1b07q.mongodb.net/omni
 const app = express();
 
 // para leer los valores que pasemos por POST en postman
-// Para leer los valores que pasemos por POST en postman
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -37,7 +37,7 @@ app.use(express.static('uploads'))
 
 // Puerto
 app.listen(5000, () => {
-    console.log('Server escuchando en el puerto 5000');
+    console.log('Server escuchando en el puerto');
 });
 
 

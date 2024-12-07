@@ -2,67 +2,94 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const Usuarios = require('../models/Usuarios');
 const nodemailer = require('../utils/nodemailer/nodemailer');
+const Role = require('../models/Role');
 
 exports.CrearUsuario = async (req, res, next) => {
-    try {
-        const { nombres, apellidos, email, telefono, password, direccion } = req.body;
+  try {
+    const { nombres, apellidos, email, telefono, password, direccion, role: roleName } = req.body;
 
+    // Validar si el rol existe (buscar el rol por nombre)
+    const role = await Role.findOne({ name: roleName });  // Cambiamos "rol" por "roleName"
+    if (!role) {
+      return res.status(404).json({ mensaje: "El rol no existe" });
+    }
+
+    // Verificar si el usuario ya existe
     const usuarioExistente = await Usuarios.findOne({ email });
     if (usuarioExistente) {
       return res.status(400).json({ mensaje: "El correo ya está en uso" });
     }
 
+    // Encriptar la contraseña
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
-        const nuevoUsuario = new Usuarios({
-            nombres,
-            apellidos,
-            email,
-            telefono,
-            password: hashedPassword,
-            direccion
-        });
+    // Crear un nuevo usuario con el _id del rol correspondiente
+    const nuevoUsuario = new Usuarios({
+      nombres,
+      apellidos,
+      email,
+      telefono,
+      password: hashedPassword,
+      direccion,
+      role: role._id,  // Asignamos el _id del rol
+    });
 
+    // Guardar el nuevo usuario
     await nuevoUsuario.save();
 
-    res
-      .status(201)
-      .json({ mensaje: "Usuario registrado exitosamente", data: nuevoUsuario });
+    res.status(201).json({
+      mensaje: "Usuario registrado exitosamente",
+      data: nuevoUsuario,
+    });
   } catch (error) {
     console.error(error);
+    res.status(500).json({ mensaje: "Error al crear el usuario", error });
     next(error);
   }
 };
 
 exports.login = async (req, res) => {
   try {
-    console.log(req.body)
-    const usuario = await Usuarios.findOne({ email: req.body.email });
+    console.log(req.body);
+
+    // Buscar el usuario por correo y hacer populate para obtener el rol
+    const usuario = await Usuarios.findOne({ email: req.body.email }).populate('role'); // 'role' es el campo en tu modelo
 
     if (!usuario) {
       return res.status(404).json({ message: "Usuario no encontrado" });
     }
 
-    const validPassword = await bcrypt.compare(
-      req.body.password,
-      usuario.password 
-    );
+    // Verificar la contraseña
+    const validPassword = await bcrypt.compare(req.body.password, usuario.password);
 
     if (!validPassword) {
       return res.status(401).json({ message: "Contraseña incorrecta" });
     }
 
-    const token = jwt.sign({ id: usuario._id }, "your_secret_key", {
+    // Crear el token JWT después de un inicio de sesión exitoso
+    const token = jwt.sign({ id: usuario._id }, "mi_clave_secreta", {
       expiresIn: "20d",
     });
 
+    // Eliminar la contraseña del objeto de respuesta
     usuario.password = undefined;
 
+    // Responder con el usuario, el token y el nombre del rol
     res.json({
       message: "Usuario logueado correctamente",
       token: token,
-      usuario: usuario,
+      usuario: {
+        _id: usuario._id,
+        nombres: usuario.nombres,
+        apellidos: usuario.apellidos,
+        email: usuario.email,
+        roleId: usuario.role._id,  // Aquí se usa 'role._id' correctamente
+        role: usuario.role.name,   // Aquí se usa 'role.name' correctamente
+        telefono: usuario.telefono,
+        direccion: usuario.direccion,
+        activo: usuario.activo,
+      },
     });
   } catch (error) {
     console.log(error);
@@ -72,7 +99,7 @@ exports.login = async (req, res) => {
 
 exports.ObtenerUsuario = async (req, res) => {
   try {
-    const usuario = await Usuarios.findById(req.userId, { password: 0 });
+    const usuario = await Usuarios.findById(req.userId, { password: 0 }).populate('role'); // Aquí también usamos populate
 
     if (!usuario) {
       return res.status(404).json({ message: "Usuario no encontrado" });
@@ -86,63 +113,23 @@ exports.ObtenerUsuario = async (req, res) => {
 };
 
 exports.restablecerPassword = async (req, res) => {
-  try {
-    const { email } = req.body;
-
-    const usuario = await Usuarios.findOne({ email });
-
-    if (!usuario) {
-      return res.status(404).json({ message: "Usuario no encontrado" });
-    }
-
-    //crear una codigo numero aleatorio de 6 digitos
-    const codigo = Math.floor(Math.random() * 100000) + 100000;
-
-    //Enviar codigo de recuperacion al correo
-    await enviarCorreo(
-      email,
-      "Restablecimiento de contraseña",
-      `Tu código de recuperación es: ${codigo}`
-    );
-
-    //Actualizar la fecha de expiracion del codigo
-    usuario.codigoRecuperacion = codigo;
-    usuario.codigoExpiracion = Date.now() + 3600000; //Expira en 1 hora
-
-    await usuario.save();
-
-    res.status(200).json({
-      message: "Se ha enviado un código de recuperación a su correo electrónico",
-    });
-  } catch (error) {
-    console.log(error);
-    res.status(500).json({ message: "Error al restablecer contraseña" });
-  }
-};
-
-
-exports.restablecerPassword = async (req, res) => {
     try {
-        const { email, nuevaPassword, codigo } = req.body;  // Cambié 'codigoRecuperacion' por 'codigo' para mayor claridad
+        const { email, nuevaPassword, codigo } = req.body;
 
         // Si no hay código de recuperación, significa que el usuario está solicitando el restablecimiento
         if (!codigo) {
-            // Verificar si el usuario existe
             const usuario = await Usuarios.findOne({ email });
             if (!usuario) {
                 return res.status(404).json({ message: 'Usuario no encontrado' });
             }
 
-            // Generar un código de recuperación (puede ser un número aleatorio o una cadena)
             const codigoGenerado = Math.floor(100000 + Math.random() * 900000); // Código de 6 dígitos
             const expiracionCodigo = Date.now() + 3600000; // 1 hora de expiración
 
-            // Guardar el código y su expiración en el usuario (en la base de datos)
             usuario.codigoRecuperacion = codigoGenerado;
             usuario.expiracionCodigo = expiracionCodigo;
             await usuario.save();
 
-            // Enviar el código de recuperación por correo
             const asunto = 'Código de Recuperación de Contraseña';
             const mensaje = `Hola ${usuario.nombres},\n\nTu código de recuperación es: ${codigoGenerado}\nEste código expirará en 1 hora.`;
 
@@ -155,26 +142,22 @@ exports.restablecerPassword = async (req, res) => {
             return res.status(200).json({ message: 'Código de recuperación enviado al correo' });
         }
 
-        // Si hay un código, procederemos con la verificación y restablecimiento de la contraseña
         const usuario = await Usuarios.findOne({ email });
 
         if (!usuario) {
             return res.status(404).json({ message: 'Usuario no encontrado' });
         }
 
-        // Verificar si el código es correcto y no ha expirado
         if (usuario.codigoRecuperacion !== parseInt(codigo) || usuario.expiracionCodigo < Date.now()) {
             return res.status(400).json({ message: 'Código inválido o expirado' });
         }
 
-        // Hashear la nueva contraseña
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(nuevaPassword, salt);
 
-        // Actualizar la contraseña en la base de datos
         usuario.password = hashedPassword;
-        usuario.codigoRecuperacion = undefined; // Borrar el código después de usarlo
-        usuario.expiracionCodigo = undefined; // Borrar la expiración
+        usuario.codigoRecuperacion = undefined;
+        usuario.expiracionCodigo = undefined;
         await usuario.save();
 
         res.status(200).json({ message: 'Contraseña restablecida exitosamente' });
@@ -189,7 +172,6 @@ exports.actualizarUsuario = async (req, res, next) => {
         const { idUsuario } = req.params;
         const datosActualizados = req.body;
 
-        // Buscar y actualizar el usuario
         const usuarioActualizado = await Usuarios.findByIdAndUpdate(
             idUsuario,
             datosActualizados,
@@ -212,7 +194,8 @@ exports.actualizarUsuario = async (req, res, next) => {
 
 exports.mostrarUsuarios = async (req, res, next) => {
     try {
-        const usuarios = await Usuarios.find({}, { password: 0 }); // Excluye las contraseñas
+        const usuarios = await Usuarios.find({}, { password: 0 }).populate('role'); // Agregado populate para los roles
+        console.log("Usuarios encontrados:", usuarios);
         res.status(200).json(usuarios);
     } catch (error) {
         console.error(error);
@@ -224,7 +207,7 @@ exports.mostrarUsuarioPorId = async (req, res, next) => {
     try {
         const { idUsuario } = req.params;
 
-        const usuario = await Usuarios.findById(idUsuario, { password: 0 }); // Excluye las contraseñas
+        const usuario = await Usuarios.findById(idUsuario, { password: 0 }).populate('role'); // Agregado populate para los roles
         if (!usuario) {
             return res.status(404).json({ mensaje: "Usuario no encontrado" });
         }

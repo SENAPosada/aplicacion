@@ -10,3 +10,15 @@ export const GetMethod = async (endopoint, body) => {
     return err;
   }
 };
+
+// Método POST
+export const PostMethod = async (endpoint, body) => {
+  try {
+    const response = await axios.post(endpoint, body);
+    console.log("Respuesta POST:", response.data);
+    return response.data;
+  } catch (err) {
+    console.error("Error en POST:", err);
+    return err;
+  }
+};

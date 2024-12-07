@@ -1,107 +1,82 @@
-import React, { useState } from 'react';
-import Swal from 'sweetalert2';
-import clienteAxios from '../config/axios';
-import { useNavigate } from 'react-router-dom';
+import React, { useState } from "react";
+import Swal from "sweetalert2";
+import clienteAxios from "../config/axios";
 
-function NuevoRol({ cerrarModal }) {
-    const [rol, setRol] = useState({
-        nombre: '',
-        permisos: [],
+const NuevoRol = ({ cerrarModal }) => {
+  const [rol, setRol] = useState({
+    name: "",
+    description: "",
+  });
+
+  const handleChange = (e) => {
+    setRol({
+      ...rol,
+      [e.target.name]: e.target.value,
     });
+  };
 
-    const navigate = useNavigate();
+  const resetForm = () => {
+    setRol({ name: "", description: "" });
+  };
 
-    // Lista de componentes
-    const componentes = [
-        { id: "roles", nombre: "Roles" },
-        { id: "dashboard", nombre: "dashboard" },
-        { id: "horarios", nombre: "horarios" },
-        { id: "usuarios", nombre: "Usuarios" },
-        { id: "clientes", nombre: "Clientes" },
-        { id: "categorias", nombre: "categorias" },
-        { id: "servicios", nombre: "Servicios" },
-        { id: "tecnicos", nombre: "Técnicos" },
-        { id: "repuestos", nombre: "Repuestos" },
-        { id: "citas", nombre: "Citas" },
-        { id: "ventas", nombre: "Ventas" },
-    ];
+  const agregarRol = async (e) => {
+    e.preventDefault();
+    try {
+      const respuesta = await clienteAxios.post("/roles", rol);
+      Swal.fire("Rol creado", respuesta.data.mensaje, "success");
+      resetForm();
+      cerrarModal();
+    } catch (error) {
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: error.response?.data?.message || "No se pudo crear el rol",
+      });
+    }
+  };
 
-    // Función para manejar la selección de los checkboxes
-    const handleCheckboxChange = (e) => {
-        const componentId = e.target.value;
-        setRol((prevRol) => ({
-            ...prevRol,
-            permisos: prevRol.permisos.includes(componentId)
-                ? prevRol.permisos.filter((id) => id !== componentId) // Deseleccionar
-                : [...prevRol.permisos, componentId] // Seleccionar
-        }));
-    };
+  const validarRol = () => {
+    const { name, description } = rol;
+    return !name.trim() || !description.trim();
+  };
 
-    // Función para manejar el envío del formulario
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-
-        try {
-            const respuesta = await clienteAxios.post('/roles', rol);
-
-            // Si la respuesta es exitosa, mostrar un mensaje de éxito y cerrar el modal
-            Swal.fire({
-                icon: 'success',
-                title: 'Rol creado',
-                text: respuesta.data.mensaje,
-            });
-
-            // Redirigir al listado de roles o cualquier página que desees
-            navigate('/roles');
-            cerrarModal();
-        } catch (error) {
-            // Si hay un error, mostrar un mensaje de error
-            Swal.fire({
-                icon: 'error',
-                title: 'Error',
-                text: 'Hubo un problema al crear el rol',
-            });
-        }
-    };
-
-    return (
-        <div className="formulario-rol">
-            <h2>Nuevo Rol</h2>
-            <form onSubmit={handleSubmit}>
-                <div className="campo">
-                    <label>Nombre:</label>
-                    <input
-                        type="text"
-                        name="nombre"
-                        placeholder="Nombre del rol"
-                        value={rol.nombre}
-                        onChange={(e) => setRol({ ...rol, nombre: e.target.value })}
-                    />
-                </div>
-
-                <div className="campo">
-                    <label>Selecciona los permisos:</label>
-                    <div>
-                        {componentes.map((componente) => (
-                            <div key={componente.id}>
-                                <input
-                                    type="checkbox"
-                                    value={componente.id}
-                                    checked={rol.permisos.includes(componente.id)}
-                                    onChange={handleCheckboxChange}
-                                />
-                                <label>{componente.nombre}</label>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-
-                <div className="enviar">
-                    <input type="submit" value="Crear Rol" />
-                </div>
-            </form>
-        </div>
-    );
-}
+  return (
+    <form onSubmit={agregarRol}>
+      <legend>Crear Nuevo Rol</legend>
+      <div className="campo">
+        <label htmlFor="name">Nombre:</label>
+        <input
+          type="text"
+          id="name"
+          name="name"
+          placeholder="Nombre del rol"
+          onChange={handleChange}
+          value={rol.name}
+          aria-label="Nombre del rol"
+        />
+      </div>
+      <div className="campo">
+        <label htmlFor="description">Descripción:</label>
+        <input
+          type="text"
+          id="description"
+          name="description"
+          placeholder="Descripción del rol"
+          onChange={handleChange}
+          value={rol.description}
+          aria-label="Descripción del rol"
+        />
+      </div>
+      <div className="enviar">
+        <input
+          type="submit"
+          className="btn btn-azul"
+          value="Guardar Rol"
+          disabled={validarRol()}
+        />
+      </div>
+    </form>
+  );
+};
 
 export default NuevoRol;

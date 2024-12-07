@@ -1,52 +1,54 @@
 import React, { useState, useEffect, Fragment } from "react";
 import Swal from "sweetalert2";
 import { useParams, useNavigate } from "react-router-dom";
-import clienteAxios from '../config/axios';
+import clienteAxios from "../config/axios";
 
 function EditarRol() {
+    // Hook para redireccionar
     const navigate = useNavigate();
+
+    // Usar el hook useParams para obtener el id de los parámetros de la URL
     const { id } = useParams();
 
+    // Estado para el rol
     const [rol, setRol] = useState({
-        nombre: "",
-        descripcion: "",
-        permisos: [], // Se añade el campo para permisos
+        name: "",
+        description: "",
     });
 
-    // Lista de componentes
-    const componentes = [
-        { id: "roles", nombre: "Roles" },
-        { id: "dashboard", nombre: "Dashboard" },
-        { id: "horarios", nombre: "Horarios" },
-        { id: "usuarios", nombre: "Usuarios" },
-        { id: "clientes", nombre: "Clientes" },
-        { id: "categorias", nombre: "Categorías" },
-        { id: "servicios", nombre: "Servicios" },
-        { id: "tecnicos", nombre: "Técnicos" },
-        { id: "repuestos", nombre: "Repuestos" },
-        { id: "citas", nombre: "Citas" },
-        { id: "ventas", nombre: "Ventas" },
-    ];
-
-    // Función para consultar el rol desde la API
+    // Consultar API para obtener el rol a editar
     const consultarAPI = async () => {
-        const rolConsulta = await clienteAxios.get(`/roles/${id}`);
-        setRol(rolConsulta.data);
+        try {
+            const respuesta = await clienteAxios.get(`/roles/${id}`);
+            setRol(respuesta.data);
+        } catch (error) {
+            console.error("Error al consultar el rol:", error);
+            Swal.fire({
+                icon: "error",
+                title: "Error",
+                text: "No se pudo cargar el rol",
+            });
+        }
     };
 
-    // Función para manejar la actualización del rol
+    // Actualizar rol en la API
     const actualizarRol = async (e) => {
         e.preventDefault();
         try {
             await clienteAxios.put(`/roles/${rol._id}`, rol);
-            Swal.fire('Correcto', 'Se actualizó correctamente', 'success');
-            navigate('/roles');
+            Swal.fire("Correcto", "El rol se actualizó correctamente", "success");
+            navigate("/roles");
         } catch (error) {
-            Swal.fire('Error', 'Hubo un error al actualizar el rol', 'error');
+            console.error("Error al actualizar el rol:", error);
+            Swal.fire({
+                icon: "error",
+                title: "Error",
+                text: "No se pudo actualizar el rol",
+            });
         }
     };
 
-    // Función para manejar el cambio de los campos de texto
+    // Leer datos del formulario
     const handleChange = (e) => {
         setRol({
             ...rol,
@@ -54,20 +56,15 @@ function EditarRol() {
         });
     };
 
-    // Función para manejar la selección/deselección de permisos
-    const handleCheckboxChange = (e) => {
-        const componentId = e.target.value;
-        setRol((prevRol) => ({
-            ...prevRol,
-            permisos: prevRol.permisos.includes(componentId)
-                ? prevRol.permisos.filter((id) => id !== componentId) // Deseleccionar
-                : [...prevRol.permisos, componentId], // Seleccionar
-        }));
+    // Validar formulario
+    const validarRol = () => {
+        const { name, description } = rol;
+        return !name.length || !description.length;
     };
 
     useEffect(() => {
         consultarAPI();
-    }, [id]);
+    }, []);
 
     return (
         <Fragment>
@@ -79,10 +76,10 @@ function EditarRol() {
                     <label>Nombre:</label>
                     <input
                         type="text"
+                        name="name"
                         placeholder="Nombre del Rol"
-                        name="nombre"
                         onChange={handleChange}
-                        value={rol.nombre}
+                        value={rol.name}
                     />
                 </div>
 
@@ -90,35 +87,19 @@ function EditarRol() {
                     <label>Descripción:</label>
                     <input
                         type="text"
+                        name="description"
                         placeholder="Descripción del Rol"
-                        name="descripcion"
                         onChange={handleChange}
-                        value={rol.descripcion}
+                        value={rol.description}
                     />
-                </div>
-
-                <div className="campo">
-                    <label>Selecciona los permisos:</label>
-                    <div>
-                        {componentes.map((componente) => (
-                            <div key={componente.id}>
-                                <input
-                                    type="checkbox"
-                                    value={componente.id}
-                                    checked={rol.permisos.includes(componente.id)}
-                                    onChange={handleCheckboxChange}
-                                />
-                                <label>{componente.nombre}</label>
-                            </div>
-                        ))}
-                    </div>
                 </div>
 
                 <div className="enviar">
                     <input
                         type="submit"
                         className="btn btn-azul"
-                        value="Guardar Rol"
+                        value="Guardar Cambios"
+                        disabled={validarRol()}
                     />
                 </div>
             </form>

@@ -5,12 +5,8 @@ import ListaVentas from "./ListaVentas";
 const Ventas = () => {
   return (
     <>
-      <h2>Ventas</h2>
+      <h2>Gestión de ventas</h2>
 
-      <Link to="/ventas/nueva" className="btn btn-verde nvo-cita">
-        <i className="fas fa-plus-circle"></i>
-        Crear venta
-      </Link>
 
       <ListaVentas />
     </>

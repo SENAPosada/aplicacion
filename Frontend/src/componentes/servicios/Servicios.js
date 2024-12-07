@@ -26,8 +26,8 @@ function Servicios() {
     // Ejecutar la consulta una sola vez al montar el componente
     useEffect(() => {
         consultarAPI();
-    }, [servicios]); // Solo necesita ejecutarse una vez al montar el componente
-
+    }, []); // Solo necesita ejecutarse una vez al montar el componente
+// Aca arriba colocaba "servicios" pero se ejecutaba siempre
     return (
         <Fragment>
             <h2>Gestión de servicios</h2>

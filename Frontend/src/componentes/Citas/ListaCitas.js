@@ -3,25 +3,19 @@ import clienteAxios from "../../config/axios";
 import { Link } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import useClientsStore from "../../store/useClients.store";
-import { useNavigate } from "react-router-dom";
-
 
 function CitasList() {
-    const navigate = useNavigate();
     const [citas, setCitas] = useState([]);
     const [tecnicos, setTecnicos] = useState([]);
-    const [repuestoSeleccionado, setRepuestoSeleccionado] = useState(null); // Estado para el modal de repuestos
+    const [repuestoSeleccionado, setRepuestoSeleccionado] = useState(null);
     const { fetchClients, clients } = useClientsStore();
-    const [estado, setEstados] = useState([]);
+
     useEffect(() => {
         const fetchCitas = async () => {
             try {
                 const response = await clienteAxios.get('/citas');
-                
-                // Filtra las citas que no tienen estado "Finalizada"
                 const citasActivas = response.data.filter(cita => cita.estado !== "Finalizado");
-                
-                setCitas(citasActivas); // Solo guardamos las citas activas para mostrar en el frontend
+                setCitas(citasActivas);
             } catch (error) {
                 console.error("Error al obtener las citas:", error);
             }
@@ -39,11 +33,8 @@ function CitasList() {
         fetchCitas();
         fetchTecnicos();
         fetchClients();
-
     }, []);
-    // console.log({estado})
-    // console.log({clients})
-    console.log({citas})
+
     const eliminarCita = (idCita) => {
         Swal.fire({
             title: "¿Estás seguro?",
@@ -53,7 +44,7 @@ function CitasList() {
             confirmButtonColor: "#3085d6",
             cancelButtonColor: "#d33",
             confirmButtonText: "Sí, eliminar!",
-            cancelButtonText: 'Cancelar'
+            cancelButtonText: "Cancelar",
         }).then((result) => {
             if (result.isConfirmed) {
                 clienteAxios.delete(`/citas/${idCita}`)
@@ -61,71 +52,38 @@ function CitasList() {
                         Swal.fire("¡Eliminado!", res.data.mensaje, "success");
                         setCitas(citas.filter(cita => cita._id !== idCita));
                     })
-                    .catch(error => {
+                    .catch(() => {
                         Swal.fire("Error", "No se pudo eliminar la cita", "error");
                     });
             }
         });
     };
-    const cambiarEstado = async (idCita, nuevoEstado, e) => {
+
+    const cambiarEstado = async (idCita, nuevoEstado) => {
         try {
-            // Actualizar el estado de la cita en la API de citas
             const response = await clienteAxios.put(`/citas/${idCita}`, { estado: nuevoEstado });
             Swal.fire("¡Estado Actualizado!", response.data.mensaje, "success");
     
-            // Actualiza el estado de la cita en el frontend
             const citaActualizada = citas.find(cita => cita._id === idCita);
             citaActualizada.estado = nuevoEstado;
             setCitas(citas.map(cita => cita._id === idCita ? citaActualizada : cita));
     
-            // Si el nuevo estado es "Finalizado", envía la cita a la API de ventas
             if (nuevoEstado === "Finalizado") {
-                await clienteAxios.post("/ventas", citaActualizada);
+                // Crear una copia de citaActualizada sin el campo "estado"
+                const citaSinEstado = { ...citaActualizada };
+                delete citaSinEstado.estado;
+    
+                await clienteAxios.post("/ventas", citaSinEstado);
                 Swal.fire("¡Cita Guardada en Ventas!", "La cita se ha enviado correctamente a la sección de ventas", "success");
-    
-                // Eliminar la cita de la API de citas
-                await clienteAxios.delete(`/citas/${idCita}`);
-                // Actualizar la lista de citas en el frontend después de eliminarla
-                setCitas(citas.filter(cita => cita._id !== idCita));
-    
-                // Redirigir a la sección de ventas
-                navigate("/ventas");
             }
-    
         } catch (error) {
             Swal.fire("Error", "No se pudo actualizar el estado de la cita", "error");
         }
     };
     
-    
-    
-    // const cambiarEstado = async (idCita, nuevoEstado) => {
-    //     try {
-    //         // Actualizar el estado de la cita en la API de citas
-    //         const response = await clienteAxios.put(`/citas/${idCita}`, { estado: nuevoEstado });
-    //         Swal.fire("¡Estado Actualizado!", response.data.mensaje, "success");
-    
-    //         // Actualiza el estado de la cita en el frontend
-    //         setCitas((prevCitas) =>
-    //             prevCitas.map((cita) => (cita._id === idCita ? { ...cita, estado: nuevoEstado } : cita))
-    //         );
-    
-    //         // Si el nuevo estado es "Finalizado", envía la cita a la API de ventas
-    //         const citaActualizada = await clienteAxios.get(`/citas/${idCita}`); // Obtener la cita actualizada directamente de la API
-    //         if (nuevoEstado === "Finalizado") {
-    //             console.log(citaActualizada.data)
-    //             await clienteAxios.post("/ventas", citaActualizada.data); // Usar citaActualizada.data
-    //             Swal.fire("¡Cita Guardada en Ventas!", "La cita se ha enviado correctamente a la sección de ventas", "success");
-    //         }
-    
-    //     } catch (error) {
-    //         Swal.fire("Error", "No se pudo actualizar el estado de la cita", "error");
-    //     }
-    // };
-// console.log({citas})
+
     const mostrarModal = (repuestos) => {
         setRepuestoSeleccionado(repuestos);
-       
     };
 
     const cerrarModal = () => {
@@ -141,9 +99,8 @@ function CitasList() {
                             <th>Cliente</th>
                             <th>Técnico</th>
                             <th>Dirección</th>
-                            <th>Ciudad</th>
                             <th>Fecha</th>
-                            <th>Horario</th> {/* Nueva columna */}
+                            <th>Horario</th>
                             <th>Servicio</th>
                             <th>Categoría</th>
                             <th>Repuesto</th>
@@ -153,33 +110,28 @@ function CitasList() {
                     </thead>
                     <tbody>
                         {citas.map(cita => {
-                            console.log("cita en el map: ", cita)
-                            // const tecnico = tecnicos.find(t => t._id === cita.tecnico);
-                            // const cliente = clients.find(t => t._id === cita.cliente);
-                            // console.log({cliente})
-                            // console.log(cliente.nombre)
+                            const tecnico = tecnicos.find(t => t.cedula === cita.tecnico);
+                            const cliente = clients.find(t => t.cedula === cita.cliente);
                             return (
                                 <tr key={cita._id}>
-                                    <td>{cita.cliente.nombres} {cita.cliente.apellidos}</td>
-                                    <td>{cita.tecnico.nombres} {cita.tecnico.apellidos}</td>
-                                    <td>{cita.direccion}</td>
-                                    <td>{cita.ciudad}</td>
+                                    <td>{cita.cliente?.nombre} {cita.cliente?.apellido}</td>
+                                    <td>{cita.tecnico ? `${cita.tecnico.nombre} ${cita.tecnico.apellido}` : "No disponible"}</td>
+                                    <td>{cita.cliente?.direccion}</td>
                                     <td>
-                                        {cita.fecha ?
-                                            new Date(cita.fecha).toLocaleDateString('es-ES', {
-                                                timeZone: 'America/Bogota', // Cambia esto según tu zona horaria
-                                            }) : 'Fecha no disponible'}
+                                        {cita.fecha ? new Date(cita.fecha).toLocaleDateString('es-ES', {
+                                            timeZone: 'America/Bogota',
+                                        }) : "Fecha no disponible"}
                                     </td>
                                     <td>{cita.horaInicio} - {cita.horaFin}</td>
-                                    <td>{cita.servicio ? cita.servicio.tipo : 'No disponible'}</td>
-                                    <td>{cita.categoria ? cita.categoria.tipo : 'No disponible'}</td>
+                                    <td>{cita.servicio?.tipo || "No disponible"}</td>
+                                    <td>{cita.categoria?.tipo || "No disponible"}</td>
                                     <td>
                                         <button onClick={() => mostrarModal(cita.repuestos)} className="btn btn-info">
                                             <i className="fas fa-eye"></i> Ver
                                         </button>
                                     </td>
                                     <td>
-                                        <select value={cita.estado} onChange={(e) => cambiarEstado(cita._id, e.target.value,e)}>
+                                        <select value={cita.estado} onChange={(e) => cambiarEstado(cita._id, e.target.value)}>
                                             <option value="Cargado">Cargado</option>
                                             <option value="Activado">Activado</option>
                                             <option value="No activado">No activado</option>
@@ -189,9 +141,7 @@ function CitasList() {
                                         </select>
                                     </td>
                                     <td>
-                                        <Link to={`/citas/editar/${cita._id}`} className="btn btn-azul">
-                                            Editar
-                                        </Link>
+                                        <Link to={`/citas/editar/${cita._id}`} className="btn btn-azul">Editar</Link>
                                         <button
                                             type="button"
                                             className="btn btn-rojo btn-eliminar"
@@ -219,7 +169,7 @@ function CitasList() {
                                 <div key={index}>
                                     <p>Nombre: {repuesto.nombre}</p>
                                     <p>Cantidad: {repuesto.cantidad}</p>
-                                    <p>Precio: {repuesto.precio}</p>
+                                    <p>Precio unitario: {repuesto.precio}</p>
                                 </div>
                             ))
                         ) : (

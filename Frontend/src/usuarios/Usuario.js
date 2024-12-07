@@ -33,7 +33,7 @@ function Usuario({ usuario }) {
                 <td>{apellidos}</td>
                 <td>{email}</td>
                 <td>{telefono}</td>
-                <td>{role}</td>
+                <td>{role.name}</td>
                 <td>
                     <label className="switch">
                         <input
