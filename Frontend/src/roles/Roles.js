@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import clienteAxios from "../config/axios";
 import Modal from "../Modal";
-import NuevoRol from "./NuevoRol";
-import Rol from "./Rol";
+import NuevoRol from "../roles/NuevoRol";
+import Rol from "../roles/Rol";
 import { Link } from "react-router-dom"; // Importamos Link para la navegación
 
 const Roles = () => {

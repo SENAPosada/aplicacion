@@ -63,9 +63,9 @@ const NuevaCita = () => {
   const handleChange = (e) => {
     const { name, value } = e.target;
 
-      if (name === "cliente") {
-    console.log("Cliente seleccionado:", value); // Muestra el cliente seleccionado
-  }
+    if (name === "cliente") {
+      console.log("Cliente seleccionado:", value); // Muestra el cliente seleccionado
+    }
     setData({
       ...Data,
       [name]: value,
@@ -83,7 +83,7 @@ const NuevaCita = () => {
         new Date(cita.fecha).toDateString() === new Date(date).toDateString() &&
         cita.tecnico._id === Data.tecnico
       );
-      
+
 
       const horariosOcupados = citasDelDia.map(cita => cita.horario);
       const horariosDisponibles = horarios.filter(
@@ -107,7 +107,7 @@ const NuevaCita = () => {
         new Date(cita.fecha).toDateString() === new Date(Data.fecha).toDateString() &&
         cita.tecnico._id === value
       );
-      
+
 
       const horariosOcupados = citasDelDia.map(cita => cita.horario);
       const horariosDisponibles = horarios.filter(
@@ -159,25 +159,32 @@ const NuevaCita = () => {
     };
 
     console.log({ citaData });
+    // Obtener el token del localStorage
+    const token = localStorage.getItem("token");
 
-    clienteAxios.post("/citas", citaData)
+    clienteAxios.post("/citas", citaData, {
+      headers: {
+          Authorization: `Bearer ${token}`, // Incluye el token en los encabezados
+      },
+  })
       .then(res => {
-        Swal.fire({
-          icon: "success",
-          title: "Cita Reservada",
-          text: "Tu cita ha sido reservada correctamente",
-        }).then(() => {
-          navigate("/citas");
-        });
+          Swal.fire({
+              icon: "success",
+              title: "Cita Reservada",
+              text: "Tu cita ha sido reservada correctamente",
+          }).then(() => {
+              navigate("/citas");
+          });
       })
       .catch(error => {
-        Swal.fire({
-          icon: "error",
-          title: "Error",
-          text: "Hubo un error al reservar la cita",
-        });
+          const errorMessage = error.response?.data?.message || "Hubo un error al reservar la cita";
+          Swal.fire({
+              icon: "error",
+              title: "Error",
+              text: errorMessage, // Muestra el mensaje de error del backend
+          });
       });
-  };
+};
 
 
 

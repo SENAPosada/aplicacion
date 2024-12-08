@@ -14,10 +14,10 @@ const permissionController = require("../controllers/permissionController.js")
 
 const rolePermissionController = require("../controllers/rolePermissionController")
 // Paso 1
-// const { authenticateUser } = require("../middlewares/authenticateUser.js")
+const { authenticateUser } = require("../middlewares/authenticateUser.js")
 //Middleware para validar los tokens
 // Paso 2
-// const checkPermission = require("../middlewares/checkUserPermission.js")
+const checkPermission = require("../middlewares/checkUserPermission.js")
 module.exports = function () {
   // Roles
   router.post('/roles', roleController.createRole);
@@ -102,7 +102,7 @@ module.exports = function () {
   router.post("/repuestos/busqueda/:query", repuestosController.buscarRepuesto);
 
   // Citas
-  router.post("/citas", citasController.nuevaCita);
+  router.post("/citas", authenticateUser, checkPermission('Citas', 'Crear'), citasController.nuevaCita);
   router.get("/citas", citasController.mostrarCitas);
   router.get("/citas/:idCita", citasController.mostrarCita);
   router.put("/citas/:idCita", citasController.actualizarCita);

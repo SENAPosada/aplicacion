@@ -2,8 +2,6 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Swal from "sweetalert2";
 import { useParams } from "react-router-dom";
-import Modal from "../Modal";
-import NuevoPermisoAsignado from "./NuevoPermisoAsignado";
 
 const AsignarPermisos = () => {
     const { id } = useParams();
@@ -85,13 +83,6 @@ const AsignarPermisos = () => {
                 <button type="submit">Asignar Permisos</button>
             </form>
 
-            <button onClick={abrirModal} className="mt-3">Agregar Nuevo Permiso</button>
-
-            {modalVisible && (
-                <Modal cerrarModal={cerrarModal} titulo="Nuevo Permiso">
-                    <NuevoPermisoAsignado cerrarModal={cerrarModal} />
-                </Modal>
-            )}
         </div>
     );
 };

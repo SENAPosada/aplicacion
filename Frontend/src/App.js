@@ -42,11 +42,11 @@ import 'primereact/resources/themes/lara-light-indigo/theme.css';  // Tema de Pr
 import 'primereact/resources/primereact.min.css'; // Estilos de los componentes
 import 'primeicons/primeicons.css'; // Iconos de PrimeReact
 import Roles from "./roles/Roles";
-import Permissions from "./roles/Permissions";
+import Permissions from "./roles_por_permiso/Permissions";
 import EditarRol from "./roles/EditarRol";
-import EditPermission from "./roles/EditPermission";
-import NewPermission from "./roles/NewPermission";
-import AsignarPermisos from "./roles/AsignarPermisos"; // Nuevo componente para asignar permisos a rol
+import EditPermission from "./roles_por_permiso/EditPermission";
+import NewPermission from "./roles_por_permiso/NewPermission";
+import AsignarPermisos from "./roles_por_permiso/AsignarPermisos"; // Nuevo componente para asignar permisos a rol
 
 function App() {
   return (

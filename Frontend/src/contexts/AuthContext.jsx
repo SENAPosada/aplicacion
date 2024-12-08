@@ -11,19 +11,22 @@ export function AuthContextProvider({ children }) {
  console.log(isAuthenticated);
  
 
-    const login = useCallback(async ( email, password ) => {
-        try {
-            const { data } = await clienteAxios.post('usuarios/login', { email, password });
+ const login = useCallback(async ( email, password ) => {
+    try {
+        const { data } = await clienteAxios.post('usuarios/login', { email, password });
 
-            localStorage.setItem('token', data.token); // Guardamos el token en el local storage
-            localStorage.setItem('usuario', JSON.stringify(data.usuario)); // Guardamos el usuario en el local storage
-            localStorage.setItem('auth', true);
-            setIsAuthenticated(true);
-            setUserAuth(data.usuario);
-        } catch (error) {
-            console.log(error)
-        }
-    }, []);
+        localStorage.setItem('token', data.token); // Guardamos el token en el local storage
+        console.log('Token guardado:', localStorage.getItem('token')); // Verifica si se guarda el token
+        
+        localStorage.setItem('usuario', JSON.stringify(data.usuario)); // Guardamos el usuario en el local storage
+        localStorage.setItem('auth', true);
+        setIsAuthenticated(true);
+        setUserAuth(data.usuario);
+    } catch (error) {
+        console.log('Error durante el login:', error);
+    }
+}, []);
+
 
     const logout = useCallback(() => {
         localStorage.removeItem('usuario');
