@@ -102,7 +102,7 @@ module.exports = function () {
   router.post("/repuestos/busqueda/:query", repuestosController.buscarRepuesto);
 
   // Citas
-  router.post("/citas", authenticateUser, checkPermission('Citas', 'Crear'), citasController.nuevaCita);
+  router.post("/citas", authenticateUser, checkPermission('citas', 'crear'), citasController.nuevaCita);
   router.get("/citas", citasController.mostrarCitas);
   router.get("/citas/:idCita", citasController.mostrarCita);
   router.put("/citas/:idCita", citasController.actualizarCita);

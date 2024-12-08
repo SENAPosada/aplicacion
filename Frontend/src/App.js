@@ -44,9 +44,7 @@ import 'primeicons/primeicons.css'; // Iconos de PrimeReact
 import Roles from "./roles/Roles";
 import Permissions from "./roles_por_permiso/Permissions";
 import EditarRol from "./roles/EditarRol";
-import EditPermission from "./roles_por_permiso/EditPermission";
 import NewPermission from "./roles_por_permiso/NewPermission";
-import AsignarPermisos from "./roles_por_permiso/AsignarPermisos"; // Nuevo componente para asignar permisos a rol
 
 function App() {
   return (
@@ -84,10 +82,10 @@ function App() {
 
           <Route path="permissions" element={<Permissions />} />
           <Route path="permissions/nuevo" element={<NewPermission />} />
-          <Route path="permissions/editar/:id" element={<EditPermission />} />
+          <Route path="permissions/editar/:id" element={<EditarRol />} />
 
           {/* Asignación de Permisos por Rol */}
-          <Route path="roles/asignar-permisos/:id" element={<AsignarPermisos />} /> {/* Nueva ruta para asignar permisos */}
+          {/* <Route path="roles/asignar-permisos/:id" element={<AsignarPermisos />} /> Nueva ruta para asignar permisos */}
 
           <Route path="horarios" element={<Agenda />} />
           <Route path="horarios/nuevo" element={<CrearDisponibilidad />} />

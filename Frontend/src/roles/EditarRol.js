@@ -3,35 +3,60 @@ import Swal from "sweetalert2";
 import { useParams, useNavigate } from "react-router-dom";
 import clienteAxios from "../config/axios";
 
-function EditarRol() {
-    // Hook para redireccionar
-    const navigate = useNavigate();
+const COMPONENTS = ["usuarios", "roles", "horarios", "clientes", "tecnicos", "categorias", "repuestos", "servicios", "citas", "ventas"];
+const PRIVILEGES = ["crear", "leer", "actualizar", "eliminar"];
 
-    // Usar el hook useParams para obtener el id de los parámetros de la URL
+function EditarRol() {
+    const navigate = useNavigate();
     const { id } = useParams();
 
-    // Estado para el rol
     const [rol, setRol] = useState({
         name: "",
         description: "",
+        permissions: [],
     });
 
-    // Consultar API para obtener el rol a editar
-    const consultarAPI = async () => {
-        try {
-            const respuesta = await clienteAxios.get(`/roles/${id}`);
-            setRol(respuesta.data);
-        } catch (error) {
-            console.error("Error al consultar el rol:", error);
-            Swal.fire({
-                icon: "error",
-                title: "Error",
-                text: "No se pudo cargar el rol",
-            });
-        }
-    };
+    const [selectedComponent, setSelectedComponent] = useState("");
+    const [generatedPermissions, setGeneratedPermissions] = useState([]);
+    const [loading, setLoading] = useState(true);
 
-    // Actualizar rol en la API
+    useEffect(() => {
+        const consultarAPI = async () => {
+            try {
+                const rolResponse = await clienteAxios.get(`/roles/${id}`);
+                const rolData = rolResponse.data;
+
+                // Extraer el primer componente del conjunto de permisos (si existe)
+                const initialComponent = rolData.permissions.length > 0 ? rolData.permissions[0].resource : "";
+
+                setRol(rolData);
+                setSelectedComponent(initialComponent);
+
+                if (initialComponent) {
+                    // Generar los permisos dinámicamente para el componente
+                    const permissions = PRIVILEGES.map((privilege) => ({
+                        id: `${initialComponent}-${privilege}`,
+                        resource: initialComponent,
+                        action: privilege,
+                    }));
+                    setGeneratedPermissions(permissions);
+                }
+
+                setLoading(false);
+            } catch (error) {
+                console.error("Error al consultar datos del rol:", error);
+                Swal.fire({
+                    icon: "error",
+                    title: "Error",
+                    text: "No se pudieron cargar los datos del rol",
+                });
+                setLoading(false);
+            }
+        };
+
+        consultarAPI();
+    }, [id]);
+
     const actualizarRol = async (e) => {
         e.preventDefault();
         try {
@@ -48,7 +73,6 @@ function EditarRol() {
         }
     };
 
-    // Leer datos del formulario
     const handleChange = (e) => {
         setRol({
             ...rol,
@@ -56,15 +80,41 @@ function EditarRol() {
         });
     };
 
-    // Validar formulario
-    const validarRol = () => {
-        const { name, description } = rol;
-        return !name.length || !description.length;
+    const handleComponentChange = (e) => {
+        const component = e.target.value;
+        setSelectedComponent(component);
+
+        if (component) {
+            const permissions = PRIVILEGES.map((privilege) => ({
+                id: `${component}-${privilege}`,
+                resource: component,
+                action: privilege,
+            }));
+            setGeneratedPermissions(permissions);
+        } else {
+            setGeneratedPermissions([]);
+        }
     };
 
-    useEffect(() => {
-        consultarAPI();
-    }, []);
+    const handlePermissionChange = (permission) => {
+        setRol((prevState) => {
+            const exists = prevState.permissions.find(
+                (perm) => perm.resource === permission.resource && perm.action === permission.action
+            );
+
+            const updatedPermissions = exists
+                ? prevState.permissions.filter(
+                      (perm) => !(perm.resource === permission.resource && perm.action === permission.action)
+                  )
+                : [...prevState.permissions, permission];
+
+            return { ...prevState, permissions: updatedPermissions };
+        });
+    };
+
+    if (loading) {
+        return <p>Cargando...</p>;
+    }
 
     return (
         <Fragment>
@@ -94,12 +144,47 @@ function EditarRol() {
                     />
                 </div>
 
+                <div className="campo">
+                    <label>Componente:</label>
+                    <select value={selectedComponent} onChange={handleComponentChange}>
+                        <option value="">Seleccione un componente</option>
+                        {COMPONENTS.map((component) => (
+                            <option key={component} value={component}>
+                                {component}
+                            </option>
+                        ))}
+                    </select>
+                </div>
+
+                <div className="campo">
+                    <label>Permisos:</label>
+                    {generatedPermissions.length > 0 ? (
+                        generatedPermissions.map((permission) => (
+                            <div key={permission.id}>
+                                <input
+                                    type="checkbox"
+                                    id={`permission-${permission.id}`}
+                                    checked={rol.permissions.some(
+                                        (perm) => perm.resource === permission.resource && perm.action === permission.action
+                                    )}
+                                    onChange={() => handlePermissionChange(permission)}
+                                />
+                                <label htmlFor={`permission-${permission.id}`}>
+                                    {permission.resource} - {permission.action}
+                                </label>
+                            </div>
+                        ))
+                    ) : (
+                        <p>No hay permisos disponibles para el componente seleccionado</p>
+                    )}
+                </div>
+
                 <div className="enviar">
                     <input
                         type="submit"
                         className="btn btn-azul"
                         value="Guardar Cambios"
-                        disabled={validarRol()}
+                        disabled={!rol.name || !rol.permissions.length}
                     />
                 </div>
             </form>

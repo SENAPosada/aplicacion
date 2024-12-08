@@ -9,11 +9,13 @@ exports.CrearUsuario = async (req, res, next) => {
     const { nombres, apellidos, email, telefono, password, direccion, role: roleName } = req.body;
 
     // Validar si el rol existe (buscar el rol por nombre)
-    const role = await Role.findOne({ name: roleName });  // Cambiamos "rol" por "roleName"
+    let role = await Role.findOne({ name: roleName });
     if (!role) {
-      return res.status(404).json({ mensaje: "El rol no existe" });
+      // Crear un rol predeterminado si no existen roles
+      role = await Role.create({ name: 'Administrador' });
+      console.log('Rol predeterminado "Administrador" creado automáticamente.');
     }
-
+    
     // Verificar si el usuario ya existe
     const usuarioExistente = await Usuarios.findOne({ email });
     if (usuarioExistente) {
