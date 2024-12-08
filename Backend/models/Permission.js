@@ -1,21 +1,25 @@
-const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
+const mongoose = require("mongoose");
 
-const PermissionSchema = new Schema({
+const PermissionSchema = new mongoose.Schema({
     resource: {
         type: String,
         required: true,
-        trim: true
     },
     action: {
         type: String,
-        enum: ['Crear', 'Leer', 'Actualizar', 'Eliminar'], // CRUD
-        required: true
+        required: true,
+    },
+    component: { // Componente al que pertenece el permiso
+        type: String,
+        required: true,
     },
     description: {
         type: String,
-        required: true
-    }
-}, { timestamps: true });
+    },
+    activo: {
+        type: Boolean,
+        default: true,
+    },
+});
 
-module.exports = mongoose.model('Permission', PermissionSchema);
+module.exports = mongoose.model("Permission", PermissionSchema);

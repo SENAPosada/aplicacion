@@ -5,17 +5,21 @@ const RoleSchema = new Schema({
     name: {
         type: String,
         required: true,
-        unique: true
+        unique: true,
     },
-    description: { // Propiedad para la descripción del rol
+    description: {
         type: String,
-        trim: true,
-        default: '' // Puedes dejarlo como un string vacío por defecto si no es obligatorio
     },
-    permissions: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Permission'
-    }]
+    permissions: [
+        {
+            resource: { type: String, required: true },
+            action: { type: String, required: true },
+        },
+    ],
+    activo: {
+        type: Boolean,
+        default: true,
+    },
 });
 
 module.exports = mongoose.model('Role', RoleSchema);

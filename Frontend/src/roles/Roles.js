@@ -2,34 +2,21 @@ import React, { useState, useEffect } from "react";
 import clienteAxios from "../config/axios";
 import Modal from "../Modal";
 import NuevoRol from "../roles/NuevoRol";
-import Rol from "../roles/Rol";
 import { Link } from "react-router-dom"; // Importamos Link para la navegación
 
 const Roles = () => {
   const [roles, setRoles] = useState([]);
-  const [permissions, setPermissions] = useState([]); // Nuevo estado para permisos
   const [modalVisible, setModalVisible] = useState(false);
 
   useEffect(() => {
     const consultarAPI = async () => {
       try {
-        // Obtener todos los roles
+        // Obtener todos los roles con sus permisos
         const respuestaRoles = await clienteAxios.get("/roles");
         setRoles(respuestaRoles.data);
-        console.log(respuestaRoles.data)
-        // Obtener los permisos para cada rol
-        const permisosPromesas = respuestaRoles.data.map(async (rol) => {
-          const respuestaPermisos = await clienteAxios.get(`/roles/${rol._id}/permisos`);
-          return {
-            rolId: rol._id,
-            permisos: respuestaPermisos.data,
-          };
-        });
-
-        const permisos = await Promise.all(permisosPromesas);
-        setPermissions(permisos);
+        console.log("Roles obtenidos:", respuestaRoles.data); // Verificar la estructura de los datos
       } catch (error) {
-        console.error("Error al obtener roles o permisos:", error);
+        console.error("Error al obtener roles:", error);
       }
     };
     consultarAPI();
@@ -44,6 +31,16 @@ const Roles = () => {
         rol._id === id ? { ...rol, activo: nuevoEstado } : rol
       )
     );
+  };
+
+  const formatearPermisos = (permissions) => {
+    if (!permissions || permissions.length === 0) {
+      return "No tiene permisos asignados";
+    }
+
+    return permissions
+      .map((permiso) => `${permiso.resource} - ${permiso.action}`)
+      .join(", ");
   };
 
   return (
@@ -66,22 +63,33 @@ const Roles = () => {
             <th>Roles</th>
             <th>Descripción</th>
             <th>Estado</th>
-            <th>Permisos</th> 
+            <th>Permisos</th>
             <th>Acciones</th>
           </tr>
         </thead>
         <tbody>
-          {roles.map((rol) => {
-            const permisosRol = permissions.find((p) => p.rolId === rol._id);
-            return (
-              <Rol
-                key={rol._id}
-                rol={rol}
-                permisos={permisosRol ? permisosRol.permisos : []} // Pasamos los permisos asignados al rol
-                actualizarEstado={actualizarEstadoRol}
-              />
-            );
-          })}
+          {roles.map((rol) => (
+            <tr key={rol._id}>
+              <td>{rol.name}</td>
+              <td>{rol.description || "Sin descripción"}</td>
+              <td>
+                <label className="switch">
+                  <input
+                    type="checkbox"
+                    checked={rol.activo}
+                    onChange={() => actualizarEstadoRol(rol._id, !rol.activo)}
+                  />
+                  <span className="slider round"></span>
+                </label>
+              </td>
+              <td>{formatearPermisos(rol.permissions)}</td>
+              <td>
+                <Link to={`/roles/editar/${rol._id}`} className="btn btn-azul">
+                  Editar
+                </Link>
+              </td>
+            </tr>
+          ))}
         </tbody>
       </table>
     </div>

@@ -47,11 +47,6 @@ const Rol = ({ rol, permisos, actualizarEstado }) => {
         <Link to={`/roles/editar/${_id}`} className="btn btn-azul">
           <i className="fas fa-pen-alt"></i> Editar
         </Link>
-
-        {/* Botón para redirigir a la página de asignación de permisos */}
-        <Link to={`/roles/asignar-permisos/${_id}`} className="btn btn-warning ml-2">
-          <i className="fas fa-key"></i> Asignar Permisos
-        </Link>
       </td>
     </tr>
   );
