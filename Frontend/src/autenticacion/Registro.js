@@ -12,7 +12,7 @@ const Registro = () => {
         password: '',
         telefono: '',
         direccion: '',
-        role: '', // Por defecto asignamos el rol de Cliente
+        role: 'Administrador', 
     });
 
     const [confirmPassword, setConfirmPassword] = useState(''); // Estado para confirmación de contraseña
@@ -33,6 +33,8 @@ const Registro = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
+        console.log('Usuario enviado:', usuario);
+
         try {
             const respuesta = await clienteAxios.post('/usuarios', usuario);  // Asegúrate de que el backend acepte el campo 'rol'
             Swal.fire('Registro Exitoso', respuesta.data.message, 'success');
