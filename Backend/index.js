@@ -10,13 +10,13 @@ require('dotenv').config(); // Esto carga las variables de entorno desde el arch
 
 // Conectar a MongoDB:
 // mongodb://mongo:fefKApObjLjZokShZdcjCMUdUzlGaTiN@junction.proxy.rlwy.net:24048
-mongoose.connect('mongodb://localhost:27017/omniapp')
+mongoose.connect('mongodb+srv://luisposada:12345@cluster0.1b07q.mongodb.net/omniappdb?retryWrites=true&w=majority&appName=Cluster0')
     .then(() => console.log('Conectado a MongoDB puerto 5000'))
     .catch(err => console.error('No se pudo conectar a MongoDB', err));
 // Mongo Atlas: 
 // mongodb+srv://luisposada:12345@cluster0.1b07q.mongodb.net/omniappdb?retryWrites=true&w=majority&appName=Cluster0
 // Mongo local: 
-// mongodb://localhost/omniapp
+// mongodb://localhost:27017/omniapp
 // Crear servidor
 const app = express();
 

@@ -16,13 +16,15 @@ const turnosController = require("../controllers/turnosController");
 const appointmentsController = require("../controllers/appointmentsController.js")
 const rolePermissionController = require("../controllers/rolePermissionController")
 // Paso 1
-const { authenticateUser } = require("../middlewares/authenticateUser.js")
+// const { authenticateUser } = require("../middlewares/authenticateUser.js")
 //Middleware para validar los tokens
 // Paso 2
-const checkPermission = require("../middlewares/checkUserPermission.js")
+// const checkPermission = require("../middlewares/checkUserPermission.js")
+const { authenticateUser, checkPermission } = require("../middlewares/mockMiddlewares.js");
+
 module.exports = function () {
 // Roles
-router.post('/roles', authenticateUser, checkPermission('roles', 'crear'), roleController.createRole);
+router.post('/roles', roleController.createRole);
 router.get('/roles', authenticateUser, checkPermission('roles', 'leer'), roleController.getRoles);
 router.get('/roles/:id', authenticateUser, checkPermission('roles', 'leer'), roleController.getRoleById);
 router.put('/roles/:id', authenticateUser, checkPermission('roles', 'actualizar'), roleController.updateRole);
