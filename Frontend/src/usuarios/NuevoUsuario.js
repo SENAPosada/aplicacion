@@ -1,11 +1,9 @@
-import React, { useState, Fragment } from "react";
+import React, { useState, useEffect, Fragment } from "react";
+import clienteAxios from "../config/axios"; // Asegúrate de que esté configurado correctamente
 import Swal from "sweetalert2";
-// para redireccionar
 import { useNavigate } from "react-router-dom";
-import clienteAxios from "../config/axios"; // Asegúrate de tener un archivo axios configurado
 
-function NuevoUsuario() {
-    // Hook para redireccionar
+const NuevoUsuario = () => {
     const navigate = useNavigate();
 
     const [usuario, guardarUsuario] = useState({
@@ -14,68 +12,74 @@ function NuevoUsuario() {
         email: "",
         telefono: "",
         password: "",
-        confirmarPassword: "", // Campo para confirmar la contraseña
-        role: "usuario",  // Por defecto se asigna 'usuario', puedes cambiar según el caso
+        confirmarPassword: "",
+        role: "", // Inicialmente vacío
         direccion: "",
-        estado: "activo" // Por defecto 'activo'
+        estado: "activo",
     });
 
-    // Leer datos del formulario
-    const handleChange = e => {
-        // Almacenar lo que el usuario escribe en el state
+    const [roles, setRoles] = useState([]); // Estado para los roles disponibles
+
+    // Cargar los roles al montar el componente
+    useEffect(() => {
+        const fetchRoles = async () => {
+            try {
+                const token = localStorage.getItem("token"); // Obtener el token
+                const response = await clienteAxios.get("/roles", {
+                    headers: {
+                        Authorization: `Bearer ${token}`, // Incluir el token en los encabezados
+                    },
+                });
+                setRoles(response.data); // Guardar los roles en el estado
+            } catch (error) {
+                Swal.fire({
+                    icon: "error",
+                    title: "Error",
+                    text: "No se pudo cargar la lista de roles",
+                });
+            }
+        };
+
+        fetchRoles();
+    }, []);
+
+    // Manejar cambios en los inputs
+    const handleChange = (e) => {
         guardarUsuario({
             ...usuario,
-            [e.target.name]: e.target.value
+            [e.target.name]: e.target.value,
         });
     };
 
-    // Añadir un nuevo usuario a la base de datos
-    const agregarUsuario = e => {
-        
+    const agregarUsuario = async (e) => {
         e.preventDefault();
+
         // Verificar si las contraseñas coinciden
         if (usuario.password !== usuario.confirmarPassword) {
             Swal.fire({
-                icon: 'error',
-                title: 'Las contraseñas no coinciden',
-                text: 'Por favor, asegúrate de que las contraseñas sean iguales.'
+                icon: "error",
+                title: "Error",
+                text: "Las contraseñas no coinciden",
             });
             return;
         }
 
-        // Enviar petición
-        clienteAxios.post('/usuarios', usuario)
-            .then(res => {
-                if (res.data.code === 11000) {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Hubo un error',
-                        text: 'El usuario ya está registrado'
-                    });
-                } else {
-                    Swal.fire(
-                        'Usuario Agregado',
-                        res.data.mensaje,
-                        'success'
-                    );
-                }
-                // redireccionar
-                navigate('/usuarios');
-            })
-            .catch(err => {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: 'Hubo un problema al agregar el usuario'
-                });
+        try {
+            const token = localStorage.getItem("token"); // Obtener el token
+            const response = await clienteAxios.post("/usuarios", usuario, {
+                headers: {
+                    Authorization: `Bearer ${token}`, // Incluir el token en los encabezados
+                },
             });
-    };
-
-    // Validar formulario
-    const validarUsuario = () => {
-        const { nombres, apellidos, email, password, confirmarPassword } = usuario;
-        let valido = !nombres.length || !apellidos.length || !email.length || !password.length || !confirmarPassword.length;
-        return valido || password !== confirmarPassword;  // Deshabilitar si las contraseñas no coinciden
+            Swal.fire("Usuario Agregado", response.data.mensaje, "success");
+            navigate("/usuarios");
+        } catch (error) {
+            Swal.fire({
+                icon: "error",
+                title: "Error",
+                text: "No se pudo agregar el usuario",
+            });
+        }
     };
 
     return (
@@ -86,63 +90,70 @@ function NuevoUsuario() {
 
                 <div className="campo">
                     <label>Nombre:</label>
-                    <input type="text"
-                        placeholder="Nombre del Usuario"
+                    <input
+                        type="text"
                         name="nombres"
+                        placeholder="Nombre del Usuario"
                         onChange={handleChange}
                     />
                 </div>
 
                 <div className="campo">
                     <label>Apellido:</label>
-                    <input type="text"
-                        placeholder="Apellido del Usuario"
+                    <input
+                        type="text"
                         name="apellidos"
+                        placeholder="Apellido del Usuario"
                         onChange={handleChange}
                     />
                 </div>
 
                 <div className="campo">
                     <label>Email:</label>
-                    <input type="email"
-                        placeholder="Email del Usuario"
+                    <input
+                        type="email"
                         name="email"
+                        placeholder="Email del Usuario"
                         onChange={handleChange}
                     />
                 </div>
 
                 <div className="campo">
                     <label>Teléfono:</label>
-                    <input type="tel"
-                        placeholder="Teléfono del Usuario"
+                    <input
+                        type="tel"
                         name="telefono"
+                        placeholder="Teléfono del Usuario"
                         onChange={handleChange}
                     />
                 </div>
 
                 <div className="campo">
                     <label>Contraseña:</label>
-                    <input type="password"
-                        placeholder="Contraseña del Usuario"
+                    <input
+                        type="password"
                         name="password"
+                        placeholder="Contraseña del Usuario"
                         onChange={handleChange}
                     />
                 </div>
 
                 <div className="campo">
                     <label>Confirmar Contraseña:</label>
-                    <input type="password"
-                        placeholder="Confirma la contraseña"
+                    <input
+                        type="password"
                         name="confirmarPassword"
+                        placeholder="Confirma la contraseña"
                         onChange={handleChange}
                     />
                 </div>
 
                 <div className="campo">
                     <label>Dirección:</label>
-                    <input type="text"
-                        placeholder="Dirección del Usuario"
+                    <input
+                        type="text"
                         name="direccion"
+                        placeholder="Dirección del Usuario"
                         onChange={handleChange}
                     />
                 </div>
@@ -156,25 +167,28 @@ function NuevoUsuario() {
                 </div>
 
                 <div className="campo">
-                    <label>Role:</label>
+                    <label>Rol:</label>
                     <select name="role" onChange={handleChange} value={usuario.role}>
-                        <option value="usuario">Usuario</option>
-                        <option value="Administrador">Administrador</option> {/* Usa el nombre correcto del rol */}
+                        <option value="">Seleccione un rol</option>
+                        {roles.map((role) => (
+                            <option key={role._id} value={role.name}>
+                                {role.name}
+                            </option>
+                        ))}
                     </select>
                 </div>
-
 
                 <div className="enviar">
                     <input
                         type="submit"
                         className="btn btn-azul"
                         value="Agregar Usuario"
-                        disabled={validarUsuario()}
+                        disabled={!usuario.nombres || !usuario.role}
                     />
                 </div>
             </form>
         </Fragment>
     );
-}
+};
 
 export default NuevoUsuario;

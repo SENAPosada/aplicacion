@@ -38,9 +38,9 @@ const Navegacion = () => {
                 <Link to={"/roles"} className="role-item">
                   <i className="fa-solid fa-user-shield"></i> Roles
                 </Link>
-                <Link to={"/permissions"} className="permisos-item">
+                {/* <Link to={"/permissions"} className="permisos-item">
                   <i className="fa-solid fa-lock"></i> Permisos
-                </Link>
+                </Link> */}
                 {/* <Link to={"/roles/asignar-permisos"} className="asignar-permisos-item">
                   <i className="fa-solid fa-key"></i> Asignar Permisos a Roles
                 </Link> Nueva ruta para asignar permisos */}
@@ -57,6 +57,12 @@ const Navegacion = () => {
               <div className="dropdown">
                 <Link to={"/clientes"} className="clientes-item">
                   <i className="fa-solid fa-users"></i> Clientes
+                </Link>
+                <Link to={"/calendario"} className="clientes-item">
+                  <i className="fa-solid fa-clock"></i> Agenda
+                </Link>
+                <Link to={"/turnos"} className="clientes-item">
+                  <i className="fa-solid fa-clock"></i> Turnos
                 </Link>
                 <Link to={"/horarios"} className="horarios-item">
                   <i className="fa-solid fa-clock"></i> Horarios
@@ -79,10 +85,10 @@ const Navegacion = () => {
             {showServicios && (
               <div className="dropdown">
                 <Link to={"/categorias"} className="categoria-item">
-                  <i className="fa-solid fa-layer-group"></i> Categorías
+                  <i className="fa-solid fa-layer-group"></i> Servicios
                 </Link>
                 <Link to={"/servicios"} className="servicio-item">
-                  <i className="fa-solid fa-concierge-bell"></i> Servicios
+                  <i className="fa-solid fa-concierge-bell"></i> Categorias
                 </Link>
                 <Link to={"/repuestos"} className="repuestos-item">
                   <i className="fa-solid fa-tools"></i> Repuestos

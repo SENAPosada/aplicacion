@@ -13,7 +13,7 @@ const tecnicosSchema = new Schema({
     tipoDocumento: {
         type: String,
         enum: ['Cédula de Ciudadanía', 'Pasaporte', 'Tarjeta de Identidad', 'Cédula de Extranjería'],
-        required: true // Obligatorio
+        required: true 
     },
     cedula: {
         type: String,
@@ -33,7 +33,7 @@ const tecnicosSchema = new Schema({
     },
     activo: {
         type: Boolean,
-        default: true // Establece el valor por defecto como activo
+        default: true 
     }
 });
 

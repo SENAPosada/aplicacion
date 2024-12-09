@@ -56,12 +56,12 @@ exports.mostrarCliente = async (req, res, next) => {
 
 exports.actualizarCliente = async (req, res, next) => {
     try {
-        const { activo } = req.body; // Extraer el nuevo estado
+        const { nombre, apellido, tipoDocumento, cedula, empresa, email, telefono, direccion } = req.body;
 
         // Buscar y actualizar el cliente por su ID
         const cliente = await Clientes.findByIdAndUpdate(
             req.params.idCliente,
-            { activo }, // Actualizar solo el campo activo
+            { nombre, apellido, tipoDocumento, cedula, empresa, email, telefono, direccion }, // Actualizar todos los campos
             { new: true } // Devuelve el cliente actualizado
         );
 
@@ -75,6 +75,7 @@ exports.actualizarCliente = async (req, res, next) => {
         next(); // Pasa el error al middleware de manejo de errores
     }
 };
+
 
 
 

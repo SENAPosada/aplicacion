@@ -11,7 +11,9 @@ const horarioController = require("../controllers/horarioController.js");
 const usuariosController = require("../controllers/usuariosController")
 const roleController = require("../controllers/roleController.js")
 const permissionController = require("../controllers/permissionController.js")
+const turnosController = require("../controllers/turnosController");
 
+const appointmentsController = require("../controllers/appointmentsController.js")
 const rolePermissionController = require("../controllers/rolePermissionController")
 // Paso 1
 const { authenticateUser } = require("../middlewares/authenticateUser.js")
@@ -19,101 +21,83 @@ const { authenticateUser } = require("../middlewares/authenticateUser.js")
 // Paso 2
 const checkPermission = require("../middlewares/checkUserPermission.js")
 module.exports = function () {
-  // Roles
-  router.post('/roles', roleController.createRole);
-  router.get('/roles', roleController.getRoles);
-  router.get('/roles/:id', roleController.getRoleById);
-  router.put('/roles/:id', roleController.updateRole);
+// Roles
+router.post('/roles', authenticateUser, checkPermission('roles', 'crear'), roleController.createRole);
+router.get('/roles', authenticateUser, checkPermission('roles', 'leer'), roleController.getRoles);
+router.get('/roles/:id', authenticateUser, checkPermission('roles', 'leer'), roleController.getRoleById);
+router.put('/roles/:id', authenticateUser, checkPermission('roles', 'actualizar'), roleController.updateRole);
 
-  // Rutas para permisos
-  router.post('/permissions', permissionController.createPermission); // Crear un permiso
-  router.get('/permissions', permissionController.getPermissions); // Obtener todos los permisos
-  router.get('/permissions/:id', permissionController.getPermissionById); // Obtener un permiso por ID
-  router.put('/permissions/:id', permissionController.updatePermission); // Actualizar un permiso por ID
-  router.delete('/permissions/:id', permissionController.deletePermission);
+// Permisos
+router.post('/permissions', authenticateUser, checkPermission('permissions', 'crear'), permissionController.createPermission);
+router.get('/permissions', authenticateUser, checkPermission('permissions', 'leer'), permissionController.getPermissions);
+router.get('/permissions/:id', authenticateUser, checkPermission('permissions', 'leer'), permissionController.getPermissionById);
+router.put('/permissions/:id', authenticateUser, checkPermission('permissions', 'actualizar'), permissionController.updatePermission);
+router.delete('/permissions/:id', authenticateUser, checkPermission('permissions', 'eliminar'), permissionController.deletePermission);
 
-  // Rutas para asignar permisos a un rol
-  // Asignar permiso a un rol
-  router.post("/roles/asignar-permisos/:id", rolePermissionController.assignPermissionToRole);
+// Rutas para asignar permisos a un rol
+router.post("/roles/asignar-permisos/:id", authenticateUser, checkPermission('roles', 'actualizar'), rolePermissionController.assignPermissionToRole);
+router.get("/roles/:roleId/permisos", authenticateUser, checkPermission('roles', 'leer'), rolePermissionController.getRolePermissions);
 
-  // Obtener permisos asignados a un rol
-  router.get("/roles/:roleId/permisos", rolePermissionController.getRolePermissions);
+// Turnos
+router.post("/turnos", authenticateUser, checkPermission('turnos', 'crear'), turnosController.crearTurno);
+router.get("/turnos", authenticateUser, checkPermission('turnos', 'leer'), turnosController.obtenerTurnos);
+router.get("/turnos/:id", authenticateUser, checkPermission('turnos', 'leer'), turnosController.obtenerTurnoPorId);
+router.put("/turnos/:id", authenticateUser, checkPermission('turnos', 'actualizar'), turnosController.actualizarTurno);
+router.delete("/turnos/:id", authenticateUser, checkPermission('turnos', 'eliminar'), turnosController.eliminarTurno);
+
+// Horarios
+router.post("/horarios", authenticateUser, checkPermission('horarios', 'crear'), horarioController.crearHorario);
+router.get("/horarios", authenticateUser, checkPermission('horarios', 'leer'), horarioController.obtenerHorarios);
+
+// Usuarios token implementado 
+router.post("/usuarios/login", usuariosController.login); // Pública
+router.post('/usuarios', usuariosController.CrearUsuario); // Pública
+router.get("/usuarios", authenticateUser, checkPermission('usuarios', 'leer'), usuariosController.mostrarUsuarios); // Requiere autenticación y permisos para leer usuarios
+router.put("/usuarios/:id", authenticateUser, checkPermission('usuarios', 'actualizar'), usuariosController.actualizarUsuario); // Requiere autenticación y permisos para actualizar usuario
 
 
-  //Horario
-  router.post("/horarios", horarioController.crearHorario);
-  router.get("/horarios", horarioController.obtenerHorarios);
 
-  router.post("/usuarios/login", usuariosController.login);
-  router.post('/usuarios', usuariosController.CrearUsuario);
-  router.get('/usuarios', usuariosController.mostrarUsuarios);
-  router.put("/usuarios/:id", usuariosController.mostrarUsuarioPorId);
+// Clientes
+router.post('/clientes', authenticateUser, checkPermission('clientes', 'crear'), clienteController.nuevoCliente);
+router.get('/clientes', authenticateUser, checkPermission('clientes', 'leer'), clienteController.mostrarClientes);
+router.get('/clientes/:idCliente', authenticateUser, checkPermission('clientes', 'leer'), clienteController.mostrarCliente);
+router.put('/clientes/:idCliente', authenticateUser, checkPermission('clientes', 'actualizar'), clienteController.actualizarCliente);
+// router.delete('/clientes/:idCliente', authenticateUser, checkPermission('clientes', 'eliminar'), clienteController.EliminarCliente);
 
-  router.post("/clientes", clienteController.nuevoCliente);
-  router.get("/clientes", clienteController.mostrarClientes);
-  router.get("/clientes/:idCliente", clienteController.mostrarCliente);
+// Técnicos
+router.post('/tecnicos', authenticateUser, checkPermission('tecnicos', 'crear'), tecnicosController.nuevoTecnico);
+router.get('/tecnicos', authenticateUser, checkPermission('tecnicos', 'leer'), tecnicosController.mostrarTecnicos);
+router.get('/tecnicos/:idTecnico', authenticateUser, checkPermission('tecnicos', 'leer'), tecnicosController.mostrarTecnico);
+router.put('/tecnicos/:idTecnico', authenticateUser, checkPermission('tecnicos', 'actualizar'), tecnicosController.actualizarTecnico);
+router.delete('/tecnicos/:idTecnico', authenticateUser, checkPermission('tecnicos', 'eliminar'), tecnicosController.EliminarTecnico);
 
-  router.put("/clientes/:idCliente", clienteController.actualizarCliente);
-  router.delete("/clientes/:idCliente", clienteController.EliminarCliente);
+// Categorías
+router.post('/categorias', authenticateUser, checkPermission('categorias', 'crear'), categoriasController.nuevaCategoria);
+router.get('/categorias', authenticateUser, checkPermission('categorias', 'leer'), categoriasController.mostrarCategorias);
+router.get('/categorias/:idCategoria', authenticateUser, checkPermission('categorias', 'leer'), categoriasController.mostrarCategoria);
+router.put('/categorias/:idCategoria', authenticateUser, checkPermission('categorias', 'actualizar'), categoriasController.actualizarCategoria);
+router.delete('/categorias/:idCategoria', authenticateUser, checkPermission('categorias', 'eliminar'), categoriasController.EliminarCategoria);
 
-  // Tecnicos
-  router.post("/tecnicos", tecnicosController.nuevoTecnico);
-  router.get("/tecnicos", tecnicosController.mostrarTecnicos);
-  router.get("/tecnicos/:idTecnico", tecnicosController.mostrarTecnico);
-  router.put("/tecnicos/:idTecnico", tecnicosController.actualizarTecnico);
-  router.delete("/tecnicos/:idTecnico", tecnicosController.EliminarTecnico);
+// Servicios
+router.post('/servicios', authenticateUser, checkPermission('servicios', 'crear'), serviciosController.nuevoServicio);
+router.get('/servicios', authenticateUser, checkPermission('servicios', 'leer'), serviciosController.mostrarServicios);
+router.get('/servicios/:idServicio', authenticateUser, checkPermission('servicios', 'leer'), serviciosController.mostrarServicio);
+router.put('/servicios/:idServicio', authenticateUser, checkPermission('servicios', 'actualizar'), serviciosController.actualizarServicio);
+router.delete('/servicios/:idServicio', authenticateUser, checkPermission('servicios', 'eliminar'), serviciosController.eliminarServicio);
 
-  // Categoría de servicios
-  router.post("/categorias", categoriasController.nuevaCategoria);
-  router.get("/categorias", categoriasController.mostrarCategorias);
-  router.get("/categorias/:idCategoria", categoriasController.mostrarCategoria);
-  router.put(
-    "/categorias/:idCategoria",
-    categoriasController.actualizarCategoria
-  );
-  router.delete(
-    "/categorias/:idCategoria",
-    categoriasController.EliminarCategoria
-  );
+// Repuestos
+router.post('/repuestos', authenticateUser, checkPermission('repuestos', 'crear'), repuestosController.nuevoRepuesto);
+router.get('/repuestos', authenticateUser, checkPermission('repuestos', 'leer'), repuestosController.mostrarRepuestos);
+router.get('/repuestos/:idRepuesto', authenticateUser, checkPermission('repuestos', 'leer'), repuestosController.mostrarRepuesto);
+router.put('/repuestos/:idRepuesto', authenticateUser, checkPermission('repuestos', 'actualizar'), repuestosController.actualizarRepuesto);
+router.delete('/repuestos/:idRepuesto', authenticateUser, checkPermission('repuestos', 'eliminar'), repuestosController.eliminarRepuesto);
 
-  // Servicios
-  router.post("/servicios", serviciosController.nuevoServicio);
-  router.get("/servicios", serviciosController.mostrarServicios);
-  router.get("/servicios/:idServicio", serviciosController.mostrarServicio);
-  router.put("/servicios/:idServicio", serviciosController.actualizarServicio);
-  router.delete("/servicios/:idServicio", serviciosController.eliminarServicio);
-
-  // Repuestos
-  router.post(
-    "/repuestos",
-    repuestosController.subirArchivo,
-    repuestosController.nuevoRepuesto
-  );
-  router.get("/repuestos", repuestosController.mostrarRepuestos);
-  router.get("/repuestos/:idRepuesto", repuestosController.mostrarRepuesto);
-  router.put(
-    "/repuestos/:idRepuesto",
-    repuestosController.subirArchivo,
-    repuestosController.actualizarRepuesto
-  );
-  router.delete("/repuestos/:idRepuesto", repuestosController.eliminarRepuesto);
-
-  // Búsqueda de repuestos
-  router.post("/repuestos/busqueda/:query", repuestosController.buscarRepuesto);
-
-  // Citas
-  router.post("/citas", authenticateUser, checkPermission('citas', 'crear'), citasController.nuevaCita);
-  router.get("/citas", citasController.mostrarCitas);
-  router.get("/citas/:idCita", citasController.mostrarCita);
-  router.put("/citas/:idCita", citasController.actualizarCita);
-  router.delete("/citas/:idCita", citasController.eliminarCita);
-
-  // Pedidos
-  router.post("/ventas", ventasController.nuevaVenta);
-  router.get("/ventas", ventasController.mostrarVentas);
-  router.get("/ventas/:idVenta", ventasController.mostrarVenta);
-  router.put("/ventas/:idVenta", ventasController.actualizarVenta);
-  router.delete("/ventas/:idVenta", ventasController.eliminarVenta);
+// Ventas
+router.post('/ventas', authenticateUser, checkPermission('ventas', 'crear'), ventasController.nuevaVenta);
+router.get('/ventas', authenticateUser, checkPermission('ventas', 'leer'), ventasController.mostrarVentas);
+router.get('/ventas/:idVenta', authenticateUser, checkPermission('ventas', 'leer'), ventasController.mostrarVenta);
+router.put('/ventas/:idVenta', authenticateUser, checkPermission('ventas', 'actualizar'), ventasController.actualizarVenta);
+router.delete('/ventas/:idVenta', authenticateUser, checkPermission('ventas', 'eliminar'), ventasController.eliminarVenta);
 
   return router;
 };

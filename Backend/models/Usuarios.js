@@ -29,7 +29,7 @@ const usuarioSchema = new mongoose.Schema({
     role: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Role',
-      required: true // Un usuario siempre debe tener un rol asignado
+      required: true 
   },
     direccion: {
       type: String,

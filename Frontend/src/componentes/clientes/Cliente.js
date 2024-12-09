@@ -10,7 +10,18 @@ function Cliente({ cliente }) {
     const cambiarEstado = async (idCliente) => {
         const nuevoEstado = !activo; // Cambia el estado actual
         try {
-            const respuesta = await clienteAxios.put(`/clientes/${idCliente}`, { activo: nuevoEstado });
+            // Obtener el token de localStorage
+            const token = localStorage.getItem("token");
+
+            // Enviar el token en los encabezados de la solicitud
+            const respuesta = await clienteAxios.put(`/clientes/${idCliente}`, 
+                { activo: nuevoEstado }, 
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}` // Enviar el token en los headers
+                    }
+                }
+            );
             setActivo(nuevoEstado); // Actualiza el estado local
             Swal.fire({
                 icon: 'success',

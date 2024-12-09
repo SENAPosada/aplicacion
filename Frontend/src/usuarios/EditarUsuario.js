@@ -5,39 +5,39 @@ import clienteAxios from "../config/axios";
 
 function EditarUsuario() {
     const navigate = useNavigate();
-    const { id } = useParams();
+    const { id } = useParams(); // Obtén el ID del usuario de la URL
 
     const [usuario, datosUsuario] = useState({
         nombres: "",
         apellidos: "",
         email: "",
         telefono: "",
-        rol: "",
+        role: "", // Al principio vacío
+        direccion: "",
+        activo: true
     });
 
+    const [roles, setRoles] = useState([]); // Estado para almacenar los roles disponibles
+
+    // Función para cargar los roles y el usuario
     const consultarAPI = async () => {
         try {
+            // Obtener el usuario por ID
             const usuarioConsulta = await clienteAxios.get(`/usuarios/${id}`);
             datosUsuario(usuarioConsulta.data);
-        } catch (error) {
-            console.error("Error al cargar usuario", error);
-        }
-    };
 
-    const actualizarUsuario = async (e) => {
-        e.preventDefault();
-        try {
-            await clienteAxios.put(`/usuarios/${usuario._id}`, usuario);
-            Swal.fire("Correcto", "Usuario actualizado con éxito", "success");
-            navigate("/usuarios");
+            // Obtener los roles disponibles
+            const rolesResponse = await clienteAxios.get("/roles");
+            setRoles(rolesResponse.data); // Guardar los roles en el estado
         } catch (error) {
-            Swal.fire("Error", "No se pudo actualizar el usuario", "error");
+            console.error("Error al cargar usuario o roles", error);
+            Swal.fire("Error", "No se pudo cargar los datos del usuario o roles", "error");
         }
     };
 
     useEffect(() => {
-        consultarAPI();
-    }, []);
+        consultarAPI(); // Llamar a la API para cargar los datos del usuario y roles
+    }, [id]);
 
     const handleChange = (e) => {
         datosUsuario({
@@ -46,9 +46,32 @@ function EditarUsuario() {
         });
     };
 
+    const actualizarUsuario = async (e) => {
+        e.preventDefault();
+
+        // Verificar si las contraseñas coinciden
+        if (usuario.password !== usuario.confirmarPassword) {
+            Swal.fire({
+                icon: "error",
+                title: "Error",
+                text: "Las contraseñas no coinciden",
+            });
+            return;
+        }
+
+        try {
+            // Enviar la solicitud PUT para actualizar el usuario
+            const response = await clienteAxios.put(`/usuarios/${usuario._id}`, usuario);
+            Swal.fire("Correcto", "Usuario actualizado con éxito", "success");
+            navigate("/usuarios"); // Redirigir a la lista de usuarios
+        } catch (error) {
+            Swal.fire("Error", "No se pudo actualizar el usuario", "error");
+        }
+    };
+
     const validarUsuario = () => {
-        const { nombres, apellidos, email, telefono, rol } = usuario;
-        return !nombres || !apellidos || !email || !telefono || !rol;
+        const { nombres, apellidos, email, telefono, role } = usuario;
+        return !nombres || !apellidos || !email || !telefono || !role;
     };
 
     return (
@@ -61,10 +84,10 @@ function EditarUsuario() {
                     <label>Nombres:</label>
                     <input
                         type="text"
-                        placeholder="nombres"
+                        placeholder="Nombres"
                         name="nombres"
                         onChange={handleChange}
-                        value={usuario.nombre}
+                        value={usuario.nombres} // Usar el valor del estado
                     />
                 </div>
 
@@ -72,10 +95,10 @@ function EditarUsuario() {
                     <label>Apellidos:</label>
                     <input
                         type="text"
-                        placeholder="Apellido Usuario"
+                        placeholder="Apellidos"
                         name="apellidos"
                         onChange={handleChange}
-                        value={usuario.apellido}
+                        value={usuario.apellidos} // Usar el valor del estado
                     />
                 </div>
 
@@ -83,10 +106,10 @@ function EditarUsuario() {
                     <label>Email:</label>
                     <input
                         type="email"
-                        placeholder="Email Usuario"
+                        placeholder="Email"
                         name="email"
                         onChange={handleChange}
-                        value={usuario.email}
+                        value={usuario.email} // Usar el valor del estado
                     />
                 </div>
 
@@ -94,24 +117,50 @@ function EditarUsuario() {
                     <label>Teléfono:</label>
                     <input
                         type="tel"
-                        placeholder="Teléfono Usuario"
+                        placeholder="Teléfono"
                         name="telefono"
                         onChange={handleChange}
-                        value={usuario.telefono}
+                        value={usuario.telefono} // Usar el valor del estado
                     />
                 </div>
 
                 <div className="campo">
                     <label>Rol:</label>
                     <select
-                        name="rol"
+                        name="role"
                         onChange={handleChange}
-                        value={usuario.rol}
+                        value={usuario.role} // Usar el valor del estado
                     >
                         <option value="">-- Selecciona un Rol --</option>
-                        <option value="Administrador">Administrador</option>
-                        <option value="Usuario">Usuario</option>
+                        {roles.map((role) => (
+                            <option key={role._id} value={role._id}> {/* Usamos el _id como valor */}
+                                {role.name}
+                            </option>
+                        ))}
                     </select>
+                </div>
+
+                <div className="campo">
+                    <label>Estado:</label>
+                    <select
+                        name="activo"
+                        onChange={handleChange}
+                        value={usuario.activo}
+                    >
+                        <option value={true}>Activo</option>
+                        <option value={false}>Inactivo</option>
+                    </select>
+                </div>
+
+                <div className="campo">
+                    <label>Dirección:</label>
+                    <input
+                        type="text"
+                        placeholder="Dirección"
+                        name="direccion"
+                        onChange={handleChange}
+                        value={usuario.direccion} // Usar el valor del estado
+                    />
                 </div>
 
                 <div className="enviar">
@@ -119,7 +168,7 @@ function EditarUsuario() {
                         type="submit"
                         className="btn btn-azul"
                         value="Guardar Cambios"
-                        disabled={validarUsuario()}
+                        disabled={validarUsuario()} // Deshabilitar si el formulario no es válido
                     />
                 </div>
             </form>

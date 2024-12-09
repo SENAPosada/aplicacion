@@ -16,12 +16,18 @@ function Clientes() {
 
     const consultarAPI = async () => {
         try {
-            const clientesConsulta = await clienteAxios.get("/clientes");
+            const token = localStorage.getItem("token"); // Obtiene el token desde localStorage
+            const clientesConsulta = await clienteAxios.get("/clientes", {
+                headers: {
+                    Authorization: `Bearer ${token}`, // Enviar el token en los encabezados
+                },
+            });
             guardarClientes(clientesConsulta.data);
         } catch (error) {
             console.error("Error al consultar la API:", error);
         }
     };
+    
 
     useEffect(() => {
         consultarAPI();

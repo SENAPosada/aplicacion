@@ -1,12 +1,13 @@
 import { create } from "zustand";
-import { endpoints } from "../config/endpoints";//apuntamientos al backend
-import { GetMethod } from "../config/methodsHttp";;//metodos http
+import { endpoints } from "../config/endpoints"; 
+import { GetMethod } from "../config/methodsHttp"; 
 
 const useTechnicalsStore = create((set) => ({
   technicals: [],
   fetchTechnicals: async () => {
-    const data = await GetMethod(endpoints.technicals); // Llamamos a la API
-    set({ technicals: data }); // Guardamos los datos y marcamos como fetched
+    const token = localStorage.getItem("token"); // Obtener el token desde localStorage
+    const data = await GetMethod(endpoints.technicals, null, token); // Pasar el token al hacer la solicitud
+    set({ technicals: data }); // Guardar los datos obtenidos
   },
 }));
 

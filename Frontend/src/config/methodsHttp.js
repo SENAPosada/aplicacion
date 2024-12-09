@@ -1,20 +1,29 @@
 import axios from "axios";
 //body es el objeto que contiene tecnico, cliente, servicio, repuesto
-export const GetMethod = async (endopoint, body) => {
+// methodsHttp.js
+export const GetMethod = async (endpoint, body, token = null) => {
   try {
-    const response = await axios.get(endopoint);
+    const headers = token
+      ? { Authorization: `Bearer ${token}` }
+      : {};
+
+    const response = await axios.get(endpoint, { headers });
     console.log(response.data);
     return response.data;
   } catch (err) {
-    console.log(err);
+    console.error("Error en GET:", err);
     return err;
   }
 };
 
 // Método POST
-export const PostMethod = async (endpoint, body) => {
+export const PostMethod = async (endpoint, body, token = null) => {
   try {
-    const response = await axios.post(endpoint, body);
+    const headers = token
+      ? { Authorization: `Bearer ${token}` }
+      : {};
+
+    const response = await axios.post(endpoint, body, { headers });
     console.log("Respuesta POST:", response.data);
     return response.data;
   } catch (err) {

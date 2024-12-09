@@ -8,14 +8,12 @@ exports.CrearUsuario = async (req, res, next) => {
   try {
     const { nombres, apellidos, email, telefono, password, direccion, role: roleName } = req.body;
 
-    // Validar si el rol existe (buscar el rol por nombre)
+    // Validar si el rol existe en la base de datos
     let role = await Role.findOne({ name: roleName });
     if (!role) {
-      // Crear un rol predeterminado si no existen roles
-      role = await Role.create({ name: 'Administrador' });
-      console.log('Rol predeterminado "Administrador" creado automáticamente.');
+      return res.status(400).json({ mensaje: `El rol '${roleName}' no existe.` });
     }
-    
+
     // Verificar si el usuario ya existe
     const usuarioExistente = await Usuarios.findOne({ email });
     if (usuarioExistente) {
@@ -34,7 +32,7 @@ exports.CrearUsuario = async (req, res, next) => {
       telefono,
       password: hashedPassword,
       direccion,
-      role: role._id,  // Asignamos el _id del rol
+      role: role._id, // Asignamos el _id del rol "Usuario"
     });
 
     // Guardar el nuevo usuario
@@ -50,6 +48,7 @@ exports.CrearUsuario = async (req, res, next) => {
     next(error);
   }
 };
+
 
 exports.login = async (req, res) => {
   try {
@@ -170,29 +169,19 @@ exports.restablecerPassword = async (req, res) => {
 };
 
 exports.actualizarUsuario = async (req, res, next) => {
-    try {
-        const { idUsuario } = req.params;
-        const datosActualizados = req.body;
-
-        const usuarioActualizado = await Usuarios.findByIdAndUpdate(
-            idUsuario,
-            datosActualizados,
-            { new: true, runValidators: true }
-        );
-
-        if (!usuarioActualizado) {
-            return res.status(404).json({ mensaje: "Usuario no encontrado" });
-        }
-
-        res.status(200).json({
-            mensaje: "Usuario actualizado exitosamente",
-            usuario: usuarioActualizado
-        });
-    } catch (error) {
-        console.error(error);
-        next(error);
-    }
+  try {
+      const { id } = req.params;
+      const updatedUser = await Usuarios.findByIdAndUpdate(id, req.body, { new: true }).populate('role');
+      if (!updatedUser) {
+          return res.status(404).json({ mensaje: "Usuario no encontrado" });
+      }
+      res.status(200).json(updatedUser);
+  } catch (error) {
+      console.error(error);
+      return res.status(500).json({ mensaje: "Error al actualizar el usuario", error });
+  }
 };
+
 
 exports.mostrarUsuarios = async (req, res, next) => {
     try {
@@ -205,18 +194,23 @@ exports.mostrarUsuarios = async (req, res, next) => {
     }
 };
 
+// usuariosController.js
 exports.mostrarUsuarioPorId = async (req, res, next) => {
-    try {
-        const { idUsuario } = req.params;
+  try {
+      const { id } = req.params; // Recuperar el ID del parámetro de la ruta
 
-        const usuario = await Usuarios.findById(idUsuario, { password: 0 }).populate('role'); // Agregado populate para los roles
-        if (!usuario) {
-            return res.status(404).json({ mensaje: "Usuario no encontrado" });
-        }
+      // Busca al usuario por su ID y evita incluir el campo de la contraseña
+      const usuario = await Usuarios.findById(id, { password: 0 }).populate('role');
 
-        res.status(200).json(usuario);
-    } catch (error) {
-        console.error(error);
-        next(error);
-    }
+      if (!usuario) {
+          return res.status(404).json({ mensaje: "Usuario no encontrado" });
+      }
+
+      res.status(200).json(usuario); // Responde con los datos del usuario
+  } catch (error) {
+      console.error(error);
+      return res.status(500).json({ mensaje: "Error al obtener usuario", error });
+  }
 };
+
+

@@ -4,22 +4,22 @@ import { endpoints } from "../config/endpoints"; // Asegúrate de que la ruta se
 import { GetMethod } from "../config/methodsHttp"; // Función para obtener datos desde el backend
 
 const useUsuariosStore = create((set) => ({
-  usuarios: [], // Almacenar todos los usuarios
-  user: null, // Usuario autenticado
+  usuarios: [],
+  user: null,
   fetchUsuarios: async () => {
-    const data = await GetMethod(endpoints.usuarios); // Llamamos a la API
-    set({ usuarios: data }); // Guardamos los usuarios en el estado
+    const token = localStorage.getItem("token"); // Obtén el token
+    const data = await GetMethod(endpoints.usuarios, null, token); // Pasa el token
+    set({ usuarios: data });
   },
   setUser: (user) => {
-    // Verifica el objeto `user` y establece el estado global
     set({
       user: {
         ...user,
-        role: user.roleId.name, // Asegúrate de que `roleId.name` sea el nombre del rol
+        role: user.roleId.name,
       },
     });
   },
-  logout: () => set({ user: null }), // Función para cerrar sesión
+  logout: () => set({ user: null }),
 }));
 
 export default useUsuariosStore;

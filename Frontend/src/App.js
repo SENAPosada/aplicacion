@@ -46,6 +46,10 @@ import Permissions from "./roles_por_permiso/Permissions";
 import EditarRol from "./roles/EditarRol";
 import NewPermission from "./roles_por_permiso/NewPermission";
 
+import Calendario from "./Calendario";
+import TurnosManager from "./TurnosManager";
+import NewAppointment from "./appointments/NewAppointment";
+
 function App() {
   return (
     <Router>
@@ -86,6 +90,9 @@ function App() {
 
           {/* Asignación de Permisos por Rol */}
           {/* <Route path="roles/asignar-permisos/:id" element={<AsignarPermisos />} /> Nueva ruta para asignar permisos */}
+          <Route path="turnos" element={<TurnosManager />} />
+
+          <Route path="calendario" element={<Calendario />} />
 
           <Route path="horarios" element={<Agenda />} />
           <Route path="horarios/nuevo" element={<CrearDisponibilidad />} />
@@ -115,6 +122,10 @@ function App() {
           <Route path="servicios/nuevo" element={<NuevoServicio />} />
           <Route path="servicios/editar/:id" element={<EditarServicio />} />
 
+        {/* Appointments */}
+        {/* <Route path="appointments" element={<App />} /> */}
+        <Route path="appointments/new" element={<NewAppointment />} />
+        {/* <Route path="appointments/edit/:id" element={<EditarCita />} /> */}
           {/* Citas */}
           <Route path="citas" element={<Citas />} />
           <Route path="citas/nueva" element={<NuevaCita />} />
